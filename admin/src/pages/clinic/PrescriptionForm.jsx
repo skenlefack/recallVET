@@ -99,7 +99,7 @@ const PrescriptionForm = () => {
         setSaving(false);
     };
 
-    if (loading) return <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>;
+    if (loading) return <div className="loading-container"><div className="spinner-border text-success" /><p>Chargement...</p></div>;
 
     return (
         <div className="container-fluid">
@@ -120,9 +120,17 @@ const PrescriptionForm = () => {
             </div>
             <div className="page-title-bar">
                 <h4><i className="fas fa-prescription me-2" />{isEdit ? 'Modifier l\'ordonnance' : 'Nouvelle ordonnance'}</h4>
-                <Link to="/clinic/prescriptions" className="btn btn-outline-secondary btn-sm">
-                    <i className="fas fa-arrow-left me-1" />Retour à la liste
-                </Link>
+                <div className="d-flex gap-2">
+                    {isEdit && (
+                        <a href={`/api/v1/clinic/exports/prescriptions/${id}/pdf`}
+                           className="btn btn-outline-secondary btn-sm" target="_blank" rel="noreferrer">
+                            <i className="fas fa-file-pdf me-1" />PDF
+                        </a>
+                    )}
+                    <Link to="/clinic/prescriptions" className="btn btn-outline-secondary btn-sm">
+                        <i className="fas fa-arrow-left me-1" />Retour à la liste
+                    </Link>
+                </div>
             </div>
 
             <form onSubmit={handleSubmit}>

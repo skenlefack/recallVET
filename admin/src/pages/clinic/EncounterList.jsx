@@ -73,7 +73,7 @@ const EncounterList = () => {
             <div className="card">
                 <div className="card-body p-0">
                     {loading ? (
-                        <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>
+                        <div className="loading-container"><div className="spinner-border text-success" /><p>Chargement...</p></div>
                     ) : encounters.length === 0 ? (
                         <div className="empty-state">
                             <i className="fas fa-notes-medical empty-icon" />

@@ -52,8 +52,12 @@ const SalesList = () => {
             </div>
             <div className="page-title-bar">
                 <h4><i className="fas fa-receipt" />Ventes <span className="badge bg-light text-dark ms-2" style={{fontSize:'0.75rem'}}>{totalItems}</span></h4>
-                <div>
-                    <Link to="/pharmacy/dispense" className="btn btn-outline-primary me-2">
+                <div className="d-flex gap-2">
+                    <a href={`${import.meta.env.VITE_API_URL || '/api'}/v1/exports/sales`}
+                       className="btn btn-outline-secondary btn-sm" target="_blank" rel="noreferrer">
+                        <i className="fas fa-download me-1" />Exporter
+                    </a>
+                    <Link to="/pharmacy/dispense" className="btn btn-outline-primary">
                         <i className="fas fa-prescription-bottle-alt me-1"></i>Délivrance
                     </Link>
                     <Link to="/pharmacy/retail-sale" className="btn btn-rv-primary">
@@ -78,7 +82,7 @@ const SalesList = () => {
             <div className="card">
                 <div className="card-body p-0">
                     {loading ? (
-                        <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>
+                        <div className="loading-container"><div className="spinner-border text-success" /><p>Chargement...</p></div>
                     ) : sales.length === 0 ? (
                         <div className="empty-state">
                             <i className="fas fa-receipt empty-icon" />

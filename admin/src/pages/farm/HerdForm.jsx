@@ -80,7 +80,7 @@ const HerdForm = () => {
         setSaving(false);
     };
 
-    if (loading) return <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>;
+    if (loading) return <div className="loading-container"><div className="spinner-border text-success" /><p>Chargement...</p></div>;
 
     return (
         <div className="container-fluid">

@@ -51,9 +51,15 @@ const AnimalList = () => {
             </div>
             <div className="page-title-bar">
                 <h4><i className="fas fa-paw" />Animaux <span className="badge bg-light text-dark ms-2" style={{fontSize:'0.75rem'}}>{totalItems}</span></h4>
-                <Link to="/clinic/animals/new" className="btn btn-rv-primary">
-                    <i className="fas fa-plus me-1"></i>Nouveau
-                </Link>
+                <div className="d-flex gap-2">
+                    <a href={`${import.meta.env.VITE_API_URL || '/api'}/v1/exports/animals`}
+                       className="btn btn-outline-secondary btn-sm" target="_blank" rel="noreferrer">
+                        <i className="fas fa-download me-1" />Exporter
+                    </a>
+                    <Link to="/clinic/animals/new" className="btn btn-rv-primary">
+                        <i className="fas fa-plus me-1"></i>Nouveau
+                    </Link>
+                </div>
             </div>
 
             <div className="filter-bar">
@@ -74,7 +80,7 @@ const AnimalList = () => {
             <div className="card">
                 <div className="card-body p-0">
                     {loading ? (
-                        <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>
+                        <div className="loading-container"><div className="spinner-border text-success" /><p>Chargement...</p></div>
                     ) : animals.length === 0 ? (
                         <div className="empty-state">
                             <i className="fas fa-paw empty-icon" />
