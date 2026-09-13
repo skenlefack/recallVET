@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: recallvet-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-recallvet}
+      MYSQL_USER: ${DB_USER:-recallvet}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-devpassword}
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - recallvet
+
+  backend:
+    build: ./backend
+    container_name: recallvet-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 5000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-recallvet}
+      DB_PASSWORD: ${DB_PASSWORD:-devpassword}
+      DB_NAME: ${DB_NAME:-recallvet}
+      JWT_SECRET: ${JWT_SECRET:-recallvet_dev_jwt_secret_key_minimum_32_characters_long_1234}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-recallvet_dev_refresh_secret_key_minimum_32_characters_long}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3010}
+      ADMIN_URL: ${ADMIN_URL:-http://localhost:3011}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-noreply@recallvet.com}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+    ports:
+      - "5010:5000"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - recallvet
+
+  admin:
+    build:
+      context: ./admin
+      args:
+        VITE_API_URL: /api
+    container_name: recallvet-admin
+    restart: unless-stopped
+    ports:
+      - "3011:3000"
+    depends_on:
+      - backend
+    networks:
+      - recallvet
+
+  website:
+    build:
+      context: ./website
+      args:
+        VITE_API_URL: /api
+        VITE_ADMIN_URL: ${VITE_ADMIN_URL:-http://localhost:3011}
+    container_name: recallvet-website
+    restart: unless-stopped
+    ports:
+      - "3010:3000"
+    depends_on:
+      - backend
+    networks:
+      - recallvet
+
+volumes:
+  mysql_data:
+  uploads_data:
+
+networks:
+  recallvet:
+    driver: bridge

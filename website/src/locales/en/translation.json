@@ -1,0 +1,305 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "about": "About",
+    "login": "Login",
+    "free_trial": "Free Trial",
+    "demo": "Request a Demo"
+  },
+  "hero": {
+    "badge": "New · Version 2.0 available",
+    "headline": "The veterinary solution",
+    "headline_accent": "#1 in Africa",
+    "subtext": "RecallVET centralizes your veterinary clinic, farm, and pharmacy management. Say goodbye to paper records, stock shortages, and missed appointments.",
+    "cta_primary": "Start free trial",
+    "cta_secondary": "Watch the demo",
+    "no_card": "No credit card required · 30 days free",
+    "stat_clinics": "Active clinics",
+    "stat_animals": "Animals tracked",
+    "stat_countries": "Countries covered",
+    "stat_uptime": "Uptime"
+  },
+  "trusted": {
+    "title": "They trust us",
+    "subtitle": "Hundreds of veterinary professionals across Africa use RecallVET every day"
+  },
+  "problems": {
+    "title": "Challenges you know all too well",
+    "subtitle": "Every African vet faces the same obstacles. RecallVET solves them all.",
+    "p1_title": "Missing paper records",
+    "p1_desc": "Spending hours searching for an animal's medical history in dusty binders? Every consultation should start in under 30 seconds.",
+    "p2_title": "Critical stock shortages",
+    "p2_desc": "Discovering you're out of vaccines when you need them most. Poor stock management costs your reputation dearly.",
+    "p3_title": "Missed reminders and follow-ups",
+    "p3_desc": "Animals missing their booster shots, clients lost without automatic follow-up. Every missed reminder is a lost opportunity."
+  },
+  "features": {
+    "title": "Everything you need",
+    "subtitle": "A complete platform built for African realities",
+    "f1_title": "Clinic Management",
+    "f1_desc": "Complete patient records, consultations, prescriptions, and vaccinations in one click.",
+    "f2_title": "Farm Monitoring",
+    "f2_desc": "Manage your farms, herds, field visits, and health events with ease.",
+    "f3_title": "Pharmacy & Stock",
+    "f3_desc": "Real-time inventory, expiry alerts, automated supplier orders.",
+    "f4_title": "Integrated Billing",
+    "f4_desc": "Professional invoices, quotes, payment tracking, and financial reports.",
+    "f5_title": "Automatic Reminders",
+    "f5_desc": "Automatic SMS and email reminders for vaccines, check-ups, and renewals.",
+    "f6_title": "Reports & Analytics",
+    "f6_desc": "Real-time dashboards, performance statistics, and exportable reports."
+  },
+  "how": {
+    "title": "Get started in 3 steps",
+    "subtitle": "Up and running in under 24 hours, no technical training required",
+    "s1_title": "Sign up",
+    "s1_desc": "Create your free account in 2 minutes. No credit card required.",
+    "s2_title": "Configure your workspace",
+    "s2_desc": "Import existing data, add your team, and customize your workflow.",
+    "s3_title": "Manage and grow",
+    "s3_desc": "Start using all features and watch your practice transform."
+  },
+  "modules": {
+    "title": "Three modules, one platform",
+    "subtitle": "Each module is designed to meet the specific needs of your profession",
+    "clinic_title": "Clinic Module",
+    "clinic_desc": "The complete solution for your veterinary practice",
+    "clinic_features": [
+      "Owner and patient management",
+      "Electronic medical records",
+      "Online appointment booking",
+      "Consultations and diagnostics",
+      "Prescriptions and orders",
+      "Vaccination tracking",
+      "Hospitalization and surgery",
+      "Lab results"
+    ],
+    "farm_title": "Farm Module",
+    "farm_desc": "Total control over your agricultural operations",
+    "farm_features": [
+      "Farm and plot management",
+      "Herd tracking by species",
+      "Field visits with geolocation",
+      "Health events and outbreaks",
+      "Prophylaxis programs",
+      "Animal tagging and identification",
+      "Zootechnical performance",
+      "Farm reports"
+    ],
+    "pharmacy_title": "Pharmacy Module",
+    "pharmacy_desc": "Smart veterinary pharmacy management",
+    "pharmacy_features": [
+      "Drug and product catalog",
+      "Real-time stock tracking",
+      "Expiry date alerts",
+      "Supplier purchase orders",
+      "Receipt and quality control",
+      "Prescription dispensing",
+      "Batch-by-batch traceability",
+      "Sales analytics"
+    ]
+  },
+  "pricing": {
+    "title": "Transparent pricing",
+    "subtitle": "Plans for every size of practice. No hidden fees.",
+    "monthly": "per month",
+    "popular": "Most popular",
+    "cta": "Get started",
+    "cta_enterprise": "Contact us",
+    "trial_note": "30-day free trial on all plans",
+    "starter_name": "Starter",
+    "starter_price": "15,000",
+    "starter_currency": "XAF",
+    "starter_desc": "Ideal for independent veterinarians",
+    "starter_features": [
+      "1 user",
+      "Up to 200 patients",
+      "Clinic module",
+      "Email reminders",
+      "Email support",
+      "Basic reports"
+    ],
+    "pro_name": "Pro",
+    "pro_price": "35,000",
+    "pro_currency": "XAF",
+    "pro_desc": "For growing clinics and practices",
+    "pro_features": [
+      "Up to 5 users",
+      "Unlimited patients",
+      "Clinic + Pharmacy modules",
+      "SMS + Email reminders",
+      "Priority support",
+      "Advanced reports",
+      "API access",
+      "Integrated billing"
+    ],
+    "enterprise_name": "Enterprise",
+    "enterprise_price": "75,000",
+    "enterprise_currency": "XAF",
+    "enterprise_desc": "For veterinary groups and networks",
+    "enterprise_features": [
+      "Unlimited users",
+      "All modules included",
+      "Multi-site",
+      "Full customization",
+      "Dedicated account manager",
+      "On-site training",
+      "99.9% SLA guarantee",
+      "Custom integration"
+    ],
+    "faq_title": "Pricing FAQ",
+    "faq": [
+      {
+        "q": "Can I change plans at any time?",
+        "a": "Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately and billing is prorated."
+      },
+      {
+        "q": "Do you accept Mobile Money?",
+        "a": "Yes! We accept Orange Money, MTN Mobile Money, Wave, Airtel Money as well as Visa/Mastercard and bank transfers."
+      },
+      {
+        "q": "What happens after the 30-day trial?",
+        "a": "At the end of your trial, you choose a paid plan or your account becomes read-only. Your data is retained for 60 days."
+      },
+      {
+        "q": "Are there setup fees?",
+        "a": "No setup fees for Starter and Pro plans. The Enterprise plan may include configuration fees depending on integration needs."
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "What our customers say",
+    "subtitle": "Over 500 veterinary professionals trust RecallVET",
+    "t1_quote": "RecallVET completely transformed our practice. We save 2 hours a day on admin and our clients are better monitored. I would never go back.",
+    "t1_name": "Dr. Aminata Diallo",
+    "t1_title": "Veterinarian, Clinique Animalia – Dakar, Senegal",
+    "t2_quote": "Managing drug stock was our nightmare. Now with RecallVET, we have zero shortages and perfect traceability. An indispensable tool.",
+    "t2_name": "Dr. Kwame Asante",
+    "t2_title": "Director, VetPlus Clinic – Accra, Ghana",
+    "t3_quote": "For our network of 8 clinics in Côte d'Ivoire, RecallVET was the solution we were missing. The centralized data and consolidated reports are excellent.",
+    "t3_name": "Dr. Estelle Konan",
+    "t3_title": "CEO, AfriVet Group – Abidjan, Côte d'Ivoire"
+  },
+  "stats": {
+    "title": "RecallVET by the numbers",
+    "clinics": "Active clinics",
+    "animals": "Animals tracked",
+    "countries": "Countries",
+    "uptime": "Uptime"
+  },
+  "cta_banner": {
+    "title": "Ready to transform your practice?",
+    "subtitle": "Join hundreds of African veterinarians who have already digitized their practice with RecallVET.",
+    "btn_primary": "Start free trial",
+    "btn_secondary": "Request a demo"
+  },
+  "contact": {
+    "title": "Contact us",
+    "subtitle": "Our team is here to answer all your questions",
+    "form_name": "Full name",
+    "form_email": "Email address",
+    "form_subject": "Subject",
+    "form_message": "Message",
+    "form_submit": "Send message",
+    "form_sending": "Sending...",
+    "form_success": "Your message was sent successfully. We'll reply within 24 hours.",
+    "form_error": "An error occurred. Please try again.",
+    "info_email": "contact@recallvet.com",
+    "info_phone": "+237 6XX XXX XXX",
+    "info_address": "Yaoundé, Cameroon",
+    "info_hours": "Mon–Fri · 8am–6pm (WAT)",
+    "social_title": "Follow us"
+  },
+  "demo": {
+    "title": "Request a free demo",
+    "subtitle": "Discover RecallVET in action with a personalized 30-minute demonstration",
+    "badge": "Free demo · No commitment",
+    "form_fullname": "Full name",
+    "form_email": "Professional email",
+    "form_phone": "Phone",
+    "form_practice": "Practice name",
+    "form_type": "Practice type",
+    "form_country": "Country",
+    "form_message": "Tell us more (optional)",
+    "form_submit": "Request my demo",
+    "form_sending": "Sending...",
+    "form_success_title": "Request received!",
+    "form_success_msg": "Thank you! Our team will contact you within 24 hours to schedule your personalized demonstration.",
+    "types": {
+      "clinic": "Veterinary clinic",
+      "farm": "Farm / Livestock",
+      "pharmacy": "Veterinary pharmacy",
+      "mixed": "Mixed practice",
+      "group": "Group / Network"
+    },
+    "benefits": [
+      "Live demo of all features",
+      "Answers to your specific questions",
+      "Personalized configuration advice",
+      "No commitment or sales pressure"
+    ]
+  },
+  "about": {
+    "title": "About RecallVET",
+    "subtitle": "We're building the future of veterinary medicine in Africa",
+    "mission_title": "Our Mission",
+    "mission_text": "RecallVET was born from a simple observation: African veterinary professionals deserve digital tools that match their expertise. Our mission is to provide a complete, affordable platform adapted to African realities to digitize and professionalize veterinary practice across the continent.",
+    "vision_title": "Our Vision",
+    "vision_text": "To be the reference platform for animal health in Africa by 2030, covering 50 countries and contributing to improved food security and animal welfare.",
+    "values_title": "Our Values",
+    "values": [
+      { "title": "Innovation", "desc": "We develop modern solutions adapted to local constraints (connectivity, languages, currencies)." },
+      { "title": "Reliability", "desc": "Your data is sacred. Bank-level security, automatic backups, guaranteed uptime." },
+      { "title": "Proximity", "desc": "Local support in your language, with a team that understands your daily challenges." },
+      { "title": "Impact", "desc": "Every vet we help contributes to animal health and African food security." }
+    ],
+    "team_title": "The RecallVET Team",
+    "team_subtitle": "A team passionate about technology and animal health"
+  },
+  "footer": {
+    "product_title": "Product",
+    "product_links": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "demo": "Demo",
+      "changelog": "Changelog",
+      "roadmap": "Roadmap"
+    },
+    "company_title": "Company",
+    "company_links": {
+      "about": "About",
+      "blog": "Blog",
+      "careers": "Careers",
+      "press": "Press",
+      "partners": "Partners"
+    },
+    "legal_title": "Legal",
+    "legal_links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "cookies": "Cookies",
+      "security": "Security"
+    },
+    "contact_title": "Contact",
+    "description": "The veterinary management platform built for Africa. Clinic, farm, pharmacy – all in one.",
+    "copyright": "© {year} RecallVET. All rights reserved.",
+    "made_with": "Made with ❤ for Africa"
+  },
+  "legal": {
+    "privacy_title": "Privacy Policy",
+    "terms_title": "Terms of Service",
+    "last_updated": "Last updated",
+    "back": "Back"
+  },
+  "common": {
+    "read_more": "Learn more",
+    "get_started": "Get started",
+    "contact_us": "Contact us",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "required": "Required field"
+  }
+}
