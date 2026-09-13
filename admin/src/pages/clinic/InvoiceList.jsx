@@ -30,7 +30,7 @@ const InvoiceList = () => {
         const res = await api.get(endpoint, token);
         if (res.success) {
             setInvoices(res.data || []);
-            setTotalItems(res.total || (res.data || []).length);
+            setTotalItems(res.pagination?.total || res.total || (res.data || []).length);
         }
         setLoading(false);
     };

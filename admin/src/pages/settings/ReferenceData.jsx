@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { api, getToken } from '../../services/api'
+import Pagination from '../../components/Pagination'
 
 const TABS = [
   { key: 'species', label: 'Espèces', icon: 'fas fa-dna', endpoint: '/v1/reference/species' },
@@ -74,8 +75,22 @@ export default function ReferenceData() {
     }
   }
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+
+  // Reset page when tab changes
+  useEffect(() => { setCurrentPage(1) }, [activeTab])
+
   const currentData = data[activeTab] || []
   const currentLoading = loading[activeTab]
+
+  // Client-side pagination
+  const filteredData = activeTab === 'breeds' && breedSpeciesFilter
+    ? currentData.filter(d => String(d.species_id) === breedSpeciesFilter)
+    : currentData
+  const totalItems = filteredData.length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   return (
     <div>
@@ -147,7 +162,7 @@ export default function ReferenceData() {
               <div className="spinner-border text-success" />
               <p>Chargement...</p>
             </div>
-          ) : currentData.length === 0 ? (
+          ) : filteredData.length === 0 ? (
             <div className="empty-state">
               <i className={`${TABS.find(t => t.key === activeTab)?.icon} empty-icon`} />
               <p>Aucune donnée</p>
@@ -158,15 +173,28 @@ export default function ReferenceData() {
           ) : (
             <RefTable
               tab={activeTab}
-              data={currentData}
+              data={paginatedData}
               speciesFilter={breedSpeciesFilter}
-              onSpeciesFilterChange={setBreedSpeciesFilter}
+              onSpeciesFilterChange={(v) => { setBreedSpeciesFilter(v); setCurrentPage(1); }}
               speciesList={speciesList}
               onEdit={(item) => { setEditItem(item); setShowForm(true); }}
               onDelete={(id) => handleDelete(activeTab, id)}
             />
           )}
         </div>
+        {totalItems > 0 && (
+          <div className="card-footer">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+              onItemsPerPageChange={(v) => { setItemsPerPage(v); setCurrentPage(1); }}
+              itemName={TABS.find(t => t.key === activeTab)?.label.toLowerCase() || 'éléments'}
+            />
+          </div>
+        )}
       </div>
     </div>
   )
@@ -302,10 +330,7 @@ function RefTable({ tab, data, speciesFilter, onSpeciesFilterChange, speciesList
     other: 'Autre'
   }
 
-  const filteredData = tab === 'breeds' && speciesFilter
-    ? data.filter(d => String(d.species_id) === speciesFilter)
-    : data
-
+  // data is already filtered and paginated by parent
   const isGlobal = (item) => item.tenant_id === null || item.tenant_id === undefined
 
   return (
@@ -333,7 +358,7 @@ function RefTable({ tab, data, speciesFilter, onSpeciesFilterChange, speciesList
             </tr>
           </thead>
           <tbody>
-            {filteredData.map(item => (
+            {data.map(item => (
               <tr key={item.id}>
                 {/* Species */}
                 {tab === 'species' && <>
