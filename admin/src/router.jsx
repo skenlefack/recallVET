@@ -65,6 +65,7 @@ const Profile = lazy(() => import('./pages/settings/Profile'))
 const SubscriptionPage = lazy(() => import('./pages/settings/Subscription'))
 const TeamManagement = lazy(() => import('./pages/settings/TeamManagement'))
 const TenantSettings = lazy(() => import('./pages/settings/TenantSettings'))
+const ReferenceData = lazy(() => import('./pages/settings/ReferenceData'))
 
 // Public pages
 const AcceptInvite = lazy(() => import('./pages/auth/AcceptInvite'))
@@ -153,6 +154,7 @@ export default function AppRouter() {
         <Route path="/settings/subscription" element={<L><SubscriptionPage /></L>} />
         <Route path="/settings/team" element={<L><TeamManagement /></L>} />
         <Route path="/settings/tenant" element={<L><TenantSettings /></L>} />
+        <Route path="/settings/reference" element={<L><ReferenceData /></L>} />
 
         {/* Superadmin */}
         <Route path="/superadmin/dashboard" element={<L><PlatformDashboard /></L>} />

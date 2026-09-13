@@ -50,6 +50,7 @@ const menuSections = [
     items: [
       { title: 'Profil', icon: 'fas fa-user-cog', to: '/settings/profile' },
       { title: 'Etablissement', icon: 'fas fa-building', to: '/settings/tenant' },
+      { title: 'Données référence', icon: 'fas fa-database', to: '/settings/reference' },
       { title: 'Utilisateurs', icon: 'fas fa-user-friends', to: '/settings/team' },
       { title: 'Abonnement', icon: 'fas fa-crown', to: '/settings/subscription' }
     ]
