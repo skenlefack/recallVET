@@ -40,6 +40,7 @@ const menuSections = [
       { title: 'Fournisseurs', icon: 'fas fa-truck', to: '/pharmacy/suppliers' },
       { title: 'Bons de commande', icon: 'fas fa-shopping-cart', to: '/pharmacy/purchase-orders' },
       { title: 'Stock', icon: 'fas fa-boxes', to: '/pharmacy/stock' },
+      { title: 'Mouvements stock', icon: 'fas fa-exchange-alt', to: '/pharmacy/stock/movements' },
       { title: 'Dispensation', icon: 'fas fa-prescription-bottle-alt', to: '/pharmacy/dispensing' },
       { title: 'Ventes', icon: 'fas fa-cash-register', to: '/pharmacy/sales' }
     ]

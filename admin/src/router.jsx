@@ -37,7 +37,9 @@ const AppointmentCalendar = lazy(() => import('./pages/clinic/AppointmentCalenda
 const FarmList = lazy(() => import('./pages/farm/FarmList'))
 const FarmForm = lazy(() => import('./pages/farm/FarmForm'))
 const FarmView = lazy(() => import('./pages/farm/FarmView'))
+const HerdList = lazy(() => import('./pages/farm/HerdList'))
 const HerdForm = lazy(() => import('./pages/farm/HerdForm'))
+const VisitList = lazy(() => import('./pages/farm/VisitList'))
 const VisitForm = lazy(() => import('./pages/farm/VisitForm'))
 const HealthEventList = lazy(() => import('./pages/farm/HealthEventList'))
 const HealthEventForm = lazy(() => import('./pages/farm/HealthEventForm'))
@@ -51,7 +53,9 @@ const PurchaseOrderList = lazy(() => import('./pages/pharmacy/PurchaseOrderList'
 const PurchaseOrderForm = lazy(() => import('./pages/pharmacy/PurchaseOrderForm'))
 const GoodsReceiptForm = lazy(() => import('./pages/pharmacy/GoodsReceiptForm'))
 const StockOverview = lazy(() => import('./pages/pharmacy/StockOverview'))
+const StockMovementList = lazy(() => import('./pages/pharmacy/StockMovementList'))
 const StockMovementForm = lazy(() => import('./pages/pharmacy/StockMovementForm'))
+const DispenseList = lazy(() => import('./pages/pharmacy/DispenseList'))
 const DispenseForm = lazy(() => import('./pages/pharmacy/DispenseForm'))
 const SalesList = lazy(() => import('./pages/pharmacy/SalesList'))
 const RetailSaleForm = lazy(() => import('./pages/pharmacy/RetailSaleForm'))
@@ -115,9 +119,10 @@ export default function AppRouter() {
         <Route path="/farm/farms/new" element={<L><FarmForm /></L>} />
         <Route path="/farm/farms/:id" element={<L><FarmView /></L>} />
         <Route path="/farm/farms/:id/edit" element={<L><FarmForm /></L>} />
+        <Route path="/farm/herds" element={<L><HerdList /></L>} />
         <Route path="/farm/herds/new" element={<L><HerdForm /></L>} />
         <Route path="/farm/herds/:id" element={<L><HerdForm /></L>} />
-        <Route path="/farm/visits" element={<L><HealthEventList /></L>} />
+        <Route path="/farm/visits" element={<L><VisitList /></L>} />
         <Route path="/farm/visits/new" element={<L><VisitForm /></L>} />
         <Route path="/farm/visits/:id" element={<L><VisitForm /></L>} />
         <Route path="/farm/health-events" element={<L><HealthEventList /></L>} />
@@ -136,7 +141,9 @@ export default function AppRouter() {
         <Route path="/pharmacy/purchase-orders/:id" element={<L><PurchaseOrderForm /></L>} />
         <Route path="/pharmacy/goods-receipts/new" element={<L><GoodsReceiptForm /></L>} />
         <Route path="/pharmacy/stock" element={<L><StockOverview /></L>} />
+        <Route path="/pharmacy/stock/movements" element={<L><StockMovementList /></L>} />
         <Route path="/pharmacy/stock/movement" element={<L><StockMovementForm /></L>} />
+        <Route path="/pharmacy/dispensing" element={<L><DispenseList /></L>} />
         <Route path="/pharmacy/dispensing/new" element={<L><DispenseForm /></L>} />
         <Route path="/pharmacy/sales" element={<L><SalesList /></L>} />
         <Route path="/pharmacy/sales/new" element={<L><RetailSaleForm /></L>} />
