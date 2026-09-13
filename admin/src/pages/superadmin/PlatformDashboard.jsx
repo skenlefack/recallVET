@@ -44,12 +44,10 @@ export default function PlatformDashboard() {
           { label: 'Clients', value: stats.totalParties, icon: 'fas fa-address-book', color: '#E91E63' }
         ].map(s => (
           <div key={s.label} className="col-sm-6 col-xl-2">
-            <div className="card stat-card">
-              <div className="card-body text-center py-3">
-                <div className="stat-icon mx-auto mb-2 text-white" style={{ background: s.color }}><i className={s.icon}></i></div>
-                <h4 className="mb-0">{s.value}</h4>
-                <small className="text-muted">{s.label}</small>
-              </div>
+            <div className="card stat-mini-card">
+              <div className="stat-mini-icon" style={{ background: s.color }}><i className={s.icon} /></div>
+              <div className="stat-mini-value">{s.value}</div>
+              <div className="stat-mini-label">{s.label}</div>
             </div>
           </div>
         ))}
@@ -57,8 +55,8 @@ export default function PlatformDashboard() {
 
       <div className="row g-3">
         <div className="col-lg-6">
-          <div className="card">
-            <div className="card-header">Inscriptions recentes</div>
+          <div className="card form-card">
+            <div className="card-header"><i className="fas fa-user-plus" />Inscriptions recentes</div>
             <div className="card-body p-0">
               <table className="table table-hover mb-0">
                 <thead><tr><th>Nom</th><th>Email</th><th>Date</th></tr></thead>
@@ -77,8 +75,8 @@ export default function PlatformDashboard() {
         </div>
 
         <div className="col-lg-6">
-          <div className="card">
-            <div className="card-header">Demandes de demo</div>
+          <div className="card form-card">
+            <div className="card-header"><i className="fas fa-headset" />Demandes de demo</div>
             <div className="card-body p-0">
               <table className="table table-hover mb-0">
                 <thead><tr><th>Nom</th><th>Cabinet</th><th>Statut</th></tr></thead>

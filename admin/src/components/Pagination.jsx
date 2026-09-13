@@ -24,35 +24,47 @@ export default function Pagination({ currentPage, totalPages, totalItems, itemsP
   return (
     <div className="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2">
       <div className="d-flex align-items-center gap-2">
-        <small className="text-muted">
-          {totalItems > 0 ? `${start}-${end} sur ${totalItems} ${itemName}` : `0 ${itemName}`}
+        <small className="text-muted" style={{ fontSize: '0.8rem' }}>
+          {totalItems > 0 ? (
+            <>Affichage <strong>{start}-{end}</strong> sur <strong>{totalItems}</strong> {itemName}</>
+          ) : `0 ${itemName}`}
         </small>
         {showItemsPerPage && onItemsPerPageChange && (
-          <select className="form-select form-select-sm" style={{ width: 'auto' }}
+          <select className="form-select form-select-sm" style={{ width: 'auto', fontSize: '0.78rem', borderRadius: '6px' }}
             value={itemsPerPage} onChange={(e) => onItemsPerPageChange(parseInt(e.target.value))}>
             {itemsPerPageOptions.map(n => <option key={n} value={n}>{n} / page</option>)}
           </select>
         )}
       </div>
       {totalPages > 1 && (
-        <nav>
-          <ul className="pagination pagination-sm mb-0">
-            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-              <button className="page-link" onClick={() => onPageChange(currentPage - 1)}>&laquo;</button>
-            </li>
-            {getPageNumbers().map((p, i) => (
-              <li key={i} className={`page-item ${p === currentPage ? 'active' : ''} ${p === '...' ? 'disabled' : ''}`}>
-                <button className="page-link" onClick={() => p !== '...' && onPageChange(p)}
-                  style={p === currentPage ? { background: 'linear-gradient(135deg, #1a8b3f 0%, #0d4f2b 100%)', borderColor: '#1a8b3f' } : {}}>
-                  {p}
-                </button>
+        <div className="d-flex align-items-center gap-2">
+          <small className="text-muted d-none d-md-inline" style={{ fontSize: '0.75rem' }}>
+            Page {currentPage}/{totalPages}
+          </small>
+          <nav>
+            <ul className="pagination pagination-sm mb-0" style={{ gap: '2px' }}>
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => onPageChange(currentPage - 1)}
+                  style={{ borderRadius: '6px', fontSize: '0.78rem' }}>&laquo;</button>
               </li>
-            ))}
-            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-              <button className="page-link" onClick={() => onPageChange(currentPage + 1)}>&raquo;</button>
-            </li>
-          </ul>
-        </nav>
+              {getPageNumbers().map((p, i) => (
+                <li key={i} className={`page-item ${p === currentPage ? 'active' : ''} ${p === '...' ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => p !== '...' && onPageChange(p)}
+                    style={{
+                      borderRadius: '6px', fontSize: '0.78rem', minWidth: '32px', textAlign: 'center',
+                      ...(p === currentPage ? { background: 'linear-gradient(135deg, #1a8b3f 0%, #0d4f2b 100%)', borderColor: '#1a8b3f' } : {})
+                    }}>
+                    {p}
+                  </button>
+                </li>
+              ))}
+              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => onPageChange(currentPage + 1)}
+                  style={{ borderRadius: '6px', fontSize: '0.78rem' }}>&raquo;</button>
+              </li>
+            </ul>
+          </nav>
+        </div>
       )}
     </div>
   )

@@ -835,3 +835,351 @@ body {
   padding: 2.5rem;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
+
+// ── Loading spinner improved ────────────────────────────────
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #6c757d;
+
+  .spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-width: 3px;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+// ── Toast notification improved ─────────────────────────────
+.rv-toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  min-width: 320px;
+  max-width: 420px;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  animation: slideInRight 0.3s ease-out;
+  border: none;
+
+  .alert {
+    border: none;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+// ── Table improvements ──────────────────────────────────────
+.table {
+  td {
+    vertical-align: middle;
+    font-size: 0.88rem;
+  }
+
+  .table-actions {
+    white-space: nowrap;
+
+    .btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.78rem;
+      border-radius: 6px;
+    }
+  }
+
+  code {
+    font-size: 0.8rem;
+    background: #f0f4f8;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    color: #4a5568;
+    font-weight: 600;
+  }
+}
+
+// ── Action button groups ────────────────────────────────────
+.btn-group-actions {
+  display: flex;
+  gap: 0.35rem;
+
+  .btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.78rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+}
+
+// ── Info cards (for detail views) ───────────────────────────
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .info-item {
+    .info-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6c757d;
+      margin-bottom: 0.2rem;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+// ── Tab navigation improved ─────────────────────────────────
+.rv-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #edf2f7;
+  margin-bottom: 1.5rem;
+
+  .rv-tab {
+    padding: 0.6rem 1.25rem;
+    border: none;
+    background: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #6c757d;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    &:hover {
+      color: var(--rv-primary);
+    }
+
+    &.active {
+      color: var(--rv-primary);
+      border-bottom-color: var(--rv-primary);
+      font-weight: 600;
+    }
+
+    .tab-count {
+      background: #edf2f7;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+
+    &.active .tab-count {
+      background: var(--rv-primary);
+      color: white;
+    }
+  }
+}
+
+// ── Detail page header ──────────────────────────────────────
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+
+  .detail-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .detail-info {
+    flex: 1;
+
+    h4 {
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      font-size: 1.15rem;
+    }
+
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: #6c757d;
+
+      span {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      i { font-size: 0.75rem; }
+    }
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+}
+
+// ── Stat mini cards (for superadmin) ────────────────────────
+.stat-mini-card {
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.2s;
+  border: 1px solid #edf2f7;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .stat-mini-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    font-size: 1.1rem;
+    color: white;
+  }
+
+  .stat-mini-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #2d3748;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+
+  .stat-mini-label {
+    font-size: 0.78rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+}
+
+// ── Confirm dialog overlay ──────────────────────────────────
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s;
+
+  .confirm-dialog {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: scaleIn 0.2s ease-out;
+
+    .confirm-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+
+      &.warning { background: #fff3cd; color: #856404; }
+      &.danger { background: #f8d7da; color: #721c24; }
+      &.info { background: #cce5ff; color: #004085; }
+    }
+
+    h5 { font-weight: 700; margin-bottom: 0.5rem; }
+    p { color: #6c757d; font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    .confirm-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+// ── Scrollbar global ────────────────────────────────────────
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+
+  &:hover { background: #a0aec0; }
+}
+
+// ── Focus ring ──────────────────────────────────────────────
+*:focus-visible {
+  outline: 2px solid var(--rv-primary);
+  outline-offset: 2px;
+}
+
+// ── Print styles ────────────────────────────────────────────
+@media print {
+  .sidebar, .app-header, .rv-breadcrumb, .page-title-bar .btn { display: none !important; }
+  .main-content { margin-left: 0 !important; }
+  .content-body { padding: 0 !important; }
+}

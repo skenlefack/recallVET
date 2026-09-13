@@ -43,10 +43,23 @@ const FarmView = () => {
                 <span className="separator"><i className="fas fa-chevron-right" /></span>
                 <span>Exploitation</span>
             </div>
-            <div className="page-title-bar">
-                <h4><i className="fas fa-tractor me-2" />{farm.name}</h4>
-                <div>
-                    <Link to={`/farm/farms/${id}/edit`} className="btn btn-outline-primary me-2">
+            {/* Detail Header */}
+            <div className="detail-header">
+                <div className="detail-avatar" style={{ background: 'linear-gradient(135deg, #1a8b3f, #0d4f2b)' }}>
+                    <i className="fas fa-tractor" />
+                </div>
+                <div className="detail-info">
+                    <h4>{farm.name}</h4>
+                    <div className="detail-meta">
+                        <span><i className="fas fa-barcode" /><code>{farm.farm_code}</code></span>
+                        {farm.farm_type && <span><i className="fas fa-tag" />{farm.farm_type}</span>}
+                        {farm.owner_name && <span><i className="fas fa-user" />{farm.owner_name}</span>}
+                        {farm.total_area_ha && <span><i className="fas fa-ruler-combined" />{farm.total_area_ha} ha</span>}
+                        {farm.region && <span><i className="fas fa-map-marker-alt" />{farm.region}</span>}
+                    </div>
+                </div>
+                <div className="detail-actions">
+                    <Link to={`/farm/farms/${id}/edit`} className="btn btn-outline-primary btn-sm">
                         <i className="fas fa-edit me-1"></i>Modifier
                     </Link>
                     <Link to="/farm/farms" className="btn btn-outline-secondary btn-sm">
@@ -55,40 +68,40 @@ const FarmView = () => {
                 </div>
             </div>
 
-            {/* Info Card */}
-            <div className="card mb-3">
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-3"><strong>Code:</strong> <code>{farm.farm_code}</code></div>
-                        <div className="col-md-3"><strong>Type:</strong> {farm.farm_type || '-'}</div>
-                        <div className="col-md-3"><strong>Propriétaire:</strong> {farm.owner_name || '-'}</div>
-                        <div className="col-md-3"><strong>Superficie:</strong> {farm.total_area_ha ? `${farm.total_area_ha} ha` : '-'}</div>
-                        <div className="col-md-3 mt-2"><strong>Région:</strong> {farm.region || '-'}</div>
-                        <div className="col-md-3 mt-2"><strong>N° enregistrement:</strong> {farm.registration_number || '-'}</div>
-                        <div className="col-md-6 mt-2"><strong>Adresse:</strong> {farm.address || '-'}</div>
+            {/* Extra Info Grid */}
+            <div className="info-grid">
+                {farm.registration_number && (
+                    <div className="info-item">
+                        <div className="info-label">N° enregistrement</div>
+                        <div className="info-value">{farm.registration_number}</div>
                     </div>
-                    {farm.notes && <div className="mt-2"><strong>Notes:</strong> {farm.notes}</div>}
-                </div>
+                )}
+                {farm.address && (
+                    <div className="info-item">
+                        <div className="info-label">Adresse</div>
+                        <div className="info-value">{farm.address}</div>
+                    </div>
+                )}
+                {farm.notes && (
+                    <div className="info-item">
+                        <div className="info-label">Notes</div>
+                        <div className="info-value">{farm.notes}</div>
+                    </div>
+                )}
             </div>
 
             {/* Tabs */}
-            <ul className="nav nav-tabs mb-3">
-                <li className="nav-item">
-                    <button className={`nav-link ${activeTab === 'herds' ? 'active' : ''}`} onClick={() => setActiveTab('herds')}>
-                        <i className="fas fa-horse me-1"></i>Troupeaux ({herds.length})
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button className={`nav-link ${activeTab === 'visits' ? 'active' : ''}`} onClick={() => setActiveTab('visits')}>
-                        <i className="fas fa-clipboard-check me-1"></i>Visites ({visits.length})
-                    </button>
-                </li>
-                <li className="nav-item">
-                    <button className={`nav-link ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
-                        <i className="fas fa-exclamation-triangle me-1"></i>Événements sanitaires ({events.length})
-                    </button>
-                </li>
-            </ul>
+            <div className="rv-tabs">
+                <button className={`rv-tab ${activeTab === 'herds' ? 'active' : ''}`} onClick={() => setActiveTab('herds')}>
+                    <i className="fas fa-horse"></i>Troupeaux <span className="tab-count">{herds.length}</span>
+                </button>
+                <button className={`rv-tab ${activeTab === 'visits' ? 'active' : ''}`} onClick={() => setActiveTab('visits')}>
+                    <i className="fas fa-clipboard-check"></i>Visites <span className="tab-count">{visits.length}</span>
+                </button>
+                <button className={`rv-tab ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
+                    <i className="fas fa-exclamation-triangle"></i>Événements <span className="tab-count">{events.length}</span>
+                </button>
+            </div>
 
             {/* Herds Tab */}
             {activeTab === 'herds' && (
@@ -101,7 +114,13 @@ const FarmView = () => {
                     </div>
                     <div className="card-body p-0">
                         {herds.length === 0 ? (
-                            <div className="text-center py-4 text-muted">Aucun troupeau enregistré</div>
+                            <div className="empty-state">
+                                <i className="fas fa-horse empty-icon" />
+                                <p>Aucun troupeau enregistré pour cette exploitation.</p>
+                                <Link to={`/farm/herds/new?farm_id=${id}`} className="btn btn-sm btn-rv-primary">
+                                    <i className="fas fa-plus me-1" />Ajouter un troupeau
+                                </Link>
+                            </div>
                         ) : (
                             <div className="table-responsive">
                                 <table className="table table-hover mb-0">
@@ -142,7 +161,13 @@ const FarmView = () => {
                     </div>
                     <div className="card-body p-0">
                         {visits.length === 0 ? (
-                            <div className="text-center py-4 text-muted">Aucune visite enregistrée</div>
+                            <div className="empty-state">
+                                <i className="fas fa-clipboard-check empty-icon" />
+                                <p>Aucune visite enregistrée pour cette exploitation.</p>
+                                <Link to={`/farm/visits/new?farm_id=${id}`} className="btn btn-sm btn-rv-primary">
+                                    <i className="fas fa-plus me-1" />Planifier une visite
+                                </Link>
+                            </div>
                         ) : (
                             <div className="table-responsive">
                                 <table className="table table-hover mb-0">
@@ -181,7 +206,13 @@ const FarmView = () => {
                     </div>
                     <div className="card-body p-0">
                         {events.length === 0 ? (
-                            <div className="text-center py-4 text-muted">Aucun événement sanitaire</div>
+                            <div className="empty-state">
+                                <i className="fas fa-shield-alt empty-icon" />
+                                <p>Aucun événement sanitaire signalé.</p>
+                                <Link to={`/farm/health-events/new?farm_id=${id}`} className="btn btn-sm btn-rv-primary">
+                                    <i className="fas fa-plus me-1" />Signaler un événement
+                                </Link>
+                            </div>
                         ) : (
                             <div className="table-responsive">
                                 <table className="table table-hover mb-0">
