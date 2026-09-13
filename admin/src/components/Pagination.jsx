@@ -1,69 +1,113 @@
-import { useState } from 'react'
+export default function Pagination({
+  currentPage,
+  totalPages,
+  totalItems,
+  itemsPerPage,
+  onPageChange,
+  onItemsPerPageChange,
+  itemName = 'éléments',
+  showItemsPerPage = true,
+  itemsPerPageOptions = [10, 25, 50, 100]
+}) {
+  if (totalPages <= 0 && totalItems <= 0) return null
 
-export default function Pagination({ currentPage, totalPages, totalItems, itemsPerPage, onPageChange, onItemsPerPageChange, itemName = 'elements', showItemsPerPage = true, itemsPerPageOptions = [10, 20, 50, 100] }) {
-  if (totalPages <= 0) return null
+  const pages = totalPages || Math.ceil(totalItems / itemsPerPage) || 1
 
   const getPageNumbers = () => {
-    const pages = []
-    const delta = 2
+    const nums = []
+    const delta = 1
     const left = Math.max(2, currentPage - delta)
-    const right = Math.min(totalPages - 1, currentPage + delta)
+    const right = Math.min(pages - 1, currentPage + delta)
 
-    pages.push(1)
-    if (left > 2) pages.push('...')
-    for (let i = left; i <= right; i++) pages.push(i)
-    if (right < totalPages - 1) pages.push('...')
-    if (totalPages > 1) pages.push(totalPages)
-
-    return pages
+    nums.push(1)
+    if (left > 2) nums.push('...')
+    for (let i = left; i <= right; i++) nums.push(i)
+    if (right < pages - 1) nums.push('...')
+    if (pages > 1) nums.push(pages)
+    return nums
   }
 
-  const start = (currentPage - 1) * itemsPerPage + 1
+  const start = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0
   const end = Math.min(currentPage * itemsPerPage, totalItems)
 
   return (
-    <div className="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2">
-      <div className="d-flex align-items-center gap-2">
-        <small className="text-muted" style={{ fontSize: '0.8rem' }}>
+    <div className="rv-pagination">
+      {/* Left: summary + per page selector */}
+      <div className="rv-pagination-left">
+        <span className="rv-pagination-summary">
           {totalItems > 0 ? (
-            <>Affichage <strong>{start}-{end}</strong> sur <strong>{totalItems}</strong> {itemName}</>
-          ) : `0 ${itemName}`}
-        </small>
+            <><strong>{start}</strong>–<strong>{end}</strong> sur <strong>{totalItems}</strong> {itemName}</>
+          ) : (
+            <>0 {itemName}</>
+          )}
+        </span>
         {showItemsPerPage && onItemsPerPageChange && (
-          <select className="form-select form-select-sm" style={{ width: 'auto', fontSize: '0.78rem', borderRadius: '6px' }}
-            value={itemsPerPage} onChange={(e) => onItemsPerPageChange(parseInt(e.target.value))}>
-            {itemsPerPageOptions.map(n => <option key={n} value={n}>{n} / page</option>)}
+          <select
+            className="rv-pagination-select"
+            value={itemsPerPage}
+            onChange={(e) => onItemsPerPageChange(parseInt(e.target.value))}
+          >
+            {itemsPerPageOptions.map(n => (
+              <option key={n} value={n}>{n} / page</option>
+            ))}
           </select>
         )}
       </div>
-      {totalPages > 1 && (
-        <div className="d-flex align-items-center gap-2">
-          <small className="text-muted d-none d-md-inline" style={{ fontSize: '0.75rem' }}>
-            Page {currentPage}/{totalPages}
-          </small>
-          <nav>
-            <ul className="pagination pagination-sm mb-0" style={{ gap: '2px' }}>
-              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                <button className="page-link" onClick={() => onPageChange(currentPage - 1)}
-                  style={{ borderRadius: '6px', fontSize: '0.78rem' }}>&laquo;</button>
-              </li>
-              {getPageNumbers().map((p, i) => (
-                <li key={i} className={`page-item ${p === currentPage ? 'active' : ''} ${p === '...' ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => p !== '...' && onPageChange(p)}
-                    style={{
-                      borderRadius: '6px', fontSize: '0.78rem', minWidth: '32px', textAlign: 'center',
-                      ...(p === currentPage ? { background: 'linear-gradient(135deg, #1a8b3f 0%, #0d4f2b 100%)', borderColor: '#1a8b3f' } : {})
-                    }}>
-                    {p}
-                  </button>
-                </li>
-              ))}
-              <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                <button className="page-link" onClick={() => onPageChange(currentPage + 1)}
-                  style={{ borderRadius: '6px', fontSize: '0.78rem' }}>&raquo;</button>
-              </li>
-            </ul>
-          </nav>
+
+      {/* Right: page buttons */}
+      {pages > 1 && (
+        <div className="rv-pagination-right">
+          {/* First page */}
+          <button
+            className="rv-page-btn"
+            disabled={currentPage === 1}
+            onClick={() => onPageChange(1)}
+            title="Première page"
+          >
+            <i className="fas fa-angles-left" />
+          </button>
+
+          {/* Previous */}
+          <button
+            className="rv-page-btn"
+            disabled={currentPage === 1}
+            onClick={() => onPageChange(currentPage - 1)}
+            title="Page précédente"
+          >
+            <i className="fas fa-chevron-left" />
+          </button>
+
+          {/* Page numbers */}
+          {getPageNumbers().map((p, i) => (
+            <button
+              key={i}
+              className={`rv-page-btn ${p === currentPage ? 'active' : ''} ${p === '...' ? 'dots' : ''}`}
+              disabled={p === '...'}
+              onClick={() => p !== '...' && onPageChange(p)}
+            >
+              {p}
+            </button>
+          ))}
+
+          {/* Next */}
+          <button
+            className="rv-page-btn"
+            disabled={currentPage === pages}
+            onClick={() => onPageChange(currentPage + 1)}
+            title="Page suivante"
+          >
+            <i className="fas fa-chevron-right" />
+          </button>
+
+          {/* Last page */}
+          <button
+            className="rv-page-btn"
+            disabled={currentPage === pages}
+            onClick={() => onPageChange(pages)}
+            title="Dernière page"
+          >
+            <i className="fas fa-angles-right" />
+          </button>
         </div>
       )}
     </div>

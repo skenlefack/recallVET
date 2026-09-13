@@ -9,7 +9,7 @@ export default function TenantList() {
   const [search, setSearch] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
-  const itemsPerPage = 20
+  const itemsPerPage = 10
 
   useEffect(() => { loadTenants() }, [currentPage])
 

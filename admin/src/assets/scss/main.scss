@@ -397,10 +397,110 @@ body {
   min-width: 300px;
 }
 
-// Pagination active
-.page-item.active .page-link {
-  background-color: var(--rv-primary);
-  border-color: var(--rv-primary);
+// ── Pagination moderne ──────────────────────────────────────
+.rv-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  margin-top: 0.5rem;
+
+  .rv-pagination-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .rv-pagination-summary {
+    font-size: 0.82rem;
+    color: #6c757d;
+
+    strong { color: #2d3748; }
+  }
+
+  .rv-pagination-select {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.78rem;
+    color: #4a5568;
+    background: #f8fafb;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:focus { border-color: var(--rv-primary); }
+  }
+
+  .rv-pagination-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .rv-page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    color: #4a5568;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+
+    i { font-size: 0.7rem; }
+
+    &:hover:not(:disabled):not(.active) {
+      background: #f0f4f8;
+      border-color: #cbd5e0;
+      color: #2d3748;
+    }
+
+    &.active {
+      background: var(--rv-gradient);
+      border-color: var(--rv-primary);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(26, 139, 63, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &.dots {
+      border: none;
+      background: none;
+      cursor: default;
+      min-width: 24px;
+      color: #a0aec0;
+      font-weight: 700;
+
+      &:hover { background: none; }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .rv-pagination {
+    flex-direction: column;
+    align-items: stretch;
+
+    .rv-pagination-left,
+    .rv-pagination-right {
+      justify-content: center;
+    }
+  }
 }
 
 // Responsive

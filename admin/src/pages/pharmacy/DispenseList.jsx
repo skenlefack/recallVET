@@ -9,7 +9,7 @@ const DispenseList = () => {
     const [loading, setLoading] = useState(true);
     const [prescriptionId, setPrescriptionId] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(20);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
 
     useEffect(() => {

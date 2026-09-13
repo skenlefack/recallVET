@@ -11,7 +11,7 @@ const AnimalList = () => {
     const [species, setSpecies] = useState('');
     const [speciesList, setSpeciesList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(20);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
 
     useEffect(() => {
