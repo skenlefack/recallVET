@@ -1,6 +1,21 @@
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SEO from '../components/seo/SEO';
+
+function useScrollReveal() {
+  const ref = useRef(null);
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setRevealed(true); },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+  return [ref, revealed];
+}
 
 const CLINIC_FEATURES = [
   { icon: 'fa-users', label: 'Gestion des propriétaires (personnes physiques et morales)' },
@@ -56,20 +71,30 @@ const BILLING_FEATURES = [
   { icon: 'fa-percentage', label: 'Gestion des remises et programmes de fidélité' },
 ];
 
-function FeatureBlock({ title, subtitle, icon, features, reverse }) {
+function FeatureBlock({ title, subtitle, icon, features, reverse, color }) {
+  const [ref, revealed] = useScrollReveal();
   return (
-    <div className={`feature-detail-block${reverse ? ' reverse' : ''}`}>
+    <div className={`feature-detail-block reveal-section ${revealed ? 'revealed' : ''}${reverse ? ' reverse' : ''}`} ref={ref}>
       <div className="row align-items-start g-5">
         <div className={`col-lg-4${reverse ? ' order-lg-2' : ''}`}>
           <div className="module-header">
-            <div className="module-icon-lg">
+            <div className="module-icon-lg" style={color ? { background: color } : {}}>
               <i className={`fas ${icon}`} />
             </div>
             <div>
               <h2 className="section-title text-start" style={{ fontSize: '1.8rem' }}>{title}</h2>
             </div>
           </div>
-          <p style={{ color: '#6c757d', lineHeight: '1.7', marginBottom: '1.5rem' }}>{subtitle}</p>
+          <p style={{ color: '#6c757d', lineHeight: '1.7', marginBottom: '1rem' }}>{subtitle}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div style={{
+              background: color || '#e8f7ed', borderRadius: 10, padding: '0.5rem 1rem',
+              fontWeight: 800, fontSize: '1.5rem', color: color ? 'white' : '#1a8b3f'
+            }}>
+              {features.length}
+            </div>
+            <span style={{ color: '#6c757d', fontSize: '0.9rem' }}>fonctionnalités incluses</span>
+          </div>
           <a
             href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/register`}
             target="_blank"
@@ -84,7 +109,7 @@ function FeatureBlock({ title, subtitle, icon, features, reverse }) {
           <div className="feature-list">
             {features.map((f, i) => (
               <div key={i} className="fl-item">
-                <i className={`fas ${f.icon}`} />
+                <i className={`fas ${f.icon}`} style={color ? { color } : {}} />
                 <span>{f.label}</span>
               </div>
             ))}
@@ -123,6 +148,7 @@ export default function Features() {
             subtitle="Gérez l'intégralité de votre cabinet vétérinaire depuis un seul écran. Des dossiers patients aux résultats d'examens, en passant par les prescriptions et les rappels de vaccination."
             icon="fa-hospital-user"
             features={CLINIC_FEATURES}
+            color="#1a8b3f"
           />
 
           <hr style={{ border: 'none', borderTop: '2px solid #e8f7ed', margin: '0 0 4rem' }} />
@@ -133,6 +159,7 @@ export default function Features() {
             icon="fa-tractor"
             features={FARM_FEATURES}
             reverse
+            color="#c17817"
           />
 
           <hr style={{ border: 'none', borderTop: '2px solid #e8f7ed', margin: '0 0 4rem' }} />
@@ -142,6 +169,7 @@ export default function Features() {
             subtitle="La gestion intelligente de votre stock de médicaments vétérinaires. Zéro rupture, traçabilité parfaite, commandes fournisseurs automatisées."
             icon="fa-prescription-bottle-medical"
             features={PHARMACY_FEATURES}
+            color="#2563eb"
           />
 
           <hr style={{ border: 'none', borderTop: '2px solid #e8f7ed', margin: '0 0 4rem' }} />
@@ -152,6 +180,7 @@ export default function Features() {
             icon="fa-file-invoice-dollar"
             features={BILLING_FEATURES}
             reverse
+            color="#9C27B0"
           />
 
           <div className="text-center" style={{ marginTop: '4rem', padding: '3rem', background: '#f8fafb', borderRadius: 20, border: '1px solid #e2e8f0' }}>

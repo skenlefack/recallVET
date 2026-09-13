@@ -119,6 +119,34 @@ export default function About() {
         </div>
       </section>
 
+      {/* Key numbers */}
+      <section style={{ padding: '3rem 0', background: '#fff' }}>
+        <div className="container">
+          <div className="row g-4 text-center">
+            {[
+              { value: '2022', label: 'Année de création', icon: 'fa-calendar' },
+              { value: '500+', label: 'Cliniques actives', icon: 'fa-hospital' },
+              { value: '50K+', label: 'Animaux suivis', icon: 'fa-paw' },
+              { value: '15', label: 'Pays en Afrique', icon: 'fa-earth-africa' },
+              { value: '99.9%', label: 'Disponibilité', icon: 'fa-shield-halved' },
+              { value: '24h', label: 'Temps de réponse', icon: 'fa-headset' }
+            ].map((s, i) => (
+              <div key={i} className="col-6 col-md-4 col-lg-2">
+                <div style={{
+                  padding: '1.5rem 0.5rem',
+                  borderRadius: 16,
+                  transition: 'all 0.3s',
+                }}>
+                  <i className={`fas ${s.icon}`} style={{ fontSize: '1.5rem', color: '#1a8b3f', marginBottom: '0.75rem', display: 'block' }} />
+                  <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#0f1c2e', lineHeight: 1 }}>{s.value}</div>
+                  <div style={{ fontSize: '0.82rem', color: '#6c757d', marginTop: '0.3rem' }}>{s.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Values */}
       <section style={{ padding: '4rem 0', background: '#f8fafb' }}>
         <div className="container">

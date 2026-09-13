@@ -36,6 +36,7 @@ function CompCell({ value }) {
 export default function Pricing() {
   const { t } = useTranslation();
   const [openFaq, setOpenFaq] = useState(null);
+  const [billingCycle, setBillingCycle] = useState('monthly');
   const faqs = t('pricing.faq', { returnObjects: true });
 
   const plans = [
@@ -61,6 +62,20 @@ export default function Pricing() {
           </span>
           <h1>{t('pricing.title')}</h1>
           <p>{t('pricing.subtitle')}</p>
+        </div>
+      </div>
+
+      <div className="text-center mb-4" style={{ paddingTop: '2rem' }}>
+        <div className="billing-toggle">
+          <button className={`toggle-btn ${billingCycle === 'monthly' ? 'active' : ''}`}
+            onClick={() => setBillingCycle('monthly')}>
+            Mensuel
+          </button>
+          <button className={`toggle-btn ${billingCycle === 'yearly' ? 'active' : ''}`}
+            onClick={() => setBillingCycle('yearly')}>
+            Annuel
+            <span className="savings-badge">-17%</span>
+          </button>
         </div>
       </div>
 
