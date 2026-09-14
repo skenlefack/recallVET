@@ -41,7 +41,7 @@ const AppointmentForm = () => {
                 animal_id: d.animal_id || '', party_id: d.party_id || '', vet_id: d.vet_id || '',
                 appointment_date: d.appointment_date ? d.appointment_date.substring(0, 10) : '',
                 start_time: d.start_time || '', end_time: d.end_time || '',
-                appointment_type: d.appointment_type || 'consultation', urgency: d.urgency || 'normal',
+                appointment_type: d.appointment_type || 'consultation', urgency: d.urgency_level || d.urgency || 'normal',
                 reason: d.reason || '', notes: d.notes || ''
             });
             if (d.animal_name) {
@@ -78,9 +78,11 @@ const AppointmentForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSaving(true);
+        const payload = { ...form, urgency_level: form.urgency };
+        delete payload.urgency;
         const res = isEdit
-            ? await api.put(`/v1/clinic/appointments/${id}`, form, token)
-            : await api.post('/v1/clinic/appointments', form, token);
+            ? await api.put(`/v1/clinic/appointments/${id}`, payload, token)
+            : await api.post('/v1/clinic/appointments', payload, token);
         if (res.success) {
             setToast({ type: 'success', message: isEdit ? 'RDV mis à jour' : 'RDV créé avec succès' });
             setTimeout(() => navigate('/clinic/appointments'), 1000);

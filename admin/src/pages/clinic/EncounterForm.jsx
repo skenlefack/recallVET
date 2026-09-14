@@ -52,9 +52,11 @@ const EncounterForm = () => {
                 animal_id: d.animal_id || '', party_id: d.party_id || '', appointment_id: d.appointment_id || '',
                 encounter_date: d.encounter_date ? d.encounter_date.substring(0, 10) : '',
                 encounter_type: d.encounter_type || 'consultation',
-                temperature: d.temperature || '', heart_rate: d.heart_rate || '',
-                respiratory_rate: d.respiratory_rate || '', weight_kg: d.weight_kg || '',
-                clinical_findings: d.clinical_findings || '', diagnosis: d.diagnosis || '', plan: d.plan || '',
+                temperature: d.temperature_c || d.temperature || '', heart_rate: d.heart_rate_bpm || d.heart_rate || '',
+                respiratory_rate: d.resp_rate_bpm || d.respiratory_rate || '', weight_kg: d.weight_kg || '',
+                clinical_findings: d.clinical_findings || '', diagnosis: d.diagnostic_hypotheses || d.diagnosis || '',
+                plan: d.clinical_plan || d.plan || '',
+                visit_reason: d.visit_reason || '',
                 prescription_needed: d.prescription_needed || false,
                 hospitalization_needed: d.hospitalization_needed || false,
                 surgery_needed: d.surgery_needed || false,
@@ -96,7 +98,24 @@ const EncounterForm = () => {
     const handleSubmit = async (e, sign = false) => {
         e.preventDefault();
         setSaving(true);
-        const payload = { ...form };
+        const payload = {
+            ...form,
+            temperature_c: form.temperature || null,
+            heart_rate_bpm: form.heart_rate || null,
+            resp_rate_bpm: form.respiratory_rate || null,
+            diagnostic_hypotheses: form.diagnosis || null,
+            clinical_plan: form.plan || null,
+            visit_reason: form.visit_reason || form.reason || null,
+            history_presenting_complaint: form.history || null,
+            owner_instructions: form.follow_up_notes || null,
+        };
+        // Remove frontend-only field names
+        delete payload.temperature;
+        delete payload.heart_rate;
+        delete payload.respiratory_rate;
+        delete payload.diagnosis;
+        delete payload.plan;
+        delete payload.history;
         if (sign) payload.status = 'signed';
         const res = isEdit
             ? await api.put(`/v1/clinic/encounters/${id}`, payload, token)

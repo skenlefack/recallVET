@@ -88,9 +88,11 @@ const AnimalForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSaving(true);
+        const payload = { ...form, owner_party_id: form.owner_id };
+        delete payload.owner_id;
         const res = isEdit
-            ? await api.put(`/v1/clinic/animals/${id}`, form, token)
-            : await api.post('/v1/clinic/animals', form, token);
+            ? await api.put(`/v1/clinic/animals/${id}`, payload, token)
+            : await api.post('/v1/clinic/animals', payload, token);
         if (res.success) {
             setToast({ type: 'success', message: isEdit ? 'Animal mis à jour' : 'Animal créé avec succès' });
             setTimeout(() => navigate('/clinic/animals'), 1000);

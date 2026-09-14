@@ -69,9 +69,11 @@ const FarmForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSaving(true);
+        const payload = { ...form, owner_party_id: form.owner_id };
+        delete payload.owner_id;
         const res = isEdit
-            ? await api.put(`/v1/farm/farms/${id}`, form, token)
-            : await api.post('/v1/farm/farms', form, token);
+            ? await api.put(`/v1/farm/farms/${id}`, payload, token)
+            : await api.post('/v1/farm/farms', payload, token);
         if (res.success) {
             setToast({ type: 'success', message: isEdit ? 'Exploitation mise à jour' : 'Exploitation créée' });
             setTimeout(() => navigate('/farm/farms'), 1000);

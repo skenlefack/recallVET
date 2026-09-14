@@ -60,7 +60,7 @@ const PrescriptionForm = () => {
     const selectAnimal = (animal) => {
         setSelectedAnimal(animal);
         setAnimalSearch(animal.name);
-        setForm(prev => ({ ...prev, animal_id: animal.id }));
+        setForm(prev => ({ ...prev, animal_id: animal.id, party_id: animal.owner_party_id || animal.owner_id }));
         setShowAnimalDropdown(false);
     };
 

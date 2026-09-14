@@ -13,7 +13,7 @@ const createAnimal = [
   body('species_id').isInt({ min: 1 }).withMessage('species_id is required.'),
   body('name').optional({ values: 'falsy' }).trim(),
   body('breed_id').optional({ values: 'falsy' }).isInt({ min: 1 }),
-  body('sex').optional({ values: 'falsy' }).isIn(['male', 'female', 'unknown', 'castrated', 'spayed']),
+  body('sex').optional({ values: 'falsy' }).isIn(['M', 'F', 'unknown', 'neutered_M', 'neutered_F']),
   body('date_of_birth').optional({ values: 'falsy' }).isISO8601().toDate(),
   body('weight_kg').optional({ values: 'falsy' }).isFloat({ min: 0 }),
   body('microchip_number').optional({ values: 'falsy' }).trim(),
@@ -23,7 +23,7 @@ const createAnimal = [
 const updateAnimal = [
   idParam,
   body('species_id').optional().isInt({ min: 1 }),
-  body('sex').optional({ values: 'falsy' }).isIn(['male', 'female', 'unknown', 'castrated', 'spayed']),
+  body('sex').optional({ values: 'falsy' }).isIn(['M', 'F', 'unknown', 'neutered_M', 'neutered_F']),
   body('date_of_birth').optional({ values: 'falsy' }).isISO8601().toDate(),
   body('weight_kg').optional({ values: 'falsy' }).isFloat({ min: 0 }),
   body('identifiers').optional().isArray()

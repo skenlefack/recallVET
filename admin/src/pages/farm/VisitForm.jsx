@@ -42,7 +42,7 @@ const VisitForm = () => {
             const d = res.data;
             setForm({
                 farm_id: d.farm_id || '', visit_date: d.visit_date ? d.visit_date.substring(0, 10) : '',
-                visit_type: d.visit_type || 'routine', findings: d.findings || '',
+                visit_type: d.visit_type || 'routine', findings: d.general_findings || d.findings || '',
                 recommendations: d.recommendations || '',
                 follow_up_date: d.follow_up_date ? d.follow_up_date.substring(0, 10) : '',
                 status: d.status || 'planned'
@@ -81,9 +81,11 @@ const VisitForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSaving(true);
+        const payload = { ...form, general_findings: form.findings, follow_up_notes: form.follow_up_notes || null };
+        delete payload.findings;
         const res = isEdit
-            ? await api.put(`/v1/farm/visits/${id}`, form, token)
-            : await api.post('/v1/farm/visits', form, token);
+            ? await api.put(`/v1/farm/visits/${id}`, payload, token)
+            : await api.post('/v1/farm/visits', payload, token);
         if (res.success) {
             setToast({ type: 'success', message: isEdit ? 'Visite mise à jour' : 'Visite enregistrée' });
             setTimeout(() => navigate(form.farm_id ? `/farm/farms/${form.farm_id}` : '/farm/farms'), 1000);
