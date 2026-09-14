@@ -95,12 +95,14 @@ const VaccinationList = () => {
                                                 ) : '-'}
                                             </td>
                                             <td>
-                                                <Link to={`/clinic/vaccinations/${v.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/clinic/vaccinations/${v.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/clinic/vaccinations/${v.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

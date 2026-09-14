@@ -111,26 +111,28 @@ const AppointmentList = () => {
                                             <td>{a.owner_name || '-'}</td>
                                             <td>{a.appointment_type || '-'}</td>
                                             <td>{a.urgency === 'urgent' ? <span className="badge bg-danger">Urgent</span> : a.urgency || '-'}</td>
-                                            <td><span className={`badge bg-${statusColors[a.status] || 'secondary'}`}>{statusLabels[a.status] || a.status}</span></td>
+                                            <td><span className={`badge-status ${a.status}`}>{statusLabels[a.status] || a.status}</span></td>
                                             <td>
+                                                <div className="btn-group-actions">
                                                 {a.status === 'scheduled' && (
-                                                    <button className="btn btn-sm btn-outline-info me-1" onClick={() => updateStatus(a.id, 'checked_in')} title="Check-in">
+                                                    <button className="btn btn-sm btn-outline-info" onClick={() => updateStatus(a.id, 'checked_in')} title="Check-in">
                                                         <i className="fas fa-sign-in-alt"></i>
                                                     </button>
                                                 )}
                                                 {(a.status === 'checked_in' || a.status === 'confirmed') && (
-                                                    <Link to={`/clinic/encounters/new?appointment_id=${a.id}`} className="btn btn-sm btn-outline-success me-1" title="Convertir en consultation">
+                                                    <Link to={`/clinic/encounters/new?appointment_id=${a.id}`} className="btn btn-sm btn-outline-success" title="Convertir en consultation">
                                                         <i className="fas fa-notes-medical"></i>
                                                     </Link>
                                                 )}
                                                 {a.status !== 'cancelled' && a.status !== 'completed' && (
-                                                    <button className="btn btn-sm btn-outline-danger me-1" onClick={() => updateStatus(a.id, 'cancelled')} title="Annuler">
+                                                    <button className="btn btn-sm btn-outline-danger" onClick={() => updateStatus(a.id, 'cancelled')} title="Annuler">
                                                         <i className="fas fa-times"></i>
                                                     </button>
                                                 )}
                                                 <Link to={`/clinic/appointments/${a.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

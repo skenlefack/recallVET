@@ -100,14 +100,16 @@ const InvoiceList = () => {
                                             <td>{inv.invoice_date ? new Date(inv.invoice_date).toLocaleDateString('fr-FR') : '-'}</td>
                                             <td><strong>{inv.party_name || '-'}</strong></td>
                                             <td className="fw-bold">{formatAmount(inv.total_amount, inv.currency)}</td>
-                                            <td><span className={`badge bg-${statusColors[inv.status] || 'secondary'}`}>{statusLabels[inv.status] || inv.status}</span></td>
+                                            <td><span className={`badge-status ${inv.status}`}>{statusLabels[inv.status] || inv.status}</span></td>
                                             <td>
-                                                <Link to={`/clinic/invoices/${inv.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/clinic/invoices/${inv.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/clinic/invoices/${inv.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

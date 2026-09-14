@@ -119,9 +119,10 @@ const SalesList = () => {
                                                             s.payment_method === 'transfer' ? 'Virement' :
                                                                 s.payment_method === 'credit' ? 'Crédit' : s.payment_method || '-'}
                                             </td>
-                                            <td><span className={`badge bg-${statusColors[s.status] || 'secondary'}`}>{statusLabels[s.status] || s.status}</span></td>
+                                            <td><span className={`badge-status ${s.status}`}>{statusLabels[s.status] || s.status}</span></td>
                                             <td>
-                                                <Link to={`/pharmacy/sales/${s.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/pharmacy/sales/${s.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 {s.status === 'completed' && (
@@ -129,6 +130,7 @@ const SalesList = () => {
                                                         <i className="fas fa-ban"></i>
                                                     </button>
                                                 )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

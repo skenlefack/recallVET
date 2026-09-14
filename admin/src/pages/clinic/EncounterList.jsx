@@ -104,14 +104,16 @@ const EncounterList = () => {
                                             <td>{e.owner_name || '-'}</td>
                                             <td>{e.encounter_type || '-'}</td>
                                             <td>{e.case_status || '-'}</td>
-                                            <td><span className={`badge bg-${statusColors[e.status] || 'secondary'}`}>{statusLabels[e.status] || e.status}</span></td>
+                                            <td><span className={`badge-status ${e.status}`}>{statusLabels[e.status] || e.status}</span></td>
                                             <td>
-                                                <Link to={`/clinic/encounters/${e.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/clinic/encounters/${e.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/clinic/encounters/${e.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

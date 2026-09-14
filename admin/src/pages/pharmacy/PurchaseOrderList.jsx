@@ -92,14 +92,16 @@ const PurchaseOrderList = () => {
                                             <td>{o.order_date ? new Date(o.order_date).toLocaleDateString('fr-FR') : '-'}</td>
                                             <td><strong>{o.supplier_name || '-'}</strong></td>
                                             <td>{formatAmount(o.total_amount)} XAF</td>
-                                            <td><span className={`badge bg-${statusColors[o.status] || 'secondary'}`}>{statusLabels[o.status] || o.status}</span></td>
+                                            <td><span className={`badge-status ${o.status}`}>{statusLabels[o.status] || o.status}</span></td>
                                             <td>
-                                                <Link to={`/pharmacy/purchase-orders/${o.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/pharmacy/purchase-orders/${o.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/pharmacy/purchase-orders/${o.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

@@ -90,14 +90,16 @@ const PrescriptionList = () => {
                                             <td>{p.prescription_date ? new Date(p.prescription_date).toLocaleDateString('fr-FR') : '-'}</td>
                                             <td><strong>{p.animal_name || '-'}</strong></td>
                                             <td>{p.prescriber_name || '-'}</td>
-                                            <td><span className={`badge bg-${statusColors[p.status] || 'secondary'}`}>{statusLabels[p.status] || p.status}</span></td>
+                                            <td><span className={`badge-status ${p.status}`}>{statusLabels[p.status] || p.status}</span></td>
                                             <td>
-                                                <Link to={`/clinic/prescriptions/${p.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/clinic/prescriptions/${p.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/clinic/prescriptions/${p.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

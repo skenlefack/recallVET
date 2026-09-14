@@ -113,12 +113,14 @@ const AnimalList = () => {
                                             <td>{a.sex === 'M' ? 'Mâle' : a.sex === 'F' ? 'Femelle' : '-'}</td>
                                             <td>{a.owner_name || '-'}</td>
                                             <td>
-                                                <Link to={`/clinic/animals/${a.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/clinic/animals/${a.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/clinic/animals/${a.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

@@ -1283,3 +1283,115 @@ body {
   .main-content { margin-left: 0 !important; }
   .content-body { padding: 0 !important; }
 }
+
+// ── Global Search ───────────────────────────────────────────
+.header-search-wrapper {
+  position: relative;
+
+  .search-clear {
+    background: none;
+    border: none;
+    color: #a0aec0;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    font-size: 0.75rem;
+
+    &:hover { color: #4a5568; }
+  }
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1060;
+  min-width: 350px;
+  animation: fadeIn 0.15s ease-out;
+
+  .search-empty {
+    padding: 2rem;
+    text-align: center;
+    color: #a0aec0;
+    font-size: 0.88rem;
+
+    i { display: block; font-size: 1.5rem; margin-bottom: 0.5rem; opacity: 0.4; }
+  }
+
+  .search-group {
+    &:not(:last-child) { border-bottom: 1px solid #f0f4f8; }
+  }
+
+  .search-group-title {
+    padding: 0.6rem 1rem 0.3rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #a0aec0;
+    font-weight: 700;
+  }
+
+  .search-item {
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.15s;
+
+    &:hover { background: #f7fafc; }
+
+    .search-item-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .search-item-sub {
+      font-size: 0.75rem;
+      color: #a0aec0;
+    }
+  }
+}
+
+// ── Modern Toast ────────────────────────────────────────────
+.rv-toast-modern {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  animation: slideInRight 0.3s ease-out;
+  max-width: 420px;
+  min-width: 300px;
+  font-size: 0.88rem;
+  font-weight: 500;
+
+  .rv-toast-message {
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .rv-toast-close {
+    background: none;
+    border: none;
+    opacity: 0.5;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.8rem;
+
+    &:hover { opacity: 1; }
+  }
+}

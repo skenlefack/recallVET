@@ -107,12 +107,14 @@ const HerdList = () => {
                                             <td><span className="badge bg-light text-dark">{h.head_count || 0}</span></td>
                                             <td>{h.purpose || '-'}</td>
                                             <td>
-                                                <Link to={`/farm/herds/${h.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/farm/herds/${h.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/farm/herds/${h.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

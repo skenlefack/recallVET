@@ -114,12 +114,14 @@ const PartyList = () => {
                                             <td>{p.city || '-'}</td>
                                             <td><span className="badge bg-light text-dark">{p.animal_count || 0}</span></td>
                                             <td>
-                                                <Link to={`/clinic/parties/${p.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/clinic/parties/${p.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/clinic/parties/${p.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

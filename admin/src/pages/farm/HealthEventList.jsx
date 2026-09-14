@@ -109,21 +109,23 @@ const HealthEventList = () => {
                                             <td>{ev.disease_suspected || '-'}</td>
                                             <td>{ev.animals_affected || 0}</td>
                                             <td className={ev.animals_dead > 0 ? 'text-danger fw-bold' : ''}>{ev.animals_dead || 0}</td>
-                                            <td><span className={`badge bg-${statusColors[ev.status] || 'secondary'}`}>{statusLabels[ev.status] || ev.status}</span></td>
+                                            <td><span className={`badge-status ${ev.status}`}>{statusLabels[ev.status] || ev.status}</span></td>
                                             <td>
+                                                <div className="btn-group-actions">
                                                 {ev.status === 'active' && (
-                                                    <button className="btn btn-sm btn-outline-danger me-1" onClick={() => quickAction(ev.id, 'escalate')} title="Escalader">
+                                                    <button className="btn btn-sm btn-outline-danger" onClick={() => quickAction(ev.id, 'escalate')} title="Escalader">
                                                         <i className="fas fa-arrow-up"></i>
                                                     </button>
                                                 )}
                                                 {ev.status !== 'resolved' && (
-                                                    <button className="btn btn-sm btn-outline-success me-1" onClick={() => quickAction(ev.id, 'resolve')} title="Résoudre">
+                                                    <button className="btn btn-sm btn-outline-success" onClick={() => quickAction(ev.id, 'resolve')} title="Résoudre">
                                                         <i className="fas fa-check"></i>
                                                     </button>
                                                 )}
                                                 <Link to={`/farm/health-events/${ev.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

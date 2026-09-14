@@ -35,7 +35,7 @@ const VisitList = () => {
     const statusBadge = (s) => {
         const colors = { planned: 'warning', in_progress: 'info', completed: 'success' };
         const labels = { planned: 'Planifiee', in_progress: 'En cours', completed: 'Terminee' };
-        return <span className={`badge badge-status bg-${colors[s] || 'secondary'}`}>{labels[s] || s}</span>;
+        return <span className={`badge-status ${s}`}>{labels[s] || s}</span>;
     };
 
     const formatDate = (d) => d ? new Date(d).toLocaleDateString('fr-FR') : '-';
@@ -111,12 +111,14 @@ const VisitList = () => {
                                             <td>{v.visit_type || v.type || '-'}</td>
                                             <td>{statusBadge(v.status)}</td>
                                             <td>
-                                                <Link to={`/farm/visits/${v.id}`} className="btn btn-sm btn-outline-info me-1" title="Voir">
+                                                <div className="btn-group-actions">
+                                                <Link to={`/farm/visits/${v.id}`} className="btn btn-sm btn-outline-info" title="Voir">
                                                     <i className="fas fa-eye"></i>
                                                 </Link>
                                                 <Link to={`/farm/visits/${v.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
