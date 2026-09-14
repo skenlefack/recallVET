@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const EncounterList = () => {
     const token = getToken();
@@ -13,6 +14,7 @@ const EncounterList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     const statusColors = { draft: 'secondary', in_progress: 'info', signed: 'success', amended: 'warning' };
     const statusLabels = { draft: 'Brouillon', in_progress: 'En cours', signed: 'Signé', amended: 'Amendé' };
@@ -107,10 +109,10 @@ const EncounterList = () => {
                                             <td><span className={`badge-status ${e.status}`}>{statusLabels[e.status] || e.status}</span></td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/clinic/encounters/${e.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(e.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
-                                                <Link to={`/clinic/encounters/${e.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                </button>
+                                                <Link to={`/clinic/encounters/${e.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
                                                 </div>
@@ -131,6 +133,13 @@ const EncounterList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="encounter"
+                entityId={detailId}
+                editUrl={detailId ? `/clinic/encounters/${detailId}` : null}
+            />
         </div>
     );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const HerdList = () => {
     const token = getToken();
@@ -13,6 +14,7 @@ const HerdList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     useEffect(() => {
         fetchFarms();
@@ -108,9 +110,9 @@ const HerdList = () => {
                                             <td>{h.purpose || '-'}</td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/farm/herds/${h.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(h.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
+                                                </button>
                                                 <Link to={`/farm/herds/${h.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
@@ -132,6 +134,13 @@ const HerdList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="herd"
+                entityId={detailId}
+                editUrl={detailId ? `/farm/herds/${detailId}` : null}
+            />
         </div>
     );
 };

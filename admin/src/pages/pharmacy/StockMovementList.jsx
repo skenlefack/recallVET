@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const StockMovementList = () => {
     const token = getToken();
@@ -13,6 +14,7 @@ const StockMovementList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     useEffect(() => {
         fetchMovements();
@@ -114,6 +116,7 @@ const StockMovementList = () => {
                                         <th>Raison</th>
                                         <th>Date</th>
                                         <th>Par</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -130,6 +133,11 @@ const StockMovementList = () => {
                                             <td>{m.reason || '-'}</td>
                                             <td>{formatDate(m.created_at || m.movement_date)}</td>
                                             <td>{m.created_by_name || m.user_name || '-'}</td>
+                                            <td>
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(m.id)}>
+                                                    <i className="fas fa-eye"></i>
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -146,6 +154,13 @@ const StockMovementList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="stockMovement"
+                entityId={detailId}
+                editUrl={null}
+            />
         </div>
     );
 };

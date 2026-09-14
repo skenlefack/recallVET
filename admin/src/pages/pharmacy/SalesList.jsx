@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const SalesList = () => {
     const token = getToken();
@@ -12,6 +13,7 @@ const SalesList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     const statusColors = { completed: 'success', voided: 'danger', pending: 'warning' };
     const statusLabels = { completed: 'Complétée', voided: 'Annulée', pending: 'En attente' };
@@ -122,9 +124,9 @@ const SalesList = () => {
                                             <td><span className={`badge-status ${s.status}`}>{statusLabels[s.status] || s.status}</span></td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/pharmacy/sales/${s.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(s.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
+                                                </button>
                                                 {s.status === 'completed' && (
                                                     <button className="btn btn-sm btn-outline-danger" onClick={() => voidSale(s.id)} title="Annuler">
                                                         <i className="fas fa-ban"></i>
@@ -148,6 +150,13 @@ const SalesList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="sale"
+                entityId={detailId}
+                editUrl={detailId ? `/pharmacy/sales/${detailId}` : null}
+            />
         </div>
     );
 };

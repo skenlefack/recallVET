@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const ProductList = () => {
     const token = getToken();
@@ -12,6 +13,7 @@ const ProductList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     const categories = [
         { value: 'medication', label: 'Médicament' },
@@ -116,9 +118,14 @@ const ProductList = () => {
                                                 {p.is_prescription_only ? <span className="badge bg-warning">Oui</span> : <span className="badge bg-light text-dark">Non</span>}
                                             </td>
                                             <td>
-                                                <Link to={`/pharmacy/products/${p.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                <div className="btn-group-actions">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(p.id)}>
+                                                    <i className="fas fa-eye"></i>
+                                                </button>
+                                                <Link to={`/pharmacy/products/${p.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -136,6 +143,13 @@ const ProductList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="product"
+                entityId={detailId}
+                editUrl={detailId ? `/pharmacy/products/${detailId}` : null}
+            />
         </div>
     );
 };

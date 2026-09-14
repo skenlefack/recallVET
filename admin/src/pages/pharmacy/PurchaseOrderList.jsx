@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const PurchaseOrderList = () => {
     const token = getToken();
@@ -11,6 +12,7 @@ const PurchaseOrderList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     const statusColors = { draft: 'secondary', submitted: 'primary', approved: 'info', received: 'success', cancelled: 'danger' };
     const statusLabels = { draft: 'Brouillon', submitted: 'Soumis', approved: 'Approuvé', received: 'Reçu', cancelled: 'Annulé' };
@@ -95,10 +97,10 @@ const PurchaseOrderList = () => {
                                             <td><span className={`badge-status ${o.status}`}>{statusLabels[o.status] || o.status}</span></td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/pharmacy/purchase-orders/${o.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(o.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
-                                                <Link to={`/pharmacy/purchase-orders/${o.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                </button>
+                                                <Link to={`/pharmacy/purchase-orders/${o.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
                                                 </div>
@@ -119,6 +121,13 @@ const PurchaseOrderList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="purchaseOrder"
+                entityId={detailId}
+                editUrl={detailId ? `/pharmacy/purchase-orders/${detailId}` : null}
+            />
         </div>
     );
 };

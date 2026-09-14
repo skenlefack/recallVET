@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const AnimalList = () => {
     const token = getToken();
@@ -13,6 +14,7 @@ const AnimalList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     useEffect(() => {
         fetchSpecies();
@@ -114,10 +116,10 @@ const AnimalList = () => {
                                             <td>{a.owner_name || '-'}</td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/clinic/animals/${a.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(a.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
-                                                <Link to={`/clinic/animals/${a.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                </button>
+                                                <Link to={`/clinic/animals/${a.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
                                                 </div>
@@ -138,6 +140,13 @@ const AnimalList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="animal"
+                entityId={detailId}
+                editUrl={detailId ? `/clinic/animals/${detailId}` : null}
+            />
         </div>
     );
 };

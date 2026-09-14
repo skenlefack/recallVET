@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const AppointmentList = () => {
     const token = getToken();
@@ -12,6 +13,7 @@ const AppointmentList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     const statusColors = {
         scheduled: 'secondary', confirmed: 'primary', checked_in: 'info',
@@ -129,7 +131,10 @@ const AppointmentList = () => {
                                                         <i className="fas fa-times"></i>
                                                     </button>
                                                 )}
-                                                <Link to={`/clinic/appointments/${a.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(a.id)}>
+                                                    <i className="fas fa-eye"></i>
+                                                </button>
+                                                <Link to={`/clinic/appointments/${a.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
                                                 </div>
@@ -150,6 +155,13 @@ const AppointmentList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="appointment"
+                entityId={detailId}
+                editUrl={detailId ? `/clinic/appointments/${detailId}` : null}
+            />
         </div>
     );
 };

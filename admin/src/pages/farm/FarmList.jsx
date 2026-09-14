@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const FarmList = () => {
     const token = getToken();
@@ -11,6 +12,7 @@ const FarmList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     useEffect(() => {
         fetchFarms();
@@ -90,10 +92,10 @@ const FarmList = () => {
                                             <td><span className="badge bg-light text-dark">{f.herd_count || 0}</span></td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/farm/farms/${f.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(f.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
-                                                <Link to={`/farm/farms/${f.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                </button>
+                                                <Link to={`/farm/farms/${f.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
                                                 </div>
@@ -114,6 +116,13 @@ const FarmList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="farm"
+                entityId={detailId}
+                editUrl={detailId ? `/farm/farms/${detailId}` : null}
+            />
         </div>
     );
 };

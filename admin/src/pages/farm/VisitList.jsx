@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const VisitList = () => {
     const token = getToken();
@@ -13,6 +14,7 @@ const VisitList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     useEffect(() => {
         fetchVisits();
@@ -112,9 +114,9 @@ const VisitList = () => {
                                             <td>{statusBadge(v.status)}</td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/farm/visits/${v.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(v.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
+                                                </button>
                                                 <Link to={`/farm/visits/${v.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
@@ -136,6 +138,13 @@ const VisitList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="visit"
+                entityId={detailId}
+                editUrl={detailId ? `/farm/visits/${detailId}` : null}
+            />
         </div>
     );
 };

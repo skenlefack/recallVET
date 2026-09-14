@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const InvoiceList = () => {
     const token = getToken();
@@ -11,6 +12,7 @@ const InvoiceList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     const statusColors = { draft: 'secondary', sent: 'primary', paid: 'success', partial: 'warning', overdue: 'danger', cancelled: 'dark' };
     const statusLabels = { draft: 'Brouillon', sent: 'Envoyée', paid: 'Payée', partial: 'Partielle', overdue: 'En retard', cancelled: 'Annulée' };
@@ -103,10 +105,10 @@ const InvoiceList = () => {
                                             <td><span className={`badge-status ${inv.status}`}>{statusLabels[inv.status] || inv.status}</span></td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/clinic/invoices/${inv.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(inv.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
-                                                <Link to={`/clinic/invoices/${inv.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                </button>
+                                                <Link to={`/clinic/invoices/${inv.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
                                                 </div>
@@ -127,6 +129,13 @@ const InvoiceList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="invoice"
+                entityId={detailId}
+                editUrl={detailId ? `/clinic/invoices/${detailId}` : null}
+            />
         </div>
     );
 };

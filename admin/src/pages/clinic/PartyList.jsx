@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const PartyList = () => {
     const token = getToken();
@@ -12,6 +13,7 @@ const PartyList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     useEffect(() => {
         fetchParties();
@@ -115,10 +117,10 @@ const PartyList = () => {
                                             <td><span className="badge bg-light text-dark">{p.animal_count || 0}</span></td>
                                             <td>
                                                 <div className="btn-group-actions">
-                                                <Link to={`/clinic/parties/${p.id}`} className="btn btn-sm btn-outline-info" title="Voir">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(p.id)}>
                                                     <i className="fas fa-eye"></i>
-                                                </Link>
-                                                <Link to={`/clinic/parties/${p.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                </button>
+                                                <Link to={`/clinic/parties/${p.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
                                                 </div>
@@ -139,6 +141,13 @@ const PartyList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="party"
+                entityId={detailId}
+                editUrl={detailId ? `/clinic/parties/${detailId}` : null}
+            />
         </div>
     );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const SupplierList = () => {
     const token = getToken();
@@ -11,6 +12,7 @@ const SupplierList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     useEffect(() => {
         fetchSuppliers();
@@ -87,9 +89,14 @@ const SupplierList = () => {
                                             <td>{s.email || '-'}</td>
                                             <td>{s.city || '-'}</td>
                                             <td>
-                                                <Link to={`/pharmacy/suppliers/${s.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                <div className="btn-group-actions">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(s.id)}>
+                                                    <i className="fas fa-eye"></i>
+                                                </button>
+                                                <Link to={`/pharmacy/suppliers/${s.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -107,6 +114,13 @@ const SupplierList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="supplier"
+                entityId={detailId}
+                editUrl={detailId ? `/pharmacy/suppliers/${detailId}` : null}
+            />
         </div>
     );
 };

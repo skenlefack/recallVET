@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import Pagination from '../../components/Pagination';
+import DetailOffcanvas from '../../components/DetailOffcanvas';
 
 const HealthEventList = () => {
     const token = getToken();
@@ -12,6 +13,7 @@ const HealthEventList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
+    const [detailId, setDetailId] = useState(null);
 
     const statusColors = { active: 'warning', monitoring: 'info', escalated: 'danger', resolved: 'success' };
     const statusLabels = { active: 'Actif', monitoring: 'Surveillance', escalated: 'Escaladé', resolved: 'Résolu' };
@@ -122,7 +124,10 @@ const HealthEventList = () => {
                                                         <i className="fas fa-check"></i>
                                                     </button>
                                                 )}
-                                                <Link to={`/farm/health-events/${ev.id}/edit`} className="btn btn-sm btn-outline-primary" title="Modifier">
+                                                <button className="btn btn-sm btn-outline-info" title="Voir" onClick={() => setDetailId(ev.id)}>
+                                                    <i className="fas fa-eye"></i>
+                                                </button>
+                                                <Link to={`/farm/health-events/${ev.id}`} className="btn btn-sm btn-outline-primary" title="Modifier">
                                                     <i className="fas fa-edit"></i>
                                                 </Link>
                                                 </div>
@@ -143,6 +148,13 @@ const HealthEventList = () => {
                     </div>
                 )}
             </div>
+            <DetailOffcanvas
+                show={!!detailId}
+                onClose={() => setDetailId(null)}
+                entityType="healthEvent"
+                entityId={detailId}
+                editUrl={detailId ? `/farm/health-events/${detailId}` : null}
+            />
         </div>
     );
 };
