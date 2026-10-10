@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../../config/db');
 const { logAudit } = require('../../../services/auditService');
+const notificationService = require('../../../services/notificationService');
 const validate = require('../../../middleware/validate');
 const asyncHandler = require('../../../utils/asyncHandler');
 const { createPrescription, updatePrescription } = require('../../../validators/clinic');
@@ -74,6 +75,18 @@ router.post('/', createPrescription, validate, asyncHandler(async (req, res) => 
 
     await conn.commit();
     await logAudit(req.tenant.id, req.user.id, 'prescription', rxId, 'create', null, b, req.ip);
+
+    // Notify the prescriber (assigned vet) about the new prescription
+    try {
+      const [animals] = await db.query('SELECT name FROM rv_animal WHERE id = ?', [b.animal_id]);
+      const animalName = animals.length ? animals[0].name : 'inconnu';
+      await notificationService.createNotification(req.tenant.id, req.user.id, {
+        type: 'info',
+        title: `Nouvelle ordonnance créée pour ${animalName}`,
+        data: { prescription_id: rxId, prescription_number }
+      });
+    } catch (_) { /* notification failure must not break main flow */ }
+
     res.status(201).json({ success: true, data: { id: rxId, prescription_number } });
   } catch (error) {
     await conn.rollback();

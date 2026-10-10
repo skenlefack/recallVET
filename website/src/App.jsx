@@ -11,6 +11,7 @@ import DemoRequest from './pages/DemoRequest';
 import About from './pages/About';
 import Privacy from './pages/Legal/Privacy';
 import Terms from './pages/Legal/Terms';
+import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -59,7 +60,7 @@ export default function App() {
           <Route path="/legal/confidentialite" element={<Privacy />} />
           <Route path="/legal/conditions" element={<Terms />} />
           {/* Catch-all */}
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />

@@ -3,6 +3,7 @@ import { useTenant } from '../context/TenantContext'
 import { useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import NotificationBell from '../components/NotificationBell'
+import api from '../services/api'
 
 export default function Header({ toggleSidebar }) {
   const { user, tenants, logout } = useAuth()
@@ -24,10 +25,7 @@ export default function Header({ toggleSidebar }) {
     if (searchTimeout.current) clearTimeout(searchTimeout.current)
     if (query.length < 2) { setSearchResults(null); setShowSearchResults(false); return }
     searchTimeout.current = setTimeout(async () => {
-      const token = localStorage.getItem('rv_token')
-      const res = await fetch(`/api/v1/search?q=${encodeURIComponent(query)}`, {
-        headers: { 'Authorization': `Bearer ${token}`, 'X-Tenant-Id': localStorage.getItem('rv_tenant_id') || '' }
-      }).then(r => r.json()).catch(() => null)
+      const res = await api.get(`/v1/search?q=${encodeURIComponent(query)}`)
       if (res?.success) { setSearchResults(res.data); setShowSearchResults(true) }
     }, 300)
   }

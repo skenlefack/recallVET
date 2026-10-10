@@ -11,6 +11,7 @@ const L = ({ children }) => <Suspense fallback={<Loading />}>{children}</Suspens
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import ForgotPassword from './pages/auth/ForgotPassword'
+import ResetPassword from './pages/auth/ResetPassword'
 
 // Dashboard
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'))
@@ -73,6 +74,10 @@ const AcceptInvite = lazy(() => import('./pages/auth/AcceptInvite'))
 // Superadmin
 const PlatformDashboard = lazy(() => import('./pages/superadmin/PlatformDashboard'))
 const TenantListAdmin = lazy(() => import('./pages/superadmin/TenantList'))
+const SubscriptionListAdmin = lazy(() => import('./pages/superadmin/SubscriptionList'))
+const UserListAdmin = lazy(() => import('./pages/superadmin/UserList'))
+const DemoRequestListAdmin = lazy(() => import('./pages/superadmin/DemoRequestList'))
+const ContactListAdmin = lazy(() => import('./pages/superadmin/ContactList'))
 
 export default function AppRouter() {
   return (
@@ -82,6 +87,7 @@ export default function AppRouter() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/accept-invite" element={<L><AcceptInvite /></L>} />
       </Route>
 
@@ -159,6 +165,10 @@ export default function AppRouter() {
         {/* Superadmin */}
         <Route path="/superadmin/dashboard" element={<L><PlatformDashboard /></L>} />
         <Route path="/superadmin/tenants" element={<L><TenantListAdmin /></L>} />
+        <Route path="/superadmin/subscriptions" element={<L><SubscriptionListAdmin /></L>} />
+        <Route path="/superadmin/users" element={<L><UserListAdmin /></L>} />
+        <Route path="/superadmin/demo-requests" element={<L><DemoRequestListAdmin /></L>} />
+        <Route path="/superadmin/contacts" element={<L><ContactListAdmin /></L>} />
       </Route>
 
       {/* Catch-all */}

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../../config/db');
 const { logAudit } = require('../../../services/auditService');
+const notificationService = require('../../../services/notificationService');
 const validate = require('../../../middleware/validate');
 const asyncHandler = require('../../../utils/asyncHandler');
 const { createAppointment, updateAppointment } = require('../../../validators/clinic');
@@ -58,6 +59,20 @@ router.post('/', createAppointment, validate, asyncHandler(async (req, res) => {
     [tenantId, site_id || null, animal_id, party_id, vet_user_id, appointment_type || 'consultation', scheduled_date, start_time || null, end_time || null, urgency_level || 'normal', booking_channel || 'walk_in', reason || null, special_instructions || null, send_reminder ? 1 : 0, reminder_channel || null, notes || null, req.user.id]
   );
   await logAudit(tenantId, req.user.id, 'appointment', result.insertId, 'create', null, req.body, req.ip);
+
+  // Notify assigned vet about the new appointment
+  if (vet_user_id) {
+    try {
+      const [animals] = await db.query('SELECT name FROM rv_animal WHERE id = ?', [animal_id]);
+      const animalName = animals.length ? animals[0].name : 'inconnu';
+      await notificationService.createNotification(tenantId, vet_user_id, {
+        type: 'info',
+        title: `Nouveau rendez-vous planifié pour ${animalName}`,
+        data: { appointment_id: result.insertId }
+      });
+    } catch (_) { /* notification failure must not break main flow */ }
+  }
+
   res.status(201).json({ success: true, data: { id: result.insertId } });
 }));
 
@@ -87,6 +102,22 @@ router.post('/:id/cancel', asyncHandler(async (req, res) => {
   const [result] = await db.query("UPDATE rv_appointment SET status = 'cancelled' WHERE id = ? AND tenant_id = ? AND status NOT IN ('completed','cancelled')", [req.params.id, req.tenant.id]);
   if (!result.affectedRows) return res.status(400).json({ success: false, message: 'Cannot cancel' });
   await logAudit(req.tenant.id, req.user.id, 'appointment', req.params.id, 'status_change', null, { status: 'cancelled' }, req.ip);
+
+  // Notify assigned vet about the cancellation
+  try {
+    const [appts] = await db.query(
+      `SELECT ap.vet_user_id, a.name as animal_name FROM rv_appointment ap
+       LEFT JOIN rv_animal a ON ap.animal_id = a.id
+       WHERE ap.id = ? AND ap.tenant_id = ?`, [req.params.id, req.tenant.id]);
+    if (appts.length && appts[0].vet_user_id) {
+      await notificationService.createNotification(req.tenant.id, appts[0].vet_user_id, {
+        type: 'error',
+        title: `Rendez-vous annulé pour ${appts[0].animal_name || 'inconnu'}`,
+        data: { appointment_id: parseInt(req.params.id) }
+      });
+    }
+  } catch (_) { /* notification failure must not break main flow */ }
+
   res.json({ success: true, message: 'Cancelled' });
 }));
 

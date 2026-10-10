@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../../config/db');
 const { logAudit } = require('../../../services/auditService');
+const notificationService = require('../../../services/notificationService');
 const validate = require('../../../middleware/validate');
 const asyncHandler = require('../../../utils/asyncHandler');
 const { createStockLocation, createStockMovement } = require('../../../validators/pharmacy');
@@ -112,6 +113,29 @@ router.post('/movements', createStockMovement, validate, asyncHandler(async (req
 
     await conn.commit();
     await logAudit(req.tenant.id, req.user.id, 'stock_movement', result.insertId, 'create', null, b, req.ip);
+
+    // Check if stock fell below reorder level and notify all tenant users
+    try {
+      const [stockInfo] = await db.query(
+        `SELECT p.name as product_name, p.reorder_level,
+                COALESCE(SUM(sl.quantity_on_hand), 0) as current_qty
+         FROM rv_product p
+         LEFT JOIN rv_stock_lot sl ON sl.product_id = p.id AND sl.status = 'available'
+         WHERE p.id = ? AND p.tenant_id = ?
+         GROUP BY p.id, p.name, p.reorder_level`,
+        [b.product_id, req.tenant.id]);
+      if (stockInfo.length && stockInfo[0].reorder_level != null && stockInfo[0].current_qty < stockInfo[0].reorder_level) {
+        const [tenantUsers] = await db.query('SELECT id FROM users WHERE tenant_id = ? AND is_active = 1', [req.tenant.id]);
+        for (const u of tenantUsers) {
+          await notificationService.createNotification(req.tenant.id, u.id, {
+            type: 'warning',
+            title: `Stock bas: ${stockInfo[0].product_name} (${stockInfo[0].current_qty} restant)`,
+            data: { product_id: b.product_id }
+          });
+        }
+      }
+    } catch (_) { /* notification failure must not break main flow */ }
+
     res.status(201).json({ success: true, data: { id: result.insertId } });
   } catch (error) {
     await conn.rollback();

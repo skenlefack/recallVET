@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../../config/db');
 const { logAudit } = require('../../../services/auditService');
+const notificationService = require('../../../services/notificationService');
 const validate = require('../../../middleware/validate');
 const asyncHandler = require('../../../utils/asyncHandler');
 const { createEncounter, updateEncounter } = require('../../../validators/clinic');
@@ -107,6 +108,22 @@ router.post('/:id/sign', asyncHandler(async (req, res) => {
     [req.user.id, req.params.id, req.tenant.id]);
   if (!result.affectedRows) return res.status(400).json({ success: false, message: 'Cannot sign' });
   await logAudit(req.tenant.id, req.user.id, 'encounter', req.params.id, 'sign', null, { signed_by: req.user.id }, req.ip);
+
+  // Notify the encounter creator that it has been signed
+  try {
+    const [encounters] = await db.query(
+      `SELECT e.created_by, a.name as animal_name FROM rv_encounter e
+       LEFT JOIN rv_animal a ON e.animal_id = a.id
+       WHERE e.id = ? AND e.tenant_id = ?`, [req.params.id, req.tenant.id]);
+    if (encounters.length && encounters[0].created_by) {
+      await notificationService.createNotification(req.tenant.id, encounters[0].created_by, {
+        type: 'info',
+        title: `Consultation signée pour ${encounters[0].animal_name || 'inconnu'}`,
+        data: { encounter_id: parseInt(req.params.id) }
+      });
+    }
+  } catch (_) { /* notification failure must not break main flow */ }
+
   res.json({ success: true, message: 'Signed' });
 }));
 

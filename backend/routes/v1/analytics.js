@@ -46,7 +46,7 @@ router.get('/encounters-by-vet', asyncHandler(async (req, res) => {
   const [rows] = await db.query(
     `SELECT u.username as vet_name, COUNT(*) as count
      FROM rv_encounter e
-     LEFT JOIN users u ON e.vet_user_id = u.id
+     LEFT JOIN rv_users u ON e.vet_user_id = u.id
      ${where}
      GROUP BY e.vet_user_id, u.username
      ORDER BY count DESC`, params);
@@ -64,7 +64,7 @@ router.get('/appointments-stats', asyncHandler(async (req, res) => {
   const [rows] = await db.query(
     `SELECT status, COUNT(*) as count
      FROM rv_appointment
-     WHERE tenant_id = ? AND appointment_date >= ? AND appointment_date <= ?
+     WHERE tenant_id = ? AND scheduled_date >= ? AND scheduled_date <= ?
      GROUP BY status`,
     [req.tenant.id, firstDay, lastDayStr]);
 
@@ -84,8 +84,8 @@ router.get('/top-products', asyncHandler(async (req, res) => {
     `SELECT pr.name as product_name,
             SUM(sl.quantity) as total_quantity,
             SUM(sl.quantity * sl.unit_price) as total_revenue
-     FROM rv_sale_line sl
-     JOIN rv_sale s ON sl.sale_id = s.id
+     FROM rv_retail_sale_line sl
+     JOIN rv_retail_sale s ON sl.retail_sale_id = s.id
      JOIN rv_product pr ON sl.product_id = pr.id
      WHERE s.tenant_id = ? AND s.status != 'cancelled'
      GROUP BY pr.id, pr.name

@@ -1,9 +1,29 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { subscribeNewsletter } from '../../services/api';
 
 export default function Footer() {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
+  const [nlEmail, setNlEmail] = useState('');
+  const [nlLoading, setNlLoading] = useState(false);
+  const [nlMessage, setNlMessage] = useState(null);
+
+  const handleNewsletter = async (e) => {
+    e.preventDefault();
+    setNlLoading(true);
+    setNlMessage(null);
+    try {
+      await subscribeNewsletter({ email: nlEmail });
+      setNlMessage({ type: 'success', text: 'Merci ! Vous êtes inscrit à notre newsletter.' });
+      setNlEmail('');
+    } catch (err) {
+      setNlMessage({ type: 'error', text: err.message || 'Une erreur est survenue. Veuillez réessayer.' });
+    } finally {
+      setNlLoading(false);
+    }
+  };
 
   return (
     <footer className="rv-footer">
@@ -103,10 +123,33 @@ export default function Footer() {
               <p>Recevez nos actualités, mises à jour produit et conseils vétérinaires.</p>
             </div>
             <div className="col-lg-7">
-              <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); }}>
-                <input type="email" placeholder="Votre adresse email" required />
-                <button type="submit"><i className="fas fa-paper-plane me-2" />S'abonner</button>
+              <form className="newsletter-form" onSubmit={handleNewsletter}>
+                <input
+                  type="email"
+                  placeholder="Votre adresse email"
+                  required
+                  value={nlEmail}
+                  onChange={(e) => setNlEmail(e.target.value)}
+                  disabled={nlLoading}
+                />
+                <button type="submit" disabled={nlLoading}>
+                  {nlLoading ? (
+                    <><i className="fas fa-spinner fa-spin me-2" />Envoi...</>
+                  ) : (
+                    <><i className="fas fa-paper-plane me-2" />S'abonner</>
+                  )}
+                </button>
               </form>
+              {nlMessage && (
+                <p style={{
+                  marginTop: '0.5rem',
+                  fontSize: '0.85rem',
+                  color: nlMessage.type === 'success' ? '#22c55e' : '#ef4444',
+                }}>
+                  <i className={`fas ${nlMessage.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-1`} />
+                  {nlMessage.text}
+                </p>
+              )}
             </div>
           </div>
         </div>

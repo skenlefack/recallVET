@@ -39,6 +39,15 @@ export default function Pricing() {
   const [billingCycle, setBillingCycle] = useState('monthly');
   const faqs = t('pricing.faq', { returnObjects: true });
 
+  const isAnnual = billingCycle === 'yearly';
+
+  const formatPrice = (monthlyPrice) => {
+    const num = parseInt(monthlyPrice.replace(/\s/g, ''), 10);
+    if (isNaN(num)) return monthlyPrice;
+    const annual = Math.round(num * 12 * 0.83);
+    return annual.toLocaleString('fr-FR');
+  };
+
   const plans = [
     { key: 'starter', popular: false },
     { key: 'pro', popular: true },
@@ -97,8 +106,8 @@ export default function Pricing() {
                     <div className="plan-name">{t(`pricing.${p.key}_name`)}</div>
                     <div className="plan-price">
                       <span className="currency">{t(`pricing.${p.key}_currency`)}</span>
-                      {t(`pricing.${p.key}_price`)}
-                      <span className="period"> /{t('pricing.monthly')}</span>
+                      {isAnnual ? formatPrice(t(`pricing.${p.key}_price`)) : t(`pricing.${p.key}_price`)}
+                      <span className="period"> /{isAnnual ? 'an' : t('pricing.monthly')}</span>
                     </div>
                     <p className="plan-desc">{t(`pricing.${p.key}_desc`)}</p>
                     <ul className="plan-features">

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import api from '../services/api'
+import { api, getToken } from '../services/api'
 
 function timeAgo(dateStr, t) {
   const now = new Date()
@@ -27,7 +27,7 @@ export default function NotificationBell() {
   const dropdownRef = useRef(null)
 
   const fetchUnreadCount = useCallback(async () => {
-    const res = await api.get('/v1/notifications/unread-count')
+    const res = await api.get('/v1/notifications/unread-count', getToken())
     if (res.success) {
       setUnreadCount(res.data.count)
     }
@@ -35,7 +35,7 @@ export default function NotificationBell() {
 
   const fetchNotifications = useCallback(async () => {
     setLoading(true)
-    const res = await api.get('/v1/notifications?page=1&limit=10')
+    const res = await api.get('/v1/notifications?page=1&limit=10', getToken())
     if (res.success) {
       setNotifications(res.data)
     }
@@ -69,7 +69,7 @@ export default function NotificationBell() {
   }
 
   const handleMarkAllRead = async () => {
-    const res = await api.put('/v1/notifications/read-all', {})
+    const res = await api.put('/v1/notifications/read-all', {}, getToken())
     if (res.success) {
       setUnreadCount(0)
       setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })))
@@ -77,7 +77,7 @@ export default function NotificationBell() {
   }
 
   const handleMarkRead = async (id) => {
-    const res = await api.put(`/v1/notifications/${id}/read`, {})
+    const res = await api.put(`/v1/notifications/${id}/read`, {}, getToken())
     if (res.success) {
       setUnreadCount(prev => Math.max(0, prev - 1))
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: 1 } : n))

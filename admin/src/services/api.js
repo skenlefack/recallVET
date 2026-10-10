@@ -13,6 +13,17 @@ function getToken() {
   return null;
 }
 
+function getRefreshToken() {
+  try {
+    const data = localStorage.getItem('rv_user');
+    if (data) {
+      const parsed = JSON.parse(data);
+      return parsed.refreshToken || null;
+    }
+  } catch (e) {}
+  return null;
+}
+
 function getTenantId() {
   try {
     const data = localStorage.getItem('rv_tenant');
@@ -42,10 +53,85 @@ function buildHeaders(token, isJson = true) {
   return headers;
 }
 
+// --- Token refresh logic ---
+let refreshPromise = null;
+
+async function refreshAccessToken() {
+  // If a refresh is already in progress, wait for it
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    try {
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) {
+        throw new Error('No refresh token available');
+      }
+
+      const res = await fetch(`${API_URL}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken })
+      });
+
+      if (!res.ok) {
+        throw new Error('Refresh failed');
+      }
+
+      const data = await res.json();
+      if (!data.token) {
+        throw new Error('No token in refresh response');
+      }
+
+      // Update tokens in localStorage while preserving user/tenants
+      const stored = localStorage.getItem('rv_user');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        parsed.token = data.token;
+        parsed.refreshToken = data.refreshToken;
+        localStorage.setItem('rv_user', JSON.stringify(parsed));
+      }
+
+      return data.token;
+    } catch (e) {
+      // Refresh failed — clear auth and redirect to login
+      localStorage.removeItem('rv_user');
+      localStorage.removeItem('rv_tenant');
+      window.location.href = '/login';
+      throw e;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+async function fetchWithRefresh(endpoint, options, isRetry = false) {
+  const res = await fetch(`${API_URL}${endpoint}`, options);
+
+  if (res.status === 401 && !isRetry) {
+    // Don't try to refresh the refresh endpoint itself
+    if (endpoint === '/auth/refresh' || endpoint === '/auth/login' || endpoint === '/auth/register') {
+      return res;
+    }
+
+    try {
+      const newToken = await refreshAccessToken();
+      // Rebuild headers with the new token
+      const newOptions = { ...options, headers: { ...options.headers, Authorization: `Bearer ${newToken}` } };
+      return fetch(`${API_URL}${endpoint}`, newOptions);
+    } catch (e) {
+      return res;
+    }
+  }
+
+  return res;
+}
+
 const api = {
   async get(endpoint, token) {
     try {
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const res = await fetchWithRefresh(endpoint, {
         method: 'GET',
         headers: buildHeaders(token)
       });
@@ -57,7 +143,7 @@ const api = {
 
   async post(endpoint, data, token) {
     try {
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const res = await fetchWithRefresh(endpoint, {
         method: 'POST',
         headers: buildHeaders(token),
         body: JSON.stringify(data)
@@ -70,7 +156,7 @@ const api = {
 
   async put(endpoint, data, token) {
     try {
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const res = await fetchWithRefresh(endpoint, {
         method: 'PUT',
         headers: buildHeaders(token),
         body: JSON.stringify(data)
@@ -83,7 +169,7 @@ const api = {
 
   async delete(endpoint, token) {
     try {
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const res = await fetchWithRefresh(endpoint, {
         method: 'DELETE',
         headers: buildHeaders(token)
       });
@@ -98,7 +184,7 @@ const api = {
       const headers = { 'Authorization': `Bearer ${token}` };
       const tenantId = getTenantId();
       if (tenantId) headers['X-Tenant-Id'] = tenantId;
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const res = await fetchWithRefresh(endpoint, {
         method: 'POST',
         headers,
         body: formData

@@ -7,8 +7,8 @@ RUN npm install --omit=dev
 
 COPY . .
 
-# Make entrypoint executable
-RUN chmod +x docker-entrypoint.sh
+# Fix line endings (Windows CRLF → LF) and make entrypoint executable
+RUN sed -i 's/\r$//' docker-entrypoint.sh && chmod +x docker-entrypoint.sh
 
 # Create uploads directory
 RUN mkdir -p uploads/logos
