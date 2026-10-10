@@ -1,14 +1,17 @@
 import { AuthProvider } from './context/AuthContext'
 import { TenantProvider } from './context/TenantContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import AppRouter from './router'
 
 function App() {
   return (
-    <AuthProvider>
-      <TenantProvider>
-        <AppRouter />
-      </TenantProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <TenantProvider>
+          <AppRouter />
+        </TenantProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
 

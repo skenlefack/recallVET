@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
+import { validateRequired, validateForm } from '../../utils/validation';
 
 const AnimalForm = () => {
     const { id } = useParams();
@@ -22,6 +23,7 @@ const AnimalForm = () => {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [toast, setToast] = useState(null);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         fetchSpecies();
@@ -83,10 +85,20 @@ const AnimalForm = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({ ...prev, [name]: value }));
+        setErrors(prev => ({ ...prev, [name]: null }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationErrors = validateForm(form, {
+            name: [(v) => validateRequired(v, 'Nom')],
+            species_id: [(v) => validateRequired(v, 'Espece')],
+            owner_id: [(v) => validateRequired(v, 'Proprietaire')],
+        });
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
         setSaving(true);
         const payload = { ...form, owner_party_id: form.owner_id };
         delete payload.owner_id;
@@ -134,10 +146,11 @@ const AnimalForm = () => {
                     <div className="card-body">
                         <div className="position-relative">
                             <label className="form-label">Rechercher le propriétaire *</label>
-                            <input type="text" className="form-control" value={ownerSearch}
-                                onChange={e => searchOwners(e.target.value)}
+                            <input type="text" className={`form-control ${errors.owner_id ? 'is-invalid' : ''}`} value={ownerSearch}
+                                onChange={e => { searchOwners(e.target.value); setErrors(prev => ({ ...prev, owner_id: null })); }}
                                 onFocus={() => ownerResults.length > 0 && setShowOwnerDropdown(true)}
-                                placeholder="Tapez pour rechercher un client..." required={!form.owner_id} />
+                                placeholder="Tapez pour rechercher un client..." />
+                            {errors.owner_id && <div className="invalid-feedback">{errors.owner_id}</div>}
                             {selectedOwner && <small className="text-success"><i className="fas fa-check me-1"></i>{selectedOwner.display_name}</small>}
                             {showOwnerDropdown && ownerResults.length > 0 && (
                                 <ul className="list-group position-absolute w-100" style={{ zIndex: 1000, maxHeight: 200, overflowY: 'auto' }}>
@@ -159,14 +172,16 @@ const AnimalForm = () => {
                         <div className="row g-3">
                             <div className="col-md-6">
                                 <label className="form-label">Nom *</label>
-                                <input type="text" className="form-control" name="name" value={form.name} onChange={handleChange} required />
+                                <input type="text" className={`form-control ${errors.name ? 'is-invalid' : ''}`} name="name" value={form.name} onChange={handleChange} />
+                                {errors.name && <div className="invalid-feedback">{errors.name}</div>}
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label">Espèce *</label>
-                                <select className="form-select" name="species_id" value={form.species_id} onChange={handleChange} required>
+                                <select className={`form-select ${errors.species_id ? 'is-invalid' : ''}`} name="species_id" value={form.species_id} onChange={handleChange}>
                                     <option value="">-- Sélectionner --</option>
                                     {speciesList.map(s => <option key={s.id} value={s.id}>{s.name_fr || s.name}</option>)}
                                 </select>
+                                {errors.species_id && <div className="invalid-feedback">{errors.species_id}</div>}
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label">Race</label>

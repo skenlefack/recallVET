@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
+import { validateRequired, validateEmail, validatePhone, validateForm } from '../../utils/validation';
 
 const PartyForm = () => {
     const { id } = useParams();
@@ -18,6 +19,7 @@ const PartyForm = () => {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [toast, setToast] = useState(null);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (isEdit) loadParty();
@@ -33,10 +35,20 @@ const PartyForm = () => {
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+        setErrors(prev => ({ ...prev, [name]: null }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationErrors = validateForm(form, {
+            display_name: [(v) => validateRequired(v, 'Nom')],
+            email: [validateEmail],
+            phone_primary: [validatePhone],
+        });
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
         setSaving(true);
         const res = isEdit
             ? await api.put(`/v1/clinic/parties/${id}`, form, token)
@@ -95,7 +107,8 @@ const PartyForm = () => {
                             </div>
                             <div className="col-md-8">
                                 <label className="form-label">Nom d'affichage *</label>
-                                <input type="text" className="form-control" name="display_name" value={form.display_name} onChange={handleChange} required />
+                                <input type="text" className={`form-control ${errors.display_name ? 'is-invalid' : ''}`} name="display_name" value={form.display_name} onChange={handleChange} />
+                                {errors.display_name && <div className="invalid-feedback">{errors.display_name}</div>}
                             </div>
                             {isIndividual ? (
                                 <>
@@ -125,7 +138,8 @@ const PartyForm = () => {
                         <div className="row g-3">
                             <div className="col-md-4">
                                 <label className="form-label">Téléphone principal</label>
-                                <input type="text" className="form-control" name="phone_primary" value={form.phone_primary} onChange={handleChange} />
+                                <input type="text" className={`form-control ${errors.phone_primary ? 'is-invalid' : ''}`} name="phone_primary" value={form.phone_primary} onChange={handleChange} />
+                                {errors.phone_primary && <div className="invalid-feedback">{errors.phone_primary}</div>}
                             </div>
                             <div className="col-md-4">
                                 <label className="form-label">Téléphone secondaire</label>
@@ -137,7 +151,8 @@ const PartyForm = () => {
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label">Email</label>
-                                <input type="email" className="form-control" name="email" value={form.email} onChange={handleChange} />
+                                <input type="email" className={`form-control ${errors.email ? 'is-invalid' : ''}`} name="email" value={form.email} onChange={handleChange} />
+                                {errors.email && <div className="invalid-feedback">{errors.email}</div>}
                             </div>
                         </div>
                     </div>

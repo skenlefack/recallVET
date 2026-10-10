@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
+import { validateRequired, validateForm } from '../../utils/validation';
 
 const AppointmentForm = () => {
     const { id } = useParams();
@@ -21,6 +22,7 @@ const AppointmentForm = () => {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [toast, setToast] = useState(null);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         fetchVets();
@@ -73,10 +75,19 @@ const AppointmentForm = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({ ...prev, [name]: value }));
+        setErrors(prev => ({ ...prev, [name]: null }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationErrors = validateForm(form, {
+            animal_id: [(v) => validateRequired(v, 'Animal')],
+            appointment_date: [(v) => validateRequired(v, 'Date')],
+        });
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
         setSaving(true);
         const payload = { ...form, urgency_level: form.urgency };
         delete payload.urgency;
@@ -124,10 +135,11 @@ const AppointmentForm = () => {
                     <div className="card-body">
                         <div className="position-relative">
                             <label className="form-label">Rechercher l'animal *</label>
-                            <input type="text" className="form-control" value={animalSearch}
-                                onChange={e => searchAnimals(e.target.value)}
+                            <input type="text" className={`form-control ${errors.animal_id ? 'is-invalid' : ''}`} value={animalSearch}
+                                onChange={e => { searchAnimals(e.target.value); setErrors(prev => ({ ...prev, animal_id: null })); }}
                                 onFocus={() => animalResults.length > 0 && setShowAnimalDropdown(true)}
-                                placeholder="Tapez le nom de l'animal..." required={!form.animal_id} />
+                                placeholder="Tapez le nom de l'animal..." />
+                            {errors.animal_id && <div className="invalid-feedback">{errors.animal_id}</div>}
                             {selectedAnimal && <small className="text-success"><i className="fas fa-check me-1"></i>{selectedAnimal.name} - Propriétaire: {selectedAnimal.owner_name || 'N/A'}</small>}
                             {showAnimalDropdown && animalResults.length > 0 && (
                                 <ul className="list-group position-absolute w-100" style={{ zIndex: 1000, maxHeight: 200, overflowY: 'auto' }}>
@@ -156,7 +168,8 @@ const AppointmentForm = () => {
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label">Date *</label>
-                                <input type="date" className="form-control" name="appointment_date" value={form.appointment_date} onChange={handleChange} required />
+                                <input type="date" className={`form-control ${errors.appointment_date ? 'is-invalid' : ''}`} name="appointment_date" value={form.appointment_date} onChange={handleChange} />
+                                {errors.appointment_date && <div className="invalid-feedback">{errors.appointment_date}</div>}
                             </div>
                             <div className="col-md-3">
                                 <label className="form-label">Heure début</label>
