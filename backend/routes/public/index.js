@@ -45,4 +45,16 @@ router.post('/newsletter/subscribe', newsletterSubscribe, validate, asyncHandler
   res.status(201).json({ success: true, message: 'Subscribed successfully.' });
 }));
 
+// POST /public/newsletter/unsubscribe
+router.post('/newsletter/unsubscribe', asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (email) {
+    await db.query(
+      'UPDATE rv_newsletter_subscriber SET is_active = 0, unsubscribed_at = NOW() WHERE email = ? AND is_active = 1',
+      [email]
+    );
+  }
+  res.json({ success: true, message: 'Unsubscribed successfully.' });
+}));
+
 module.exports = router;

@@ -88,7 +88,7 @@ router.post('/', createParty, validate, asyncHandler(async (req, res) => {
       customer_segment, phone_primary, phone_secondary, whatsapp_number,
       email, country_code, region, city, geo_lat, geo_lng,
       preferred_currency, credit_limit, preferred_channel, notes,
-      contacts, addresses
+      data_processing_consent, contacts, addresses
     } = req.body;
 
     // Generate client code
@@ -101,14 +101,14 @@ router.post('/', createParty, validate, asyncHandler(async (req, res) => {
       `INSERT INTO rv_party (tenant_id, client_code, party_type, display_name, first_name, last_name,
         legal_name, customer_segment, phone_primary, phone_secondary, whatsapp_number, email,
         country_code, region, city, geo_lat, geo_lng, preferred_currency, credit_limit,
-        preferred_channel, notes, created_by)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        preferred_channel, data_processing_consent, notes, created_by)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [tenantId, client_code, party_type, display_name, first_name || null, last_name || null,
         legal_name || null, customer_segment || 'private', phone_primary || null,
         phone_secondary || null, whatsapp_number || null, email || null,
         country_code || 'CM', region || null, city || null, geo_lat || null, geo_lng || null,
         preferred_currency || req.tenant.currency, credit_limit || 0,
-        preferred_channel || null, notes || null, req.user.id]
+        preferred_channel || null, data_processing_consent ? 1 : 0, notes || null, req.user.id]
     );
 
     const partyId = result.insertId;
@@ -165,14 +165,14 @@ router.put('/:id', updateParty, validate, asyncHandler(async (req, res) => {
       customer_segment, phone_primary, phone_secondary, whatsapp_number,
       email, country_code, region, city, geo_lat, geo_lng,
       preferred_currency, credit_limit, preferred_channel, notes, status,
-      contacts, addresses
+      data_processing_consent, contacts, addresses
     } = req.body;
 
     await conn.query(
       `UPDATE rv_party SET party_type=?, display_name=?, first_name=?, last_name=?, legal_name=?,
         customer_segment=?, phone_primary=?, phone_secondary=?, whatsapp_number=?, email=?,
         country_code=?, region=?, city=?, geo_lat=?, geo_lng=?, preferred_currency=?,
-        credit_limit=?, preferred_channel=?, notes=?, status=?
+        credit_limit=?, preferred_channel=?, data_processing_consent=?, notes=?, status=?
        WHERE id = ? AND tenant_id = ?`,
       [party_type || existing[0].party_type, display_name || existing[0].display_name,
         first_name ?? existing[0].first_name, last_name ?? existing[0].last_name,
@@ -182,7 +182,9 @@ router.put('/:id', updateParty, validate, asyncHandler(async (req, res) => {
         country_code || existing[0].country_code, region ?? existing[0].region,
         city ?? existing[0].city, geo_lat ?? existing[0].geo_lat, geo_lng ?? existing[0].geo_lng,
         preferred_currency || existing[0].preferred_currency, credit_limit ?? existing[0].credit_limit,
-        preferred_channel ?? existing[0].preferred_channel, notes ?? existing[0].notes,
+        preferred_channel ?? existing[0].preferred_channel,
+        data_processing_consent != null ? (data_processing_consent ? 1 : 0) : existing[0].data_processing_consent,
+        notes ?? existing[0].notes,
         status || existing[0].status, partyId, tenantId]
     );
 

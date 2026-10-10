@@ -5,6 +5,7 @@ const { logAudit } = require('../../../services/auditService');
 const validate = require('../../../middleware/validate');
 const asyncHandler = require('../../../utils/asyncHandler');
 const { createAnimal, updateAnimal } = require('../../../validators/clinic');
+const { checkPlanLimit } = require('../../../middleware/planLimits');
 
 /**
  * @swagger
@@ -177,7 +178,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/SuccessResponse'
  */
-router.post('/', createAnimal, validate, asyncHandler(async (req, res) => {
+router.post('/', checkPlanLimit('animals'), createAnimal, validate, asyncHandler(async (req, res) => {
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();

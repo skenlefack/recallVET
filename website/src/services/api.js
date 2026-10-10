@@ -24,4 +24,5 @@ export const api = {
 export const submitContact = (data) => api.post('/contact', data);
 export const submitDemoRequest = (data) => api.post('/demo-request', data);
 export const subscribeNewsletter = (data) => api.post('/newsletter/subscribe', data);
+export const unsubscribeNewsletter = (data) => api.post('/newsletter/unsubscribe', data);
 export const getPlans = () => api.get('/plans');

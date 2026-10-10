@@ -3,14 +3,15 @@ const router = express.Router();
 const { auth } = require('../../middleware/auth');
 const { requireTenant } = require('../../middleware/tenantAuth');
 const { requireActiveSubscription } = require('../../middleware/subscription');
+const { requireFeature } = require('../../middleware/featureGate');
 
 // All v1 routes require auth + active subscription + tenant context
 router.use(auth, requireTenant, requireActiveSubscription);
 
 // Module routers
 router.use('/clinic', require('./clinic'));
-router.use('/farm', require('./farm'));
-router.use('/pharmacy', require('./pharmacy'));
+router.use('/farm', requireFeature('farm'), require('./farm'));
+router.use('/pharmacy', requireFeature('pharmacy'), require('./pharmacy'));
 router.use('/notifications', require('./notifications'));
 router.use('/team', require('./team'));
 router.use('/tenant', require('./tenant'));

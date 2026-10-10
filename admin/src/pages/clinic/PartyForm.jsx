@@ -12,7 +12,8 @@ const PartyForm = () => {
         party_type: 'individual', display_name: '', first_name: '', last_name: '', legal_name: '',
         phone_primary: '', phone_secondary: '', whatsapp: '', email: '',
         country_code: 'CM', region: '', city: '',
-        customer_segment: '', preferred_currency: 'XAF', credit_limit: 0
+        customer_segment: '', preferred_currency: 'XAF', credit_limit: 0,
+        data_processing_consent: false
     });
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -30,8 +31,8 @@ const PartyForm = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        const { name, value, type, checked } = e.target;
+        setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     };
 
     const handleSubmit = async (e) => {
@@ -190,6 +191,20 @@ const PartyForm = () => {
                                 <label className="form-label">Limite de crédit</label>
                                 <input type="number" className="form-control" name="credit_limit" value={form.credit_limit} onChange={handleChange} min="0" />
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Consentement */}
+                <div className="card form-card mb-3">
+                    <div className="card-header"><h6 className="mb-0"><i className="fas fa-shield-alt me-2"></i>Consentement au traitement des données personnelles</h6></div>
+                    <div className="card-body">
+                        <div className="form-check">
+                            <input type="checkbox" className="form-check-input" id="data_processing_consent"
+                                name="data_processing_consent" checked={!!form.data_processing_consent} onChange={handleChange} />
+                            <label className="form-check-label" htmlFor="data_processing_consent">
+                                Le client consent au traitement de ses données personnelles conformément à notre politique de confidentialité
+                            </label>
                         </div>
                     </div>
                 </div>

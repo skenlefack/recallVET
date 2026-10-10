@@ -37,6 +37,7 @@ const createParty = [
   body('phone_primary').optional({ values: 'falsy' }).trim(),
   body('country_code').optional({ values: 'falsy' }).isLength({ min: 2, max: 3 }),
   body('credit_limit').optional({ values: 'falsy' }).isFloat({ min: 0 }),
+  body('data_processing_consent').optional().isBoolean(),
   body('contacts').optional().isArray(),
   body('addresses').optional().isArray()
 ];
@@ -47,6 +48,7 @@ const updateParty = [
   body('party_type').optional().isIn(['individual', 'organization', 'farm_owner', 'government']),
   body('email').optional({ values: 'falsy' }).isEmail().normalizeEmail(),
   body('credit_limit').optional({ values: 'falsy' }).isFloat({ min: 0 }),
+  body('data_processing_consent').optional().isBoolean(),
   body('contacts').optional().isArray(),
   body('addresses').optional().isArray()
 ];

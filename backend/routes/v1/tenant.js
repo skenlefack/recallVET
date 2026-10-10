@@ -7,6 +7,7 @@ const fs = require('fs');
 const validate = require('../../middleware/validate');
 const asyncHandler = require('../../utils/asyncHandler');
 const db = require('../../config/db');
+const { checkPlanLimit } = require('../../middleware/planLimits');
 
 // Multer config for logo uploads
 const storage = multer.diskStorage({
@@ -132,7 +133,7 @@ router.get('/structures', asyncHandler(async (req, res) => {
 }));
 
 // POST /api/v1/tenant/structures
-router.post('/structures', [
+router.post('/structures', checkPlanLimit('structures'), [
   body('name').trim().notEmpty().withMessage('Structure name is required.'),
   body('type').optional().isIn(['clinic', 'pharmacy', 'farm_practice', 'mixed']),
   body('address').optional({ nullable: true }).trim(),

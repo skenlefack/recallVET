@@ -6,6 +6,7 @@ const validate = require('../../middleware/validate');
 const { requireRvRole } = require('../../middleware/tenantAuth');
 const asyncHandler = require('../../utils/asyncHandler');
 const { createInvitation, cancelInvitation } = require('../../services/invitationService');
+const { checkPlanLimit } = require('../../middleware/planLimits');
 const { sendInvitationEmail } = require('../../services/emailService');
 
 const VALID_ROLES = ['user', 'admin', 'vet', 'assistant', 'receptionist', 'pharmacist'];
@@ -49,6 +50,7 @@ router.get('/invitations', requireRvRole('owner', 'admin'), asyncHandler(async (
  */
 router.post('/invite',
   requireRvRole('owner', 'admin'),
+  checkPlanLimit('users'),
   [
     body('email').isEmail().normalizeEmail().withMessage('Valid email is required.'),
     body('role').isIn(VALID_ROLES).withMessage('Invalid role.')
