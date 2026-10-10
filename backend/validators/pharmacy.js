@@ -50,7 +50,7 @@ const updateSupplier = [
 const createStockLocation = [
   body('name').trim().notEmpty().withMessage('Location name is required.'),
   body('site_id').optional({ values: 'falsy' }).isInt({ min: 1 }),
-  body('location_type').optional({ values: 'falsy' }).isIn(['main_store', 'pharmacy', 'cold_room', 'vehicle', 'satellite'])
+  body('location_type').optional({ values: 'falsy' }).isIn(['main_store', 'dispensary', 'fridge', 'quarantine', 'mobile'])
 ];
 
 const createStockMovement = [

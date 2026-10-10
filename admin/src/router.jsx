@@ -67,17 +67,23 @@ const SubscriptionPage = lazy(() => import('./pages/settings/Subscription'))
 const TeamManagement = lazy(() => import('./pages/settings/TeamManagement'))
 const TenantSettings = lazy(() => import('./pages/settings/TenantSettings'))
 const ReferenceData = lazy(() => import('./pages/settings/ReferenceData'))
+const BillingPage = lazy(() => import('./pages/settings/Billing'))
 
 // Public pages
 const AcceptInvite = lazy(() => import('./pages/auth/AcceptInvite'))
 
+// Notifications
+const NotificationList = lazy(() => import('./pages/notifications/NotificationList'))
+
 // Superadmin
 const PlatformDashboard = lazy(() => import('./pages/superadmin/PlatformDashboard'))
 const TenantListAdmin = lazy(() => import('./pages/superadmin/TenantList'))
+const TenantDetailAdmin = lazy(() => import('./pages/superadmin/TenantDetail'))
 const SubscriptionListAdmin = lazy(() => import('./pages/superadmin/SubscriptionList'))
 const UserListAdmin = lazy(() => import('./pages/superadmin/UserList'))
 const DemoRequestListAdmin = lazy(() => import('./pages/superadmin/DemoRequestList'))
 const ContactListAdmin = lazy(() => import('./pages/superadmin/ContactList'))
+const AuditLogAdmin = lazy(() => import('./pages/superadmin/AuditLog'))
 
 export default function AppRouter() {
   return (
@@ -96,6 +102,9 @@ export default function AppRouter() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<L><Dashboard /></L>} />
         <Route path="/analytics" element={<L><AnalyticsDashboard /></L>} />
+
+        {/* Notifications */}
+        <Route path="/notifications" element={<L><NotificationList /></L>} />
 
         {/* Clinic */}
         <Route path="/clinic/parties" element={<L><PartyList /></L>} />
@@ -162,14 +171,17 @@ export default function AppRouter() {
         <Route path="/settings/team" element={<L><TeamManagement /></L>} />
         <Route path="/settings/tenant" element={<L><TenantSettings /></L>} />
         <Route path="/settings/reference" element={<L><ReferenceData /></L>} />
+        <Route path="/settings/billing" element={<L><BillingPage /></L>} />
 
         {/* Superadmin */}
         <Route path="/superadmin/dashboard" element={<L><PlatformDashboard /></L>} />
         <Route path="/superadmin/tenants" element={<L><TenantListAdmin /></L>} />
+        <Route path="/superadmin/tenants/:id" element={<L><TenantDetailAdmin /></L>} />
         <Route path="/superadmin/subscriptions" element={<L><SubscriptionListAdmin /></L>} />
         <Route path="/superadmin/users" element={<L><UserListAdmin /></L>} />
         <Route path="/superadmin/demo-requests" element={<L><DemoRequestListAdmin /></L>} />
         <Route path="/superadmin/contacts" element={<L><ContactListAdmin /></L>} />
+        <Route path="/superadmin/audit-log" element={<L><AuditLogAdmin /></L>} />
       </Route>
 
       {/* Catch-all */}

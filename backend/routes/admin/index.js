@@ -143,6 +143,58 @@ router.put('/demo-requests/:id', updateDemoRequest, validate, asyncHandler(async
   res.json({ success: true, message: 'Demo request updated.' });
 }));
 
+// GET /admin/audit-log
+router.get('/audit-log', asyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = Math.min(parseInt(req.query.limit) || 20, 100);
+  const offset = (page - 1) * limit;
+
+  let where = '1=1';
+  const params = [];
+
+  if (req.query.tenant_id) {
+    where += ' AND al.tenant_id = ?';
+    params.push(req.query.tenant_id);
+  }
+  if (req.query.entity_type) {
+    where += ' AND al.entity_type = ?';
+    params.push(req.query.entity_type);
+  }
+  if (req.query.action) {
+    where += ' AND al.action = ?';
+    params.push(req.query.action);
+  }
+  if (req.query.from) {
+    where += ' AND al.created_at >= ?';
+    params.push(req.query.from);
+  }
+  if (req.query.to) {
+    where += ' AND al.created_at <= ?';
+    params.push(req.query.to + ' 23:59:59');
+  }
+
+  const [[{ total }]] = await db.query(
+    `SELECT COUNT(*) as total FROM rv_audit_log al WHERE ${where}`,
+    params
+  );
+
+  const [rows] = await db.query(
+    `SELECT al.*, CONCAT(u.first_name, ' ', u.last_name) as user_name, u.email as user_email, t.name as tenant_name
+     FROM rv_audit_log al
+     LEFT JOIN rv_users u ON al.user_id = u.id
+     LEFT JOIN rv_tenant t ON al.tenant_id = t.id
+     WHERE ${where}
+     ORDER BY al.created_at DESC LIMIT ? OFFSET ?`,
+    [...params, limit, offset]
+  );
+
+  res.json({
+    success: true,
+    data: rows,
+    pagination: { total, page, limit, totalPages: Math.ceil(total / limit) }
+  });
+}));
+
 // GET /admin/contacts
 router.get('/contacts', asyncHandler(async (req, res) => {
   const [msgs] = await db.query('SELECT * FROM rv_contact_message ORDER BY created_at DESC');

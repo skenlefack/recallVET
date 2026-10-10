@@ -2,8 +2,21 @@ const db = require('../config/db');
 
 /**
  * Create a new in-app notification.
+ * Checks user preferences before inserting — if user has disabled this event_type, skip.
  */
-async function createNotification(tenantId, userId, { type = 'info', title, body = null, data = null }) {
+async function createNotification(tenantId, userId, { type = 'info', title, body = null, data = null, event_type = null }) {
+  // Check user preference if event_type is provided
+  if (event_type) {
+    const [prefs] = await db.query(
+      'SELECT enabled FROM rv_notification_preference WHERE user_id = ? AND tenant_id = ? AND event_type = ? AND channel = ?',
+      [userId, tenantId, event_type, 'in_app']
+    );
+    // If a preference exists and is disabled, skip notification
+    if (prefs.length > 0 && !prefs[0].enabled) {
+      return null;
+    }
+  }
+
   const [result] = await db.query(
     `INSERT INTO rv_notification (tenant_id, user_id, type, title, body, data)
      VALUES (?, ?, ?, ?, ?, ?)`,

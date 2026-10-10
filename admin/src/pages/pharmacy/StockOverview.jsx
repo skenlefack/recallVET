@@ -2,14 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 
+const LOCATION_TYPES = [
+    { value: 'main_store', label: 'Magasin principal' },
+    { value: 'dispensary', label: 'Dispensaire' },
+    { value: 'fridge', label: 'Réfrigérateur' },
+    { value: 'quarantine', label: 'Quarantaine' },
+    { value: 'mobile', label: 'Mobile' }
+];
+
 const StockOverview = () => {
     const token = getToken();
     const [levels, setLevels] = useState([]);
     const [lots, setLots] = useState([]);
+    const [locations, setLocations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('levels');
     const [productFilter, setProductFilter] = useState('');
     const [locationFilter, setLocationFilter] = useState('');
+    // Location form state
+    const [locForm, setLocForm] = useState({ name: '', location_type: 'main_store', site_id: '' });
+    const [editingLocId, setEditingLocId] = useState(null);
+    const [savingLoc, setSavingLoc] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -17,13 +30,45 @@ const StockOverview = () => {
 
     const fetchData = async () => {
         setLoading(true);
-        const [levelsRes, lotsRes] = await Promise.all([
+        const [levelsRes, lotsRes, locsRes] = await Promise.all([
             api.get('/v1/pharmacy/stock/levels', token),
-            api.get('/v1/pharmacy/stock/lots', token)
+            api.get('/v1/pharmacy/stock/lots', token),
+            api.get('/v1/pharmacy/stock/locations', token)
         ]);
         if (levelsRes.success) setLevels(levelsRes.data || []);
         if (lotsRes.success) setLots(lotsRes.data || []);
+        if (locsRes.success) setLocations(locsRes.data || []);
         setLoading(false);
+    };
+
+    const handleLocSubmit = async (e) => {
+        e.preventDefault();
+        setSavingLoc(true);
+        const payload = { ...locForm };
+        if (!payload.site_id) delete payload.site_id;
+        let res;
+        if (editingLocId) {
+            res = await api.put(`/v1/pharmacy/stock/locations/${editingLocId}`, payload, token);
+        } else {
+            res = await api.post('/v1/pharmacy/stock/locations', payload, token);
+        }
+        setSavingLoc(false);
+        if (res.success) {
+            setLocForm({ name: '', location_type: 'main_store', site_id: '' });
+            setEditingLocId(null);
+            const locsRes = await api.get('/v1/pharmacy/stock/locations', token);
+            if (locsRes.success) setLocations(locsRes.data || []);
+        }
+    };
+
+    const startEditLoc = (loc) => {
+        setEditingLocId(loc.id);
+        setLocForm({ name: loc.name, location_type: loc.location_type || 'main_store', site_id: loc.site_id || '' });
+    };
+
+    const cancelEditLoc = () => {
+        setEditingLocId(null);
+        setLocForm({ name: '', location_type: 'main_store', site_id: '' });
     };
 
     const formatAmount = (amount) => new Intl.NumberFormat('fr-FR').format(amount || 0);
@@ -92,6 +137,11 @@ const StockOverview = () => {
                 <li className="nav-item">
                     <button className={`nav-link ${activeTab === 'lots' ? 'active' : ''}`} onClick={() => setActiveTab('lots')}>
                         <i className="fas fa-boxes me-1"></i>Lots ({filteredLots.length})
+                    </button>
+                </li>
+                <li className="nav-item">
+                    <button className={`nav-link ${activeTab === 'locations' ? 'active' : ''}`} onClick={() => setActiveTab('locations')}>
+                        <i className="fas fa-map-marker-alt me-1"></i>Emplacements ({locations.length})
                     </button>
                 </li>
             </ul>
@@ -186,6 +236,72 @@ const StockOverview = () => {
                                 </table>
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+            {activeTab === 'locations' && (
+                <div className="card">
+                    <div className="card-body">
+                        {locations.length > 0 && (
+                            <div className="table-responsive mb-3">
+                                <table className="table table-hover mb-0">
+                                    <thead className="table-light">
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Type</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {locations.map(loc => (
+                                            <tr key={loc.id}>
+                                                <td><strong>{loc.name}</strong></td>
+                                                <td>
+                                                    <span className="badge bg-light text-dark">
+                                                        {LOCATION_TYPES.find(t => t.value === loc.location_type)?.label || loc.location_type}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button className="btn btn-sm btn-outline-primary" onClick={() => startEditLoc(loc)}>
+                                                        <i className="fas fa-pen"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                        <form onSubmit={handleLocSubmit} className="row g-2 align-items-end">
+                            <div className="col-md-4">
+                                <label className="form-label small fw-bold">
+                                    {editingLocId ? 'Modifier l\'emplacement' : 'Ajouter un emplacement'}
+                                </label>
+                                <input type="text" className="form-control form-control-sm" placeholder="Nom *"
+                                    value={locForm.name} onChange={e => setLocForm(p => ({ ...p, name: e.target.value }))} required />
+                            </div>
+                            <div className="col-md-3">
+                                <label className="form-label small">Type</label>
+                                <select className="form-select form-select-sm" value={locForm.location_type}
+                                    onChange={e => setLocForm(p => ({ ...p, location_type: e.target.value }))}>
+                                    {LOCATION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                                </select>
+                            </div>
+                            <div className="col-md-3">
+                                <div className="d-flex gap-2">
+                                    <button type="submit" className="btn btn-sm btn-success" disabled={savingLoc}>
+                                        {savingLoc ? <span className="spinner-border spinner-border-sm" /> : (
+                                            <><i className="fas fa-save me-1"></i>{editingLocId ? 'Modifier' : 'Ajouter'}</>
+                                        )}
+                                    </button>
+                                    {editingLocId && (
+                                        <button type="button" className="btn btn-sm btn-outline-secondary" onClick={cancelEditLoc}>
+                                            Annuler
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

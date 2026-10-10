@@ -1,9 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Form, Card, Row, Col, Button, Alert, Spinner, Image } from 'react-bootstrap'
+import { Form, Card, Row, Col, Button, Alert, Spinner, Image, Badge, ListGroup } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { api, getToken, API_URL } from '../../services/api'
 import CountrySelect from '../../components/CountrySelect'
+
+const STRUCTURE_TYPES = [
+  { value: 'clinic', label: 'Clinique' },
+  { value: 'pharmacy', label: 'Pharmacie' },
+  { value: 'farm_practice', label: 'Cabinet rural' },
+  { value: 'mixed', label: 'Mixte' }
+]
 
 const CURRENCIES = ['XAF', 'XOF', 'USD', 'EUR', 'GBP']
 const LANGUAGES = [
@@ -49,8 +56,19 @@ export default function TenantSettings() {
   const [uploading, setUploading] = useState(false)
   const [toast, setToast] = useState(null)
 
+  // Structures & Sites state
+  const [structures, setStructures] = useState([])
+  const [sites, setSites] = useState([])
+  const [structureForm, setStructureForm] = useState({ name: '', type: 'mixed', address: '', phone: '', email: '' })
+  const [editingStructureId, setEditingStructureId] = useState(null)
+  const [siteForm, setSiteForm] = useState({ name: '', structure_id: '', address: '', phone: '' })
+  const [editingSiteId, setEditingSiteId] = useState(null)
+  const [savingStructure, setSavingStructure] = useState(false)
+  const [savingSite, setSavingSite] = useState(false)
+
   useEffect(() => {
     loadSettings()
+    loadStructuresAndSites()
   }, [])
 
   const loadSettings = async () => {
@@ -127,6 +145,79 @@ export default function TenantSettings() {
       setLogoPreview(null)
       setToast({ type: 'danger', message: res.message || t('tenantSettings.logoError') })
     }
+  }
+
+  // ── Structures & Sites ──
+  const loadStructuresAndSites = async () => {
+    const token = getToken()
+    const [structRes, siteRes] = await Promise.all([
+      api.get('/v1/tenant/structures', token),
+      api.get('/v1/tenant/sites', token)
+    ])
+    if (structRes.success) setStructures(structRes.data || [])
+    if (siteRes.success) setSites(siteRes.data || [])
+  }
+
+  const handleStructureSubmit = async (e) => {
+    e.preventDefault()
+    setSavingStructure(true)
+    const token = getToken()
+    let res
+    if (editingStructureId) {
+      res = await api.put(`/v1/tenant/structures/${editingStructureId}`, structureForm, token)
+    } else {
+      res = await api.post('/v1/tenant/structures', structureForm, token)
+    }
+    setSavingStructure(false)
+    if (res.success) {
+      setStructureForm({ name: '', type: 'mixed', address: '', phone: '', email: '' })
+      setEditingStructureId(null)
+      loadStructuresAndSites()
+      setToast({ type: 'success', message: editingStructureId ? 'Structure mise à jour.' : 'Structure créée.' })
+    } else {
+      setToast({ type: 'danger', message: res.message || 'Erreur.' })
+    }
+  }
+
+  const startEditStructure = (s) => {
+    setEditingStructureId(s.id)
+    setStructureForm({ name: s.name, type: s.type || 'mixed', address: s.address || '', phone: s.phone || '', email: s.email || '' })
+  }
+
+  const cancelEditStructure = () => {
+    setEditingStructureId(null)
+    setStructureForm({ name: '', type: 'mixed', address: '', phone: '', email: '' })
+  }
+
+  const handleSiteSubmit = async (e) => {
+    e.preventDefault()
+    setSavingSite(true)
+    const token = getToken()
+    let res
+    if (editingSiteId) {
+      res = await api.put(`/v1/tenant/sites/${editingSiteId}`, siteForm, token)
+    } else {
+      res = await api.post('/v1/tenant/sites', siteForm, token)
+    }
+    setSavingSite(false)
+    if (res.success) {
+      setSiteForm({ name: '', structure_id: '', address: '', phone: '' })
+      setEditingSiteId(null)
+      loadStructuresAndSites()
+      setToast({ type: 'success', message: editingSiteId ? 'Site mis à jour.' : 'Site créé.' })
+    } else {
+      setToast({ type: 'danger', message: res.message || 'Erreur.' })
+    }
+  }
+
+  const startEditSite = (s) => {
+    setEditingSiteId(s.id)
+    setSiteForm({ name: s.name, structure_id: s.structure_id, address: s.address || '', phone: s.phone || '' })
+  }
+
+  const cancelEditSite = () => {
+    setEditingSiteId(null)
+    setSiteForm({ name: '', structure_id: '', address: '', phone: '' })
   }
 
   const resolveLogoSrc = () => {
@@ -321,6 +412,163 @@ export default function TenantSettings() {
                   </Button>
                 </div>
               </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* ── Structures & Sites ── */}
+      <hr className="my-4" />
+      <h5 className="mb-3"><i className="fas fa-sitemap me-2" />Structures & Sites</h5>
+      <Row className="g-4">
+        {/* Structures */}
+        <Col lg={6}>
+          <Card>
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <span><i className="fas fa-building me-1" />Structures</span>
+              <Badge bg="secondary">{structures.length}</Badge>
+            </Card.Header>
+            <Card.Body>
+              {structures.length > 0 && (
+                <ListGroup variant="flush" className="mb-3">
+                  {structures.map(s => (
+                    <ListGroup.Item key={s.id} className="d-flex justify-content-between align-items-start">
+                      <div>
+                        <strong>{s.name}</strong>
+                        <div className="text-muted small">
+                          {STRUCTURE_TYPES.find(t => t.value === s.type)?.label || s.type}
+                          {s.address && <> &mdash; {s.address}</>}
+                        </div>
+                        {/* Sites under this structure */}
+                        {sites.filter(si => si.structure_id === s.id).length > 0 && (
+                          <div className="mt-1">
+                            {sites.filter(si => si.structure_id === s.id).map(si => (
+                              <span key={si.id} className="me-2">
+                                <Badge bg="light" text="dark" className="me-1">
+                                  <i className="fas fa-map-marker-alt me-1" />{si.name}
+                                </Badge>
+                                <button className="btn btn-sm btn-link p-0 text-primary" onClick={() => startEditSite(si)} title="Modifier">
+                                  <i className="fas fa-pen fa-xs" />
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <Button variant="outline-primary" size="sm" onClick={() => startEditStructure(s)}>
+                        <i className="fas fa-pen" />
+                      </Button>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+              <Form onSubmit={handleStructureSubmit}>
+                <div className="small fw-bold mb-2">
+                  {editingStructureId ? 'Modifier la structure' : 'Ajouter une structure'}
+                </div>
+                <Form.Group className="mb-2">
+                  <Form.Control size="sm" placeholder="Nom *" value={structureForm.name}
+                    onChange={e => setStructureForm(p => ({ ...p, name: e.target.value }))} required />
+                </Form.Group>
+                <Row className="g-2 mb-2">
+                  <Col>
+                    <Form.Select size="sm" value={structureForm.type}
+                      onChange={e => setStructureForm(p => ({ ...p, type: e.target.value }))}>
+                      {STRUCTURE_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                    </Form.Select>
+                  </Col>
+                  <Col>
+                    <Form.Control size="sm" placeholder="Adresse" value={structureForm.address}
+                      onChange={e => setStructureForm(p => ({ ...p, address: e.target.value }))} />
+                  </Col>
+                </Row>
+                <Row className="g-2 mb-2">
+                  <Col>
+                    <Form.Control size="sm" placeholder="Téléphone" value={structureForm.phone}
+                      onChange={e => setStructureForm(p => ({ ...p, phone: e.target.value }))} />
+                  </Col>
+                  <Col>
+                    <Form.Control size="sm" type="email" placeholder="Email" value={structureForm.email}
+                      onChange={e => setStructureForm(p => ({ ...p, email: e.target.value }))} />
+                  </Col>
+                </Row>
+                <div className="d-flex gap-2">
+                  <Button type="submit" variant="success" size="sm" disabled={savingStructure}>
+                    {savingStructure ? <Spinner size="sm" /> : <><i className="fas fa-save me-1" />{editingStructureId ? 'Modifier' : 'Ajouter'}</>}
+                  </Button>
+                  {editingStructureId && (
+                    <Button variant="outline-secondary" size="sm" onClick={cancelEditStructure}>Annuler</Button>
+                  )}
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        {/* Sites */}
+        <Col lg={6}>
+          <Card>
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <span><i className="fas fa-map-marker-alt me-1" />Sites</span>
+              <Badge bg="secondary">{sites.length}</Badge>
+            </Card.Header>
+            <Card.Body>
+              {sites.length > 0 && (
+                <ListGroup variant="flush" className="mb-3">
+                  {sites.map(s => (
+                    <ListGroup.Item key={s.id} className="d-flex justify-content-between align-items-start">
+                      <div>
+                        <strong>{s.name}</strong>
+                        <div className="text-muted small">
+                          {s.structure_name && <><i className="fas fa-building me-1" />{s.structure_name}</>}
+                          {s.address && <> &mdash; {s.address}</>}
+                        </div>
+                      </div>
+                      <Button variant="outline-primary" size="sm" onClick={() => startEditSite(s)}>
+                        <i className="fas fa-pen" />
+                      </Button>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+              {structures.length === 0 ? (
+                <Alert variant="info" className="mb-0">Créez d'abord une structure pour pouvoir ajouter des sites.</Alert>
+              ) : (
+                <Form onSubmit={handleSiteSubmit}>
+                  <div className="small fw-bold mb-2">
+                    {editingSiteId ? 'Modifier le site' : 'Ajouter un site'}
+                  </div>
+                  <Form.Group className="mb-2">
+                    <Form.Control size="sm" placeholder="Nom du site *" value={siteForm.name}
+                      onChange={e => setSiteForm(p => ({ ...p, name: e.target.value }))} required />
+                  </Form.Group>
+                  <Row className="g-2 mb-2">
+                    <Col>
+                      <Form.Select size="sm" value={siteForm.structure_id}
+                        onChange={e => setSiteForm(p => ({ ...p, structure_id: e.target.value }))} required>
+                        <option value="">-- Structure --</option>
+                        {structures.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                      </Form.Select>
+                    </Col>
+                    <Col>
+                      <Form.Control size="sm" placeholder="Adresse" value={siteForm.address}
+                        onChange={e => setSiteForm(p => ({ ...p, address: e.target.value }))} />
+                    </Col>
+                  </Row>
+                  <Form.Group className="mb-2">
+                    <Form.Control size="sm" placeholder="Téléphone" value={siteForm.phone}
+                      onChange={e => setSiteForm(p => ({ ...p, phone: e.target.value }))} />
+                  </Form.Group>
+                  <div className="d-flex gap-2">
+                    <Button type="submit" variant="success" size="sm" disabled={savingSite}>
+                      {savingSite ? <Spinner size="sm" /> : <><i className="fas fa-save me-1" />{editingSiteId ? 'Modifier' : 'Ajouter'}</>}
+                    </Button>
+                    {editingSiteId && (
+                      <Button variant="outline-secondary" size="sm" onClick={cancelEditSite}>Annuler</Button>
+                    )}
+                  </div>
+                </Form>
+              )}
             </Card.Body>
           </Card>
         </Col>

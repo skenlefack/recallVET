@@ -65,7 +65,8 @@ const superadminSection = {
     { title: 'Abonnements', icon: 'fas fa-credit-card', to: '/superadmin/subscriptions' },
     { title: 'Utilisateurs', icon: 'fas fa-users-cog', to: '/superadmin/users' },
     { title: 'Demandes demo', icon: 'fas fa-envelope-open-text', to: '/superadmin/demo-requests' },
-    { title: 'Messages', icon: 'fas fa-inbox', to: '/superadmin/contacts' }
+    { title: 'Messages', icon: 'fas fa-inbox', to: '/superadmin/contacts' },
+    { title: 'Journal d\'audit', icon: 'fas fa-history', to: '/superadmin/audit-log' }
   ]
 }
 

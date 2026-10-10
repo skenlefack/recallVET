@@ -20,6 +20,32 @@ router.post('/locations', createStockLocation, validate, asyncHandler(async (req
   res.status(201).json({ success: true, data: { id: result.insertId } });
 }));
 
+// PUT /locations/:id
+router.put('/locations/:id', createStockLocation, validate, asyncHandler(async (req, res) => {
+  // Verify location belongs to tenant
+  const [existing] = await db.query(
+    'SELECT id FROM rv_stock_location WHERE id = ? AND tenant_id = ?',
+    [req.params.id, req.tenant.id]
+  );
+  if (!existing.length) {
+    return res.status(404).json({ success: false, message: 'Location not found.' });
+  }
+  const allowedFields = ['name', 'site_id', 'location_type', 'is_active'];
+  const updates = {};
+  for (const field of allowedFields) {
+    if (req.body[field] !== undefined) updates[field] = req.body[field];
+  }
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ success: false, message: 'No fields to update.' });
+  }
+  const setClauses = Object.keys(updates).map(k => `${k} = ?`).join(', ');
+  await db.query(
+    `UPDATE rv_stock_location SET ${setClauses} WHERE id = ? AND tenant_id = ?`,
+    [...Object.values(updates), req.params.id, req.tenant.id]
+  );
+  res.json({ success: true, message: 'Location updated.' });
+}));
+
 // GET /levels — aggregated stock per product
 router.get('/levels', asyncHandler(async (req, res) => {
   const { search, location_id } = req.query;

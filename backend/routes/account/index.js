@@ -1,12 +1,40 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const db = require('../../config/db');
 const { auth } = require('../../middleware/auth');
 const { getTenantSubscription } = require('../../services/subscriptionService');
 const validate = require('../../middleware/validate');
 const { updateProfile, changePassword } = require('../../validators/account');
 const asyncHandler = require('../../utils/asyncHandler');
+
+// Multer config for avatar uploads
+const avatarStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, '../../uploads/avatars');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `user_${req.user.id}_${Date.now()}${ext}`);
+  }
+});
+
+const avatarUpload = multer({
+  storage: avatarStorage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+  fileFilter: (req, file, cb) => {
+    if (['image/jpeg', 'image/png'].includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only JPEG and PNG images are allowed.'));
+    }
+  }
+});
 
 router.use(auth);
 
@@ -42,6 +70,31 @@ router.put('/password', changePassword, validate, asyncHandler(async (req, res) 
   const hash = await bcrypt.hash(new_password, 10);
   await db.query('UPDATE rv_users SET password_hash = ? WHERE id = ?', [hash, req.user.id]);
   res.json({ success: true, message: 'Password updated.' });
+}));
+
+// POST /account/avatar — Upload user avatar
+router.post('/avatar', avatarUpload.single('avatar'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded.' });
+  }
+
+  const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+
+  // Get old avatar to clean up
+  const [rows] = await db.query('SELECT avatar_url FROM rv_users WHERE id = ?', [req.user.id]);
+  if (rows.length > 0 && rows[0].avatar_url) {
+    const oldPath = path.join(__dirname, '../../', rows[0].avatar_url);
+    if (fs.existsSync(oldPath)) {
+      fs.unlinkSync(oldPath);
+    }
+  }
+
+  await db.query(
+    'UPDATE rv_users SET avatar_url = ? WHERE id = ?',
+    [avatarUrl, req.user.id]
+  );
+
+  res.json({ success: true, message: 'Avatar uploaded.', data: { avatar_url: avatarUrl } });
 }));
 
 // GET /account/subscription
@@ -189,5 +242,19 @@ router.post('/cancel-subscription', asyncHandler(async (req, res) => {
 
   res.json({ success: true, message: 'Subscription will be cancelled at end of billing period.' });
 }));
+
+// Multer error handler
+router.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ success: false, message: 'File too large. Maximum size is 2MB.' });
+    }
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  if (err.message === 'Only JPEG and PNG images are allowed.') {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  next(err);
+});
 
 module.exports = router;

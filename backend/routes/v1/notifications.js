@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { query, param } = require('express-validator');
+const { query, param, body } = require('express-validator');
 const validate = require('../../middleware/validate');
 const asyncHandler = require('../../utils/asyncHandler');
+const db = require('../../config/db');
 const {
   getNotifications,
   getUnreadCount,
@@ -36,6 +37,48 @@ router.get('/unread-count', asyncHandler(async (req, res) => {
 router.put('/read-all', asyncHandler(async (req, res) => {
   const affected = await markAllAsRead(req.user.id, req.tenant.id);
   res.json({ success: true, data: { marked: affected } });
+}));
+
+// GET /api/v1/notifications/preferences — Get user notification preferences
+router.get('/preferences', asyncHandler(async (req, res) => {
+  const [rows] = await db.query(
+    'SELECT id, event_type, channel, enabled FROM rv_notification_preference WHERE user_id = ? AND tenant_id = ?',
+    [req.user.id, req.tenant.id]
+  );
+  res.json({ success: true, data: rows });
+}));
+
+// PUT /api/v1/notifications/preferences — Upsert notification preferences
+router.put('/preferences', [
+  body('preferences').isArray().withMessage('preferences must be an array'),
+  body('preferences.*.event_type').notEmpty().withMessage('event_type is required'),
+  body('preferences.*.channel').optional().isString(),
+  body('preferences.*.enabled').isBoolean().withMessage('enabled must be a boolean'),
+  validate
+], asyncHandler(async (req, res) => {
+  const { preferences } = req.body;
+
+  for (const pref of preferences) {
+    const channel = pref.channel || 'in_app';
+    const [existing] = await db.query(
+      'SELECT id FROM rv_notification_preference WHERE user_id = ? AND tenant_id = ? AND event_type = ? AND channel = ?',
+      [req.user.id, req.tenant.id, pref.event_type, channel]
+    );
+
+    if (existing.length > 0) {
+      await db.query(
+        'UPDATE rv_notification_preference SET enabled = ?, updated_at = NOW() WHERE id = ?',
+        [pref.enabled ? 1 : 0, existing[0].id]
+      );
+    } else {
+      await db.query(
+        'INSERT INTO rv_notification_preference (user_id, tenant_id, event_type, channel, enabled) VALUES (?, ?, ?, ?, ?)',
+        [req.user.id, req.tenant.id, pref.event_type, channel, pref.enabled ? 1 : 0]
+      );
+    }
+  }
+
+  res.json({ success: true, message: 'Preferences updated.' });
 }));
 
 // PUT /api/v1/notifications/:id/read — Mark one as read
