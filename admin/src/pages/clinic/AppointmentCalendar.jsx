@@ -27,6 +27,7 @@ const AppointmentCalendar = () => {
   const [selectedVet, setSelectedVet] = useState('');
   const [loading, setLoading] = useState(false);
   const [dateRange, setDateRange] = useState({ start: null, end: null });
+  const [toast, setToast] = useState(null);
 
   const fetchVets = useCallback(async () => {
     const res = await api.get('/v1/team', token);
@@ -84,6 +85,31 @@ const AppointmentCalendar = () => {
     navigate(`/clinic/appointments/new?date=${info.dateStr}`);
   };
 
+  const handleEventDrop = async (info) => {
+    const appointmentId = info.event.extendedProps.appointmentId || info.event.id;
+    const newDate = info.event.start.toISOString().split('T')[0];
+    const res = await api.put(`/v1/clinic/appointments/${appointmentId}`, { scheduled_date: newDate }, token);
+    if (res.success) {
+      setToast({ type: 'success', message: 'Rendez-vous déplacé avec succès' });
+    } else {
+      info.revert();
+      setToast({ type: 'danger', message: res.message || 'Erreur lors du déplacement' });
+    }
+  };
+
+  const handleEventResize = async (info) => {
+    const appointmentId = info.event.extendedProps.appointmentId || info.event.id;
+    const payload = { scheduled_date: info.event.start.toISOString().split('T')[0] };
+    if (info.event.end) {
+      payload.end_time = info.event.end.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    }
+    const res = await api.put(`/v1/clinic/appointments/${appointmentId}`, payload, token);
+    if (!res.success) {
+      info.revert();
+      setToast({ type: 'danger', message: res.message || 'Erreur lors de la modification' });
+    }
+  };
+
   return (
     <div className="container-fluid py-4">
       <div className="rv-breadcrumb">
@@ -109,6 +135,14 @@ const AppointmentCalendar = () => {
         </Form.Select>
       </div>
 
+
+      {toast && (
+        <div className={`alert alert-${toast.type} alert-dismissible fade show position-fixed`}
+          style={{ top: 20, right: 20, zIndex: 9999, minWidth: 300 }}>
+          {toast.message}
+          <button className="btn-close" onClick={() => setToast(null)}></button>
+        </div>
+      )}
 
       <Card>
         <Card.Body>
@@ -139,7 +173,9 @@ const AppointmentCalendar = () => {
             datesSet={handleDatesSet}
             eventClick={handleEventClick}
             dateClick={handleDateClick}
-            editable={false}
+            editable={true}
+            eventDrop={handleEventDrop}
+            eventResize={handleEventResize}
             selectable={true}
             height="auto"
             locale={localStorage.getItem('i18nextLng') === 'fr' ? 'fr' : 'en'}

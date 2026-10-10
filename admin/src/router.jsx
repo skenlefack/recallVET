@@ -28,11 +28,18 @@ const EncounterList = lazy(() => import('./pages/clinic/EncounterList'))
 const EncounterForm = lazy(() => import('./pages/clinic/EncounterForm'))
 const VaccinationList = lazy(() => import('./pages/clinic/VaccinationList'))
 const VaccinationForm = lazy(() => import('./pages/clinic/VaccinationForm'))
+const LabRequestList = lazy(() => import('./pages/clinic/LabRequestList'))
+const LabRequestForm = lazy(() => import('./pages/clinic/LabRequestForm'))
+const ProtocolList = lazy(() => import('./pages/clinic/ProtocolList'))
 const PrescriptionList = lazy(() => import('./pages/clinic/PrescriptionList'))
 const PrescriptionForm = lazy(() => import('./pages/clinic/PrescriptionForm'))
 const InvoiceList = lazy(() => import('./pages/clinic/InvoiceList'))
 const InvoiceForm = lazy(() => import('./pages/clinic/InvoiceForm'))
 const AppointmentCalendar = lazy(() => import('./pages/clinic/AppointmentCalendar'))
+const HospitalizationList = lazy(() => import('./pages/clinic/HospitalizationList'))
+const HospitalizationForm = lazy(() => import('./pages/clinic/HospitalizationForm'))
+const SurgeryList = lazy(() => import('./pages/clinic/SurgeryList'))
+const SurgeryForm = lazy(() => import('./pages/clinic/SurgeryForm'))
 
 // Farm
 const FarmList = lazy(() => import('./pages/farm/FarmList'))
@@ -122,6 +129,10 @@ export default function AppRouter() {
         <Route path="/clinic/vaccinations" element={<L><VaccinationList /></L>} />
         <Route path="/clinic/vaccinations/new" element={<L><VaccinationForm /></L>} />
         <Route path="/clinic/vaccinations/:id" element={<L><VaccinationForm /></L>} />
+        <Route path="/clinic/lab" element={<L><LabRequestList /></L>} />
+        <Route path="/clinic/lab/new" element={<L><LabRequestForm /></L>} />
+        <Route path="/clinic/lab/:id" element={<L><LabRequestForm /></L>} />
+        <Route path="/clinic/protocols" element={<L><ProtocolList /></L>} />
         <Route path="/clinic/prescriptions" element={<L><PrescriptionList /></L>} />
         <Route path="/clinic/prescriptions/new" element={<L><PrescriptionForm /></L>} />
         <Route path="/clinic/prescriptions/:id" element={<L><PrescriptionForm /></L>} />
@@ -129,6 +140,12 @@ export default function AppRouter() {
         <Route path="/clinic/invoices/new" element={<L><InvoiceForm /></L>} />
         <Route path="/clinic/invoices/:id" element={<L><InvoiceForm /></L>} />
         <Route path="/clinic/calendar" element={<L><AppointmentCalendar /></L>} />
+        <Route path="/clinic/hospitalizations" element={<L><HospitalizationList /></L>} />
+        <Route path="/clinic/hospitalizations/new" element={<L><HospitalizationForm /></L>} />
+        <Route path="/clinic/hospitalizations/:id" element={<L><HospitalizationForm /></L>} />
+        <Route path="/clinic/surgeries" element={<L><SurgeryList /></L>} />
+        <Route path="/clinic/surgeries/new" element={<L><SurgeryForm /></L>} />
+        <Route path="/clinic/surgeries/:id" element={<L><SurgeryForm /></L>} />
 
         {/* Farm */}
         <Route path="/farm/farms" element={<L><FarmList /></L>} />

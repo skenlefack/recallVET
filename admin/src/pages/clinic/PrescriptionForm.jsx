@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
+import AttachmentPanel from '../../components/AttachmentPanel';
 
 const emptyLine = () => ({ product_name: '', dosage: '', frequency: '', duration_days: '', quantity: '', route: 'oral', instructions: '' });
 
@@ -233,6 +234,8 @@ const PrescriptionForm = () => {
                     <Link to="/clinic/prescriptions" className="btn btn-outline-secondary">Annuler</Link>
                 </div>
             </form>
+
+            {isEdit && <AttachmentPanel entityType="prescription" entityId={Number(id)} />}
         </div>
     );
 };

@@ -342,4 +342,62 @@ router.delete('/units/:id', asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Deleted' });
 }));
 
+// ============================================================
+// DISEASE-SIGN MAPPINGS
+// ============================================================
+
+// GET /diseases/:id/signs — clinical signs linked to a disease
+router.get('/diseases/:id/signs', asyncHandler(async (req, res) => {
+  const [rows] = await db.query(
+    `SELECT cs.* FROM rv_clinical_sign cs
+     JOIN rv_disease_sign ds ON cs.id = ds.clinical_sign_id
+     WHERE ds.disease_id = ?`,
+    [req.params.id]
+  );
+  res.json({ success: true, data: rows });
+}));
+
+// POST /diseases/:id/signs — link signs to a disease (body: { sign_ids: [1,2,3] })
+router.post('/diseases/:id/signs', asyncHandler(async (req, res) => {
+  const diseaseId = req.params.id;
+  const { sign_ids } = req.body;
+  if (!Array.isArray(sign_ids)) {
+    return res.status(400).json({ success: false, message: 'sign_ids must be an array' });
+  }
+
+  await db.query('DELETE FROM rv_disease_sign WHERE disease_id = ?', [diseaseId]);
+
+  if (sign_ids.length > 0) {
+    const values = sign_ids.map(signId => [diseaseId, signId]);
+    await db.query('INSERT INTO rv_disease_sign (disease_id, clinical_sign_id) VALUES ?', [values]);
+  }
+
+  res.json({ success: true, message: 'Signs updated' });
+}));
+
+// GET /suggestions?signs=1,2,3 — suggest diseases based on selected clinical signs
+router.get('/suggestions', asyncHandler(async (req, res) => {
+  const { signs } = req.query;
+  if (!signs) {
+    return res.status(400).json({ success: false, message: 'signs query parameter is required' });
+  }
+
+  const signIds = signs.split(',').map(Number).filter(n => !isNaN(n) && n > 0);
+  if (!signIds.length) {
+    return res.status(400).json({ success: false, message: 'Invalid sign IDs' });
+  }
+
+  const [rows] = await db.query(
+    `SELECT d.*, COUNT(ds.clinical_sign_id) as match_count
+     FROM rv_disease d
+     JOIN rv_disease_sign ds ON d.id = ds.disease_id
+     WHERE ds.clinical_sign_id IN (?)
+     GROUP BY d.id
+     ORDER BY match_count DESC
+     LIMIT 10`,
+    [signIds]
+  );
+  res.json({ success: true, data: rows });
+}));
+
 module.exports = router;

@@ -20,6 +20,10 @@ const menuSections = [
       { title: 'Calendrier', icon: 'fas fa-calendar-alt', to: '/clinic/calendar' },
       { title: 'Consultations', icon: 'fas fa-stethoscope', to: '/clinic/encounters' },
       { title: 'Vaccinations', icon: 'fas fa-syringe', to: '/clinic/vaccinations' },
+      { title: 'Laboratoire', icon: 'fas fa-flask', to: '/clinic/lab' },
+      { title: 'Protocoles', icon: 'fas fa-clipboard-list', to: '/clinic/protocols' },
+      { title: 'Hospitalisations', icon: 'fas fa-procedures', to: '/clinic/hospitalizations' },
+      { title: 'Chirurgies', icon: 'fas fa-cut', to: '/clinic/surgeries' },
       { title: 'Ordonnances', icon: 'fas fa-prescription', to: '/clinic/prescriptions' },
       { title: 'Factures', icon: 'fas fa-file-invoice-dollar', to: '/clinic/invoices' }
     ]

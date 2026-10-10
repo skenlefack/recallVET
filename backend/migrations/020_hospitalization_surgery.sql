@@ -1,0 +1,42 @@
+CREATE TABLE IF NOT EXISTS rv_hospitalization (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  tenant_id INT NOT NULL,
+  encounter_id INT DEFAULT NULL,
+  animal_id INT NOT NULL,
+  cage_number VARCHAR(20),
+  admission_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  discharge_date DATETIME DEFAULT NULL,
+  reason TEXT,
+  daily_notes JSON DEFAULT NULL,
+  diet_instructions TEXT,
+  medications TEXT,
+  status ENUM('admitted','discharged','transferred','deceased') DEFAULT 'admitted',
+  created_by INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (tenant_id) REFERENCES rv_tenant(id),
+  FOREIGN KEY (animal_id) REFERENCES rv_animal(id)
+);
+
+CREATE TABLE IF NOT EXISTS rv_surgery (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  tenant_id INT NOT NULL,
+  encounter_id INT DEFAULT NULL,
+  animal_id INT NOT NULL,
+  procedure_name VARCHAR(255) NOT NULL,
+  anesthesia_type VARCHAR(100),
+  pre_op_notes TEXT,
+  post_op_notes TEXT,
+  complications TEXT,
+  surgeon_id INT,
+  assistant_id INT,
+  scheduled_date DATETIME,
+  start_time DATETIME,
+  end_time DATETIME,
+  status ENUM('planned','in_progress','completed','cancelled') DEFAULT 'planned',
+  created_by INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (tenant_id) REFERENCES rv_tenant(id),
+  FOREIGN KEY (animal_id) REFERENCES rv_animal(id)
+);

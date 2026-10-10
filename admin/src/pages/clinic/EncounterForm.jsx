@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
+import AttachmentPanel from '../../components/AttachmentPanel';
 
 const EncounterForm = () => {
     const { id } = useParams();
@@ -297,6 +298,8 @@ const EncounterForm = () => {
                     <Link to="/clinic/encounters" className="btn btn-outline-secondary">Annuler</Link>
                 </div>
             </form>
+
+            {isEdit && <AttachmentPanel entityType="encounter" entityId={Number(id)} />}
         </div>
     );
 };

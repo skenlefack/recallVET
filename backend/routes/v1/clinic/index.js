@@ -8,6 +8,10 @@ router.use('/encounters', require('./encounters'));
 router.use('/vaccinations', require('./vaccinations'));
 router.use('/prescriptions', require('./prescriptions'));
 router.use('/invoices', require('./invoices'));
+router.use('/hospitalizations', require('./hospitalizations'));
+router.use('/surgeries', require('./surgeries'));
+router.use('/lab', require('./lab'));
+router.use('/protocols', require('./protocols'));
 
 router.use('/exports', require('./exports'));
 router.use('/bulk', require('./bulk'));

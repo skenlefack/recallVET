@@ -59,7 +59,11 @@ router.post('/', createVaccination, validate, asyncHandler(async (req, res) => {
       req.user.id, b.notes || null]
   );
   await logAudit(req.tenant.id, req.user.id, 'vaccination', result.insertId, 'create', null, b, req.ip);
-  res.status(201).json({ success: true, data: { id: result.insertId } });
+  const data = { id: result.insertId };
+  if (b.certificate_needed) {
+    data.certificate_url = `/v1/clinic/exports/vaccinations/${result.insertId}/certificate`;
+  }
+  res.status(201).json({ success: true, data });
 }));
 
 // PUT /api/v1/clinic/vaccinations/:id

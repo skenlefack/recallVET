@@ -314,8 +314,91 @@ async function generateVaccinationCertificatePDF(vaccinationData, tenantData) {
   return pdfToBuffer(doc);
 }
 
+/**
+ * Generate a farm visit report PDF.
+ */
+async function generateFarmVisitReportPDF(visit, tenantData) {
+  const doc = new PDFDocument({ size: 'A4', margin: 50 });
+  let y = addHeader(doc, tenantData, 'RAPPORT DE VISITE / FARM VISIT REPORT');
+
+  // Visit info
+  doc.fontSize(10).font('Helvetica-Bold').fillColor('#000000');
+  doc.text(`Farm: ${visit.farm_name || ''}`, 50, y);
+  doc.text(`Date: ${visit.visit_date ? new Date(visit.visit_date).toLocaleDateString() : ''}`, 350, y);
+  y += 16;
+  doc.font('Helvetica').fontSize(9);
+  doc.text(`Veterinarian: ${visit.vet_name || ''}`, 50, y);
+  doc.text(`Visit Type: ${(visit.visit_type || '').replace(/_/g, ' ')}`, 350, y);
+  y += 16;
+  doc.text(`Status: ${(visit.status || '').toUpperCase()}`, 50, y);
+  y += 25;
+
+  // General findings
+  if (visit.general_findings) {
+    doc.fontSize(11).font('Helvetica-Bold').fillColor('#2d6a4f').text('General Findings / Constatations', 50, y);
+    y += 16;
+    doc.fontSize(9).font('Helvetica').fillColor('#000000')
+      .text(visit.general_findings, 50, y, { width: 500 });
+    y = doc.y + 15;
+  }
+
+  // Recommendations
+  if (visit.recommendations) {
+    doc.fontSize(11).font('Helvetica-Bold').fillColor('#2d6a4f').text('Recommendations / Recommandations', 50, y);
+    y += 16;
+    doc.fontSize(9).font('Helvetica').fillColor('#000000')
+      .text(visit.recommendations, 50, y, { width: 500 });
+    y = doc.y + 15;
+  }
+
+  // Treatments table (if provided)
+  if (visit.treatments && visit.treatments.length > 0) {
+    doc.fontSize(11).font('Helvetica-Bold').fillColor('#2d6a4f').text('Treatments / Traitements', 50, y);
+    y += 16;
+    const columns = [
+      { label: 'Treatment', width: 180 },
+      { label: 'Animals', width: 80, align: 'right' },
+      { label: 'Product', width: 120 },
+      { label: 'Notes', width: 130 }
+    ];
+    const rows = visit.treatments.map(tr => [
+      tr.description || tr.treatment_type || '',
+      tr.animal_count != null ? String(tr.animal_count) : '',
+      tr.product_name || '',
+      tr.notes || ''
+    ]);
+    y = drawTable(doc, 50, y, columns, rows);
+  }
+
+  // Follow-up
+  if (visit.follow_up_date || visit.follow_up_notes) {
+    y += 5;
+    doc.fontSize(11).font('Helvetica-Bold').fillColor('#2d6a4f').text('Follow-up / Suivi', 50, y);
+    y += 16;
+    doc.fontSize(9).font('Helvetica').fillColor('#000000');
+    if (visit.follow_up_date) {
+      doc.font('Helvetica-Bold').text('Next Visit: ', 50, y, { continued: true });
+      doc.font('Helvetica').text(new Date(visit.follow_up_date).toLocaleDateString());
+      y += 14;
+    }
+    if (visit.follow_up_notes) {
+      doc.text(visit.follow_up_notes, 50, y, { width: 500 });
+      y = doc.y + 10;
+    }
+  }
+
+  // Signature area
+  y = Math.max(y + 40, 620);
+  doc.moveTo(350, y).lineTo(540, y).strokeColor('#000000').lineWidth(0.5).stroke();
+  doc.fontSize(8).text('Veterinarian Signature', 350, y + 5, { width: 190, align: 'center' });
+
+  addFooter(doc, tenantData);
+  return pdfToBuffer(doc);
+}
+
 module.exports = {
   generateInvoicePDF,
   generatePrescriptionPDF,
-  generateVaccinationCertificatePDF
+  generateVaccinationCertificatePDF,
+  generateFarmVisitReportPDF
 };
