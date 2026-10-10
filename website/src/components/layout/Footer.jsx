@@ -41,19 +41,19 @@ export default function Footer() {
             </Link>
             <p className="footer-desc">{t('footer.description')}</p>
             <div className="social-links">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
+              <a href="https://facebook.com/recallvet" target="_blank" rel="noreferrer" aria-label="Facebook">
                 <i className="fab fa-facebook-f" />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter">
+              <a href="https://x.com/recallvet" target="_blank" rel="noreferrer" aria-label="Twitter">
                 <i className="fab fa-x-twitter" />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+              <a href="https://linkedin.com/company/recallvet" target="_blank" rel="noreferrer" aria-label="LinkedIn">
                 <i className="fab fa-linkedin-in" />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
+              <a href="https://instagram.com/recallvet" target="_blank" rel="noreferrer" aria-label="Instagram">
                 <i className="fab fa-instagram" />
               </a>
-              <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
+              <a href="https://youtube.com/@recallvet" target="_blank" rel="noreferrer" aria-label="YouTube">
                 <i className="fab fa-youtube" />
               </a>
             </div>
@@ -66,8 +66,8 @@ export default function Footer() {
               <li><Link to="/fonctionnalites">{t('footer.product_links.features')}</Link></li>
               <li><Link to="/tarifs">{t('footer.product_links.pricing')}</Link></li>
               <li><Link to="/demo">{t('footer.product_links.demo')}</Link></li>
-              <li><a href="#">{t('footer.product_links.changelog')}</a></li>
-              <li><a href="#">{t('footer.product_links.roadmap')}</a></li>
+              <li><Link to="/changelog">{t('footer.product_links.changelog')}</Link></li>
+              <li><Link to="/roadmap">{t('footer.product_links.roadmap')}</Link></li>
             </ul>
           </div>
 
@@ -76,10 +76,8 @@ export default function Footer() {
             <h5 className="footer-col-title">{t('footer.company_title')}</h5>
             <ul className="footer-links">
               <li><Link to="/a-propos">{t('footer.company_links.about')}</Link></li>
-              <li><a href="#">{t('footer.company_links.blog')}</a></li>
-              <li><a href="#">{t('footer.company_links.careers')}</a></li>
-              <li><a href="#">{t('footer.company_links.press')}</a></li>
-              <li><a href="#">{t('footer.company_links.partners')}</a></li>
+              <li><Link to="/legal/cookies">{t('footer.legal_links.cookies', 'Cookies')}</Link></li>
+              <li><Link to="/legal/securite">{t('footer.legal_links.security', 'Sécurité')}</Link></li>
             </ul>
           </div>
 
@@ -110,6 +108,8 @@ export default function Footer() {
               <ul className="footer-links" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <li><Link to="/legal/confidentialite">{t('footer.legal_links.privacy')}</Link></li>
                 <li><Link to="/legal/conditions">{t('footer.legal_links.terms')}</Link></li>
+                <li><Link to="/legal/cookies">Cookies</Link></li>
+                <li><Link to="/legal/securite">Sécurité</Link></li>
               </ul>
             </div>
           </div>

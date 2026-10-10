@@ -181,11 +181,11 @@ export default function Contact() {
                 <h5 style={{ fontWeight: 700, marginBottom: '1rem' }}>{t('contact.social_title')}</h5>
                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                   {[
-                    { icon: 'fa-facebook-f', href: '#', label: 'Facebook' },
-                    { icon: 'fa-x-twitter', href: '#', label: 'Twitter/X' },
-                    { icon: 'fa-linkedin-in', href: '#', label: 'LinkedIn' },
-                    { icon: 'fa-instagram', href: '#', label: 'Instagram' },
-                    { icon: 'fa-whatsapp', href: '#', label: 'WhatsApp' },
+                    { icon: 'fa-facebook-f', href: 'https://facebook.com/recallvet', label: 'Facebook' },
+                    { icon: 'fa-x-twitter', href: 'https://x.com/recallvet', label: 'Twitter/X' },
+                    { icon: 'fa-linkedin-in', href: 'https://linkedin.com/company/recallvet', label: 'LinkedIn' },
+                    { icon: 'fa-instagram', href: 'https://instagram.com/recallvet', label: 'Instagram' },
+                    { icon: 'fa-whatsapp', href: 'https://wa.me/237XXXXXXXXX', label: 'WhatsApp' },
                   ].map((s) => (
                     <a
                       key={s.label}

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SEO from '../components/seo/SEO';
+import { getPlans } from '../services/api';
 
 const COMPARISON_KEYS = [
   'users', 'patients', 'clinic_module', 'farm_module', 'pharmacy_module',
@@ -47,22 +48,54 @@ export default function Pricing() {
   const { t } = useTranslation();
   const [openFaq, setOpenFaq] = useState(null);
   const [billingCycle, setBillingCycle] = useState('monthly');
+  const [apiPlans, setApiPlans] = useState(null);
+  const [plansLoading, setPlansLoading] = useState(true);
   const faqs = t('pricing.faq', { returnObjects: true });
 
   const isAnnual = billingCycle === 'yearly';
 
+  useEffect(() => {
+    getPlans()
+      .then((res) => {
+        const data = res.data || res;
+        if (Array.isArray(data) && data.length > 0) {
+          setApiPlans(data);
+        }
+      })
+      .catch(() => {
+        // Fall back to hardcoded i18n plans
+      })
+      .finally(() => setPlansLoading(false));
+  }, []);
+
   const formatPrice = (monthlyPrice) => {
-    const num = parseInt(monthlyPrice.replace(/\s/g, ''), 10);
-    if (isNaN(num)) return monthlyPrice;
+    const str = String(monthlyPrice);
+    const num = parseInt(str.replace(/\s/g, ''), 10);
+    if (isNaN(num)) return str;
     const annual = Math.round(num * 12 * 0.83);
     return annual.toLocaleString('fr-FR');
   };
 
-  const plans = [
+  // Map API plan names to the keys used in i18n / comparison table
+  const planKeyMap = { starter: 'starter', pro: 'pro', enterprise: 'enterprise' };
+
+  const fallbackPlans = [
     { key: 'starter', popular: false },
     { key: 'pro', popular: true },
     { key: 'enterprise', popular: false },
   ];
+
+  const plans = apiPlans
+    ? apiPlans.map((ap) => {
+        const key = (ap.slug || ap.name || '').toLowerCase();
+        const mapped = planKeyMap[key] || key;
+        return {
+          key: mapped,
+          popular: mapped === 'pro',
+          apiData: ap,
+        };
+      })
+    : fallbackPlans;
 
   return (
     <>
@@ -103,7 +136,15 @@ export default function Pricing() {
         <div className="container">
           <div className="row g-4 justify-content-center">
             {plans.map((p) => {
-              const feats = t(`pricing.${p.key}_features`, { returnObjects: true });
+              const api = p.apiData;
+              const name = api?.name || t(`pricing.${p.key}_name`);
+              const currency = api?.currency || t(`pricing.${p.key}_currency`);
+              const monthlyPrice = api ? String(api.price) : t(`pricing.${p.key}_price`);
+              const displayPrice = isAnnual ? formatPrice(monthlyPrice) : monthlyPrice;
+              const desc = api?.description || t(`pricing.${p.key}_desc`);
+              const feats = (api?.features && Array.isArray(api.features) && api.features.length > 0)
+                ? api.features
+                : t(`pricing.${p.key}_features`, { returnObjects: true });
               return (
                 <div key={p.key} className="col-md-4">
                   <div className={`pricing-card${p.popular ? ' popular' : ''}`}>
@@ -113,18 +154,18 @@ export default function Pricing() {
                         {t('pricing.popular')}
                       </div>
                     )}
-                    <div className="plan-name">{t(`pricing.${p.key}_name`)}</div>
+                    <div className="plan-name">{name}</div>
                     <div className="plan-price">
-                      <span className="currency">{t(`pricing.${p.key}_currency`)}</span>
-                      {isAnnual ? formatPrice(t(`pricing.${p.key}_price`)) : t(`pricing.${p.key}_price`)}
+                      <span className="currency">{currency}</span>
+                      {displayPrice}
                       <span className="period"> /{isAnnual ? t('pricing_page.per_year') : t('pricing.monthly')}</span>
                     </div>
-                    <p className="plan-desc">{t(`pricing.${p.key}_desc`)}</p>
+                    <p className="plan-desc">{desc}</p>
                     <ul className="plan-features">
                       {Array.isArray(feats) && feats.map((f, i) => (
                         <li key={i}>
                           <i className="fas fa-check-circle" />
-                          {f}
+                          {typeof f === 'string' ? f : f.label || f.name || String(f)}
                         </li>
                       ))}
                     </ul>

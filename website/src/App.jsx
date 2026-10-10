@@ -11,6 +11,10 @@ import DemoRequest from './pages/DemoRequest';
 import About from './pages/About';
 import Privacy from './pages/Legal/Privacy';
 import Terms from './pages/Legal/Terms';
+import Cookies from './pages/Legal/Cookies';
+import Security from './pages/Legal/Security';
+import Changelog from './pages/Changelog';
+import Roadmap from './pages/Roadmap';
 import NotFound from './pages/NotFound';
 
 function ScrollToTop() {
@@ -59,6 +63,10 @@ export default function App() {
           <Route path="/a-propos" element={<About />} />
           <Route path="/legal/confidentialite" element={<Privacy />} />
           <Route path="/legal/conditions" element={<Terms />} />
+          <Route path="/legal/cookies" element={<Cookies />} />
+          <Route path="/legal/securite" element={<Security />} />
+          <Route path="/changelog" element={<Changelog />} />
+          <Route path="/roadmap" element={<Roadmap />} />
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>

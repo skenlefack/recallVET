@@ -31,8 +31,11 @@ export default function SEO({
       <meta property="og:image" content={image} />
       <meta property="og:site_name" content={SITE_NAME} />
 
+      <meta property="og:locale" content="fr_FR" />
+
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@recallvet" />
       <meta name="twitter:title" content={fullTitle} />
       {description && <meta name="twitter:description" content={description} />}
       <meta name="twitter:image" content={image} />

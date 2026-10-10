@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f1c2e"/>
+      <stop offset="100%" style="stop-color:#1a3a52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="950" cy="315" r="200" fill="#1a8b3f" opacity="0.1"/>
+  <circle cx="250" cy="500" r="150" fill="#1a8b3f" opacity="0.05"/>
+  <!-- Paw icon -->
+  <g transform="translate(100, 240)" fill="#1a8b3f">
+    <circle cx="30" cy="10" r="14"/>
+    <circle cx="70" cy="0" r="14"/>
+    <circle cx="110" cy="10" r="14"/>
+    <circle cx="0" cy="50" r="14"/>
+    <ellipse cx="55" cy="70" rx="40" ry="35"/>
+  </g>
+  <!-- Text -->
+  <text x="240" y="290" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="bold" fill="#ffffff">
+    Recall<tspan fill="#1a8b3f">VET</tspan>
+  </text>
+  <text x="240" y="340" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#94a3b8">
+    La solution veterinaire #1 en Afrique
+  </text>
+  <rect x="240" y="370" width="80" height="4" rx="2" fill="#1a8b3f"/>
+  <!-- Features -->
+  <text x="240" y="420" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#64748b">Clinique  |  Elevage  |  Pharmacie  |  Facturation</text>
+  <!-- URL -->
+  <text x="240" y="530" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#1a8b3f">recallvet.com</text>
+</svg>

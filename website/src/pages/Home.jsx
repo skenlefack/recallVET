@@ -619,6 +619,49 @@ export default function Home() {
       <SEO
         description="RecallVET est la plateforme SaaS vétérinaire #1 en Afrique. Gérez votre clinique, élevage et pharmacie en un seul outil. Essai gratuit 30 jours."
         keywords="logiciel vétérinaire, gestion clinique vétérinaire, SaaS vétérinaire Afrique, pharmacie vétérinaire, RecallVET"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'Organization',
+              name: 'RecallVET',
+              url: 'https://recallvet.com',
+              logo: 'https://recallvet.com/favicon.svg',
+              description: 'La plateforme SaaS veterinaire #1 en Afrique',
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: 'Yaounde',
+                addressCountry: 'CM',
+              },
+              contactPoint: {
+                '@type': 'ContactPoint',
+                email: 'contact@recallvet.com',
+                contactType: 'customer service',
+                availableLanguage: ['French', 'English'],
+              },
+              sameAs: [
+                'https://facebook.com/recallvet',
+                'https://x.com/recallvet',
+                'https://linkedin.com/company/recallvet',
+                'https://instagram.com/recallvet',
+              ],
+            },
+            {
+              '@type': 'SoftwareApplication',
+              name: 'RecallVET',
+              applicationCategory: 'BusinessApplication',
+              operatingSystem: 'Web',
+              url: 'https://recallvet.com',
+              description: 'Plateforme SaaS de gestion veterinaire pour cliniques, elevages et pharmacies en Afrique.',
+              offers: {
+                '@type': 'AggregateOffer',
+                priceCurrency: 'XAF',
+                lowPrice: '0',
+                offerCount: '3',
+              },
+            },
+          ],
+        }}
       />
       <HeroSection />
       <ProblemSection />
