@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: recallvet-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - recallvet
+
+  backend:
+    build: ./backend
+    container_name: recallvet-backend
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      FRONTEND_URL: https://www.recallvet.com
+      ADMIN_URL: https://app.recallvet.com
+      CORS_ORIGINS: https://www.recallvet.com,https://app.recallvet.com,https://recallvet.com
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+      ENABLE_CRONS: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - recallvet
+
+  admin:
+    build:
+      context: ./admin
+      args:
+        VITE_API_URL: https://api.recallvet.com/api
+    container_name: recallvet-admin
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - recallvet
+
+  website:
+    build:
+      context: ./website
+      args:
+        VITE_API_URL: https://api.recallvet.com/api
+        VITE_ADMIN_URL: https://app.recallvet.com
+    container_name: recallvet-website
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - recallvet
+
+  nginx:
+    image: nginx:alpine
+    container_name: recallvet-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+      - certbot_data:/var/www/certbot
+    depends_on:
+      - backend
+      - admin
+      - website
+    networks:
+      - recallvet
+
+  certbot:
+    image: certbot/certbot
+    container_name: recallvet-certbot
+    volumes:
+      - ./docker/nginx/ssl:/etc/letsencrypt
+      - certbot_data:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  mysql_data:
+  certbot_data:
+
+networks:
+  recallvet:
+    driver: bridge
