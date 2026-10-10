@@ -396,9 +396,102 @@ async function generateFarmVisitReportPDF(visit, tenantData) {
   return pdfToBuffer(doc);
 }
 
+/**
+ * Generate a SaaS subscription invoice PDF.
+ */
+async function generateSaasInvoicePDF(invoiceData, tenantData) {
+  const doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+  // RecallVET company header (platform issuer)
+  doc.fontSize(20).font('Helvetica-Bold').fillColor('#2d6a4f')
+    .text('RecallVET', 50, 40);
+  doc.fontSize(8).font('Helvetica').fillColor('#666666')
+    .text('Veterinary Practice Management Platform', 50, 64);
+  doc.moveTo(50, 80).lineTo(560, 80).strokeColor('#2d6a4f').lineWidth(1).stroke();
+
+  doc.fontSize(14).font('Helvetica-Bold').fillColor('#000000')
+    .text('SUBSCRIPTION INVOICE', 50, 90, { align: 'center' });
+  let y = 120;
+
+  // Invoice metadata
+  doc.fontSize(10).font('Helvetica-Bold').fillColor('#000000');
+  doc.text(`Invoice #: ${invoiceData.invoice_number || ''}`, 50, y);
+  doc.text(`Date: ${invoiceData.paid_at ? new Date(invoiceData.paid_at).toLocaleDateString() : new Date().toLocaleDateString()}`, 350, y);
+  y += 18;
+  doc.font('Helvetica').fontSize(9);
+  doc.text(`Status: ${(invoiceData.status || 'draft').toUpperCase()}`, 50, y);
+  y += 25;
+
+  // Bill To section
+  doc.fontSize(11).font('Helvetica-Bold').fillColor('#2d6a4f').text('Bill To', 50, y);
+  y += 16;
+  doc.fontSize(9).font('Helvetica').fillColor('#000000');
+  doc.text(tenantData.name || '', 50, y); y += 14;
+  if (tenantData.address_line) { doc.text(tenantData.address_line, 50, y); y += 14; }
+  const cityRegion = [tenantData.city, tenantData.region].filter(Boolean).join(', ');
+  if (cityRegion) { doc.text(cityRegion, 50, y); y += 14; }
+  if (tenantData.email) { doc.text(tenantData.email, 50, y); y += 14; }
+  if (tenantData.phone) { doc.text(tenantData.phone, 50, y); y += 14; }
+  y += 15;
+
+  // Subscription details table
+  const columns = [
+    { label: 'Description', width: 220 },
+    { label: 'Period', width: 160 },
+    { label: 'Amount', width: 110, align: 'right' }
+  ];
+
+  const periodStart = invoiceData.period_start ? new Date(invoiceData.period_start).toLocaleDateString() : '';
+  const periodEnd = invoiceData.period_end ? new Date(invoiceData.period_end).toLocaleDateString() : '';
+  const periodStr = [periodStart, periodEnd].filter(Boolean).join(' - ');
+  const planLabel = invoiceData.plan_name || 'Subscription';
+
+  const rows = [
+    [planLabel, periodStr, fmt(invoiceData.amount)]
+  ];
+
+  y = drawTable(doc, 50, y, columns, rows);
+
+  // Totals
+  y += 10;
+  const totalsX = 380;
+  doc.fontSize(9).font('Helvetica');
+  if (invoiceData.tax_amount && parseFloat(invoiceData.tax_amount) > 0) {
+    doc.text('Subtotal:', totalsX, y);
+    doc.text(fmt(invoiceData.amount), totalsX + 100, y, { align: 'right', width: 70 });
+    y += 16;
+    doc.text('Tax:', totalsX, y);
+    doc.text(fmt(invoiceData.tax_amount), totalsX + 100, y, { align: 'right', width: 70 });
+    y += 16;
+    const total = parseFloat(invoiceData.amount || 0) + parseFloat(invoiceData.tax_amount || 0);
+    doc.font('Helvetica-Bold').fontSize(11);
+    doc.text('TOTAL:', totalsX, y);
+    doc.text(fmt(total), totalsX + 100, y, { align: 'right', width: 70 });
+  } else {
+    doc.font('Helvetica-Bold').fontSize(11);
+    doc.text('TOTAL:', totalsX, y);
+    doc.text(`${invoiceData.currency || ''} ${fmt(invoiceData.amount)}`, totalsX + 80, y, { align: 'right', width: 90 });
+  }
+  y += 25;
+
+  // Payment status
+  doc.font('Helvetica').fontSize(9);
+  const statusColor = invoiceData.status === 'paid' ? '#2d6a4f' : '#cc0000';
+  doc.fillColor(statusColor).text(`Payment Status: ${(invoiceData.status || 'draft').toUpperCase()}`, totalsX, y);
+
+  // Footer
+  const bottom = 760;
+  doc.moveTo(50, bottom).lineTo(560, bottom).strokeColor('#cccccc').lineWidth(0.5).stroke();
+  doc.fontSize(7).font('Helvetica').fillColor('#999999')
+    .text(`RecallVET - Subscription Invoice - Generated on ${new Date().toLocaleDateString()}`, 50, bottom + 5, { align: 'center', width: 510 });
+
+  return pdfToBuffer(doc);
+}
+
 module.exports = {
   generateInvoicePDF,
   generatePrescriptionPDF,
   generateVaccinationCertificatePDF,
-  generateFarmVisitReportPDF
+  generateFarmVisitReportPDF,
+  generateSaasInvoicePDF
 };

@@ -7,6 +7,7 @@ const fs = require('fs');
 const db = require('../../config/db');
 const { auth } = require('../../middleware/auth');
 const { getTenantSubscription } = require('../../services/subscriptionService');
+const { generateSaasInvoicePDF } = require('../../services/pdfService');
 const validate = require('../../middleware/validate');
 const { updateProfile, changePassword } = require('../../validators/account');
 const asyncHandler = require('../../utils/asyncHandler');
@@ -136,6 +137,45 @@ router.get('/invoices', asyncHandler(async (req, res) => {
     [tenantId]
   );
   res.json({ success: true, data: invoices });
+}));
+
+// GET /account/invoices/:id/pdf - Generate SaaS invoice PDF
+router.get('/invoices/:id/pdf', asyncHandler(async (req, res) => {
+  const tenantId = req.headers['x-tenant-id'];
+  if (!tenantId) return res.status(400).json({ success: false, message: 'X-Tenant-Id header required.' });
+
+  const [ut] = await db.query(
+    'SELECT id FROM rv_user_tenant WHERE user_id = ? AND tenant_id = ? AND is_active = 1',
+    [req.user.id, tenantId]
+  );
+  if (ut.length === 0) return res.status(403).json({ success: false, message: 'Access denied.' });
+
+  const [rows] = await db.query(
+    `SELECT si.*, p.name_en as plan_name
+     FROM rv_saas_invoice si
+     LEFT JOIN rv_subscription sub ON si.subscription_id = sub.id
+     LEFT JOIN rv_plan p ON sub.plan_id = p.id
+     WHERE si.id = ? AND si.tenant_id = ?`,
+    [req.params.id, tenantId]
+  );
+  if (rows.length === 0) return res.status(404).json({ success: false, message: 'Invoice not found.' });
+
+  const [tenants] = await db.query('SELECT * FROM rv_tenant WHERE id = ?', [tenantId]);
+  const tenantData = tenants[0] || { name: 'Clinic' };
+
+  const invoiceData = rows[0];
+  const buffer = await generateSaasInvoicePDF(invoiceData, tenantData);
+
+  // Store PDF path reference
+  const pdfPath = `/api/account/invoices/${req.params.id}/pdf`;
+  await db.query('UPDATE rv_saas_invoice SET pdf_url = ? WHERE id = ?', [pdfPath, req.params.id]);
+
+  res.set({
+    'Content-Type': 'application/pdf',
+    'Content-Disposition': `inline; filename="saas-invoice-${invoiceData.invoice_number || req.params.id}.pdf"`,
+    'Content-Length': buffer.length
+  });
+  res.send(buffer);
 }));
 
 // POST /account/checkout - Create Stripe checkout session

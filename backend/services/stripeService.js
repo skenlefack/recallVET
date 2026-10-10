@@ -157,6 +157,7 @@ async function handleWebhookEvent(event) {
       const invoice = event.data.object;
       const stripeCustomerId = invoice.customer;
       const amountPaid = invoice.amount_paid / 100; // Convert from cents
+      const currency = (invoice.currency || 'usd').toUpperCase();
 
       // Find tenant by stripe_customer_id
       const [tenants] = await db.query(
@@ -167,22 +168,63 @@ async function handleWebhookEvent(event) {
       if (tenants.length > 0) {
         const tenantId = tenants[0].id;
 
-        // Log the payment in rv_saas_payment if invoice exists
-        const [invoices] = await db.query(
-          'SELECT id FROM rv_saas_invoice WHERE tenant_id = ? ORDER BY created_at DESC LIMIT 1',
-          [tenantId]
+        // Check if rv_saas_invoice already exists for this Stripe invoice
+        let [invoices] = await db.query(
+          'SELECT id FROM rv_saas_invoice WHERE stripe_invoice_id = ?',
+          [invoice.id]
         );
 
+        if (invoices.length === 0) {
+          // Auto-create rv_saas_invoice from the Stripe invoice
+          const periodStart = invoice.period_start
+            ? new Date(invoice.period_start * 1000).toISOString().slice(0, 10)
+            : new Date().toISOString().slice(0, 10);
+          const periodEnd = invoice.period_end
+            ? new Date(invoice.period_end * 1000).toISOString().slice(0, 10)
+            : new Date().toISOString().slice(0, 10);
+
+          // Find the active subscription for this tenant
+          const [subs] = await db.query(
+            `SELECT id FROM rv_subscription WHERE tenant_id = ? AND status = 'active' ORDER BY created_at DESC LIMIT 1`,
+            [tenantId]
+          );
+          const subscriptionId = subs.length > 0 ? subs[0].id : null;
+
+          // Generate invoice number: SAAS-<tenantId>-<timestamp>
+          const invoiceNumber = `SAAS-${tenantId}-${Date.now()}`;
+
+          if (subscriptionId) {
+            const [result] = await db.query(
+              `INSERT INTO rv_saas_invoice
+                 (subscription_id, tenant_id, invoice_number, amount, currency, status,
+                  stripe_invoice_id, period_start, period_end, due_date, paid_at)
+               VALUES (?, ?, ?, ?, ?, 'paid', ?, ?, ?, ?, NOW())`,
+              [subscriptionId, tenantId, invoiceNumber, amountPaid, currency,
+               invoice.id, periodStart, periodEnd, periodStart]
+            );
+
+            invoices = [{ id: result.insertId }];
+            logger.info(`Auto-created rv_saas_invoice #${invoiceNumber} for tenant ${tenantId}`);
+          }
+        } else {
+          // Update existing invoice to paid
+          await db.query(
+            `UPDATE rv_saas_invoice SET status = 'paid', paid_at = NOW() WHERE id = ?`,
+            [invoices[0].id]
+          );
+        }
+
+        // Create rv_saas_payment record linked to the invoice
         if (invoices.length > 0) {
           await db.query(
             `INSERT INTO rv_saas_payment (invoice_id, amount, payment_method, payment_date, stripe_payment_intent_id)
-             VALUES (?, ?, 'stripe', NOW(), ?)
+             VALUES (?, ?, 'card', NOW(), ?)
              ON DUPLICATE KEY UPDATE amount = VALUES(amount)`,
             [invoices[0].id, amountPaid, invoice.payment_intent]
           );
         }
 
-        logger.info(`Invoice paid for tenant ${tenantId}: $${amountPaid}`);
+        logger.info(`Invoice paid for tenant ${tenantId}: ${currency} ${amountPaid}`);
       }
       break;
     }
