@@ -89,4 +89,26 @@ async function sendInvitationEmail({ email, inviterName, tenantName, token }) {
   });
 }
 
-module.exports = { sendEmail, sendWelcomeEmail, sendPasswordResetEmail, sendInvitationEmail };
+async function sendAppointmentReminder({ to, ownerName, animalName, clinicName, vetName, date, time }) {
+  const timeInfo = time ? `<strong>Heure :</strong> ${time}` : '<em>Heure a confirmer</em>';
+  return sendEmail({
+    to,
+    subject: `RecallVET - Rappel de rendez-vous pour ${animalName}`,
+    html: `
+      <h2>Rappel de rendez-vous</h2>
+      <p>Bonjour ${ownerName},</p>
+      <p>Nous vous rappelons que vous avez un rendez-vous prevu demain pour <strong>${animalName}</strong>.</p>
+      <table style="border-collapse:collapse;margin:16px 0;">
+        <tr><td style="padding:6px 12px;font-weight:bold;">Clinique :</td><td style="padding:6px 12px;">${clinicName}</td></tr>
+        ${vetName ? `<tr><td style="padding:6px 12px;font-weight:bold;">Veterinaire :</td><td style="padding:6px 12px;">Dr ${vetName}</td></tr>` : ''}
+        <tr><td style="padding:6px 12px;font-weight:bold;">Date :</td><td style="padding:6px 12px;">${date}</td></tr>
+        <tr><td style="padding:6px 12px;font-weight:bold;">${timeInfo}</td></tr>
+        <tr><td style="padding:6px 12px;font-weight:bold;">Animal :</td><td style="padding:6px 12px;">${animalName}</td></tr>
+      </table>
+      <p>Si vous devez annuler ou reporter ce rendez-vous, veuillez nous contacter au plus vite.</p>
+      <p>Cordialement,<br>${clinicName} - RecallVET</p>
+    `
+  });
+}
+
+module.exports = { sendEmail, sendWelcomeEmail, sendPasswordResetEmail, sendInvitationEmail, sendAppointmentReminder };

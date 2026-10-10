@@ -107,6 +107,7 @@ app.use('/api/admin', require('./routes/admin'));
 // Cron jobs (only in production or if explicitly enabled)
 if (process.env.NODE_ENV === 'production' || process.env.ENABLE_CRONS === 'true') {
   require('./jobs/trialExpiration');
+  require('./jobs/appointmentReminder');
 }
 
 // 404 handler
