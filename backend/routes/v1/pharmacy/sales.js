@@ -19,8 +19,8 @@ router.get('/', asyncHandler(async (req, res) => {
   if (status) { where += ' AND s.status = ?'; params.push(status); }
   const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM rv_retail_sale s ${where}`, params);
   const [rows] = await db.query(
-    `SELECT s.*, p.display_name as party_name, u.username as sold_by_name
-     FROM rv_retail_sale s LEFT JOIN rv_party p ON s.party_id = p.id LEFT JOIN users u ON s.sold_by = u.id
+    `SELECT s.*, p.display_name as party_name, CONCAT(u.first_name, ' ', u.last_name) as sold_by_name
+     FROM rv_retail_sale s LEFT JOIN rv_party p ON s.party_id = p.id LEFT JOIN rv_users u ON s.sold_by = u.id
      ${where} ORDER BY s.sale_date DESC LIMIT ? OFFSET ?`,
     [...params, limit, parseInt(offset)]);
   res.json({ success: true, data: rows, pagination: { total, page: parseInt(page), limit, totalPages: Math.ceil(total / limit) } });

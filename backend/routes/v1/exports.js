@@ -45,7 +45,7 @@ router.get('/animals', asyncHandler(async (req, res) => {
 router.get('/parties', asyncHandler(async (req, res) => {
   const [rows] = await db.query(
     `SELECT client_code, display_name, party_type as type, phone_primary as phone,
-            email, city, country, status
+            email, city, country_code, status
      FROM rv_party WHERE tenant_id = ? ORDER BY display_name`, [req.tenant.id]);
 
   const columns = [
@@ -55,7 +55,7 @@ router.get('/parties', asyncHandler(async (req, res) => {
     { header: 'Phone', key: 'phone' },
     { header: 'Email', key: 'email' },
     { header: 'City', key: 'city' },
-    { header: 'Country', key: 'country' },
+    { header: 'Country', key: 'country_code' },
     { header: 'Status', key: 'status' }
   ];
 
@@ -145,7 +145,7 @@ router.get('/sales', asyncHandler(async (req, res) => {
     `SELECT s.sale_number, s.sale_date as date, p.display_name as party,
             s.subtotal, s.discount_amount as discount, s.tax_amount as tax,
             s.total_amount as total, s.payment_method, s.status
-     FROM rv_sale s
+     FROM rv_retail_sale s
      LEFT JOIN rv_party p ON s.party_id = p.id
      ${where} ORDER BY s.sale_date DESC`, params);
 

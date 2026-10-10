@@ -77,9 +77,9 @@ router.post('/animals', upload.single('file'), asyncHandler(async (req, res) => 
   });
 
   // Preload owner lookup by party code within tenant
-  const [partyList] = await db.query('SELECT id, party_code FROM rv_party WHERE tenant_id = ?', [tenantId]);
+  const [partyList] = await db.query('SELECT id, client_code FROM rv_party WHERE tenant_id = ?', [tenantId]);
   const partyMap = {};
-  partyList.forEach(p => { partyMap[(p.party_code || '').toLowerCase()] = p.id; });
+  partyList.forEach(p => { partyMap[(p.client_code || '').toLowerCase()] = p.id; });
 
   // Get current animal count for code generation
   const [[{ cnt }]] = await db.query('SELECT COUNT(*) as cnt FROM rv_animal WHERE tenant_id = ?', [tenantId]);

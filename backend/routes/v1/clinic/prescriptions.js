@@ -20,11 +20,11 @@ router.get('/', asyncHandler(async (req, res) => {
 
   const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM rv_prescription rx ${where}`, params);
   const [rows] = await db.query(
-    `SELECT rx.*, a.name as animal_name, a.animal_code, p.display_name as owner_name, u.username as prescriber_name
+    `SELECT rx.*, a.name as animal_name, a.animal_code, p.display_name as owner_name, CONCAT(u.first_name, ' ', u.last_name) as prescriber_name
      FROM rv_prescription rx
      LEFT JOIN rv_animal a ON rx.animal_id = a.id
      LEFT JOIN rv_party p ON rx.party_id = p.id
-     LEFT JOIN users u ON rx.prescriber_user_id = u.id
+     LEFT JOIN rv_users u ON rx.prescriber_user_id = u.id
      ${where} ORDER BY rx.prescription_date DESC LIMIT ? OFFSET ?`,
     [...params, limit, parseInt(offset)]
   );
@@ -34,10 +34,10 @@ router.get('/', asyncHandler(async (req, res) => {
 // GET /api/v1/clinic/prescriptions/:id
 router.get('/:id', asyncHandler(async (req, res) => {
   const [rows] = await db.query(
-    `SELECT rx.*, a.name as animal_name, a.animal_code, p.display_name as owner_name, u.username as prescriber_name
+    `SELECT rx.*, a.name as animal_name, a.animal_code, p.display_name as owner_name, CONCAT(u.first_name, ' ', u.last_name) as prescriber_name
      FROM rv_prescription rx
      LEFT JOIN rv_animal a ON rx.animal_id = a.id LEFT JOIN rv_party p ON rx.party_id = p.id
-     LEFT JOIN users u ON rx.prescriber_user_id = u.id
+     LEFT JOIN rv_users u ON rx.prescriber_user_id = u.id
      WHERE rx.id = ? AND rx.tenant_id = ?`, [req.params.id, req.tenant.id]);
   if (!rows.length) return res.status(404).json({ success: false, message: 'Not found' });
   const [lines] = await db.query('SELECT * FROM rv_prescription_line WHERE prescription_id = ?', [req.params.id]);

@@ -19,8 +19,8 @@ router.get('/', asyncHandler(async (req, res) => {
 
   const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM rv_farm_visit v ${where}`, params);
   const [rows] = await db.query(
-    `SELECT v.*, f.name as farm_name, u.username as vet_name
-     FROM rv_farm_visit v LEFT JOIN rv_farm f ON v.farm_id = f.id LEFT JOIN users u ON v.vet_user_id = u.id
+    `SELECT v.*, f.name as farm_name, CONCAT(u.first_name, ' ', u.last_name) as vet_name
+     FROM rv_farm_visit v LEFT JOIN rv_farm f ON v.farm_id = f.id LEFT JOIN rv_users u ON v.vet_user_id = u.id
      ${where} ORDER BY v.visit_date DESC LIMIT ? OFFSET ?`,
     [...params, limit, parseInt(offset)]
   );
@@ -29,8 +29,8 @@ router.get('/', asyncHandler(async (req, res) => {
 
 router.get('/:id', asyncHandler(async (req, res) => {
   const [rows] = await db.query(
-    `SELECT v.*, f.name as farm_name, u.username as vet_name
-     FROM rv_farm_visit v LEFT JOIN rv_farm f ON v.farm_id = f.id LEFT JOIN users u ON v.vet_user_id = u.id
+    `SELECT v.*, f.name as farm_name, CONCAT(u.first_name, ' ', u.last_name) as vet_name
+     FROM rv_farm_visit v LEFT JOIN rv_farm f ON v.farm_id = f.id LEFT JOIN rv_users u ON v.vet_user_id = u.id
      WHERE v.id = ? AND v.tenant_id = ?`, [req.params.id, req.tenant.id]);
   if (!rows.length) return res.status(404).json({ success: false, message: 'Not found' });
   res.json({ success: true, data: rows[0] });

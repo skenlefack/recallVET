@@ -147,6 +147,7 @@ export default function AppRouter() {
         <Route path="/pharmacy/purchase-orders/new" element={<L><PurchaseOrderForm /></L>} />
         <Route path="/pharmacy/purchase-orders/:id" element={<L><PurchaseOrderForm /></L>} />
         <Route path="/pharmacy/goods-receipts/new" element={<L><GoodsReceiptForm /></L>} />
+        <Route path="/pharmacy/goods-receipts/:id" element={<L><GoodsReceiptForm /></L>} />
         <Route path="/pharmacy/stock" element={<L><StockOverview /></L>} />
         <Route path="/pharmacy/stock/movements" element={<L><StockMovementList /></L>} />
         <Route path="/pharmacy/stock/movement" element={<L><StockMovementForm /></L>} />

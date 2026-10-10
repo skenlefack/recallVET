@@ -125,7 +125,7 @@ router.post('/movements', createStockMovement, validate, asyncHandler(async (req
          GROUP BY p.id, p.name, p.reorder_level`,
         [b.product_id, req.tenant.id]);
       if (stockInfo.length && stockInfo[0].reorder_level != null && stockInfo[0].current_qty < stockInfo[0].reorder_level) {
-        const [tenantUsers] = await db.query('SELECT id FROM users WHERE tenant_id = ? AND is_active = 1', [req.tenant.id]);
+        const [tenantUsers] = await db.query('SELECT user_id AS id FROM rv_user_tenant WHERE tenant_id = ?', [req.tenant.id]);
         for (const u of tenantUsers) {
           await notificationService.createNotification(req.tenant.id, u.id, {
             type: 'warning',
@@ -157,8 +157,8 @@ router.get('/movements', asyncHandler(async (req, res) => {
 
   const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM rv_stock_movement sm ${where}`, params);
   const [rows] = await db.query(
-    `SELECT sm.*, p.name as product_name, u.username as performed_by_name
-     FROM rv_stock_movement sm LEFT JOIN rv_product p ON sm.product_id = p.id LEFT JOIN users u ON sm.performed_by = u.id
+    `SELECT sm.*, p.name as product_name, CONCAT(u.first_name, ' ', u.last_name) as performed_by_name
+     FROM rv_stock_movement sm LEFT JOIN rv_product p ON sm.product_id = p.id LEFT JOIN rv_users u ON sm.performed_by = u.id
      ${where} ORDER BY sm.created_at DESC LIMIT ? OFFSET ?`,
     [...params, limit, parseInt(offset)]);
   res.json({ success: true, data: rows, pagination: { total, page: parseInt(page), limit, totalPages: Math.ceil(total / limit) } });

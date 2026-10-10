@@ -22,10 +22,10 @@ router.get('/', asyncHandler(async (req, res) => {
 
   const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM rv_vaccination_event v ${where}`, params);
   const [rows] = await db.query(
-    `SELECT v.*, a.name as animal_name, a.animal_code, sp.name_fr as species_name, u.username as vet_name
+    `SELECT v.*, a.name as animal_name, a.animal_code, sp.name_fr as species_name, CONCAT(u.first_name, ' ', u.last_name) as vet_name
      FROM rv_vaccination_event v
      LEFT JOIN rv_animal a ON v.animal_id = a.id LEFT JOIN rv_species sp ON a.species_id = sp.id
-     LEFT JOIN users u ON v.administered_by = u.id
+     LEFT JOIN rv_users u ON v.administered_by = u.id
      ${where} ORDER BY v.vaccination_date DESC LIMIT ? OFFSET ?`,
     [...params, limit, parseInt(offset)]
   );
@@ -35,9 +35,9 @@ router.get('/', asyncHandler(async (req, res) => {
 // GET /api/v1/clinic/vaccinations/:id
 router.get('/:id', asyncHandler(async (req, res) => {
   const [rows] = await db.query(
-    `SELECT v.*, a.name as animal_name, a.animal_code, u.username as vet_name
+    `SELECT v.*, a.name as animal_name, a.animal_code, CONCAT(u.first_name, ' ', u.last_name) as vet_name
      FROM rv_vaccination_event v
-     LEFT JOIN rv_animal a ON v.animal_id = a.id LEFT JOIN users u ON v.administered_by = u.id
+     LEFT JOIN rv_animal a ON v.animal_id = a.id LEFT JOIN rv_users u ON v.administered_by = u.id
      WHERE v.id = ? AND v.tenant_id = ?`, [req.params.id, req.tenant.id]);
   if (!rows.length) return res.status(404).json({ success: false, message: 'Not found' });
   res.json({ success: true, data: rows[0] });

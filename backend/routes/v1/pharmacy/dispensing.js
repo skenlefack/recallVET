@@ -17,9 +17,9 @@ router.get('/', asyncHandler(async (req, res) => {
   if (prescription_id) { where += ' AND d.prescription_id = ?'; params.push(prescription_id); }
   const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM rv_dispense_transaction d ${where}`, params);
   const [rows] = await db.query(
-    `SELECT d.*, a.name as animal_name, p.display_name as party_name, u.username as dispensed_by_name
+    `SELECT d.*, a.name as animal_name, p.display_name as party_name, CONCAT(u.first_name, ' ', u.last_name) as dispensed_by_name
      FROM rv_dispense_transaction d
-     LEFT JOIN rv_animal a ON d.animal_id = a.id LEFT JOIN rv_party p ON d.party_id = p.id LEFT JOIN users u ON d.dispensed_by = u.id
+     LEFT JOIN rv_animal a ON d.animal_id = a.id LEFT JOIN rv_party p ON d.party_id = p.id LEFT JOIN rv_users u ON d.dispensed_by = u.id
      ${where} ORDER BY d.dispense_date DESC LIMIT ? OFFSET ?`,
     [...params, limit, parseInt(offset)]);
   res.json({ success: true, data: rows, pagination: { total, page: parseInt(page), limit, totalPages: Math.ceil(total / limit) } });

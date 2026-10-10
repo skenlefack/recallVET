@@ -64,7 +64,7 @@ const StockOverview = () => {
                     <Link to="/pharmacy/goods-receipts/new" className="btn btn-rv-primary me-2">
                         <i className="fas fa-box-open me-1"></i>Réception
                     </Link>
-                    <Link to="/pharmacy/stock-movements/new" className="btn btn-outline-primary">
+                    <Link to="/pharmacy/stock/movement" className="btn btn-outline-primary">
                         <i className="fas fa-exchange-alt me-1"></i>Mouvement
                     </Link>
                 </div>
