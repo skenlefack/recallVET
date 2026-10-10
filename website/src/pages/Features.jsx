@@ -17,61 +17,30 @@ function useScrollReveal() {
   return [ref, revealed];
 }
 
-const CLINIC_FEATURES = [
-  { icon: 'fa-users', label: 'Gestion des propriétaires (personnes physiques et morales)' },
-  { icon: 'fa-paw', label: "Dossiers patients complets avec historique médical" },
-  { icon: 'fa-calendar-check', label: 'Prise de rendez-vous en ligne avec confirmation automatique' },
-  { icon: 'fa-stethoscope', label: 'Consultations : anamnèse, examen clinique, diagnostic' },
-  { icon: 'fa-prescription', label: 'Ordonnances électroniques et prescriptions médicales' },
-  { icon: 'fa-syringe', label: 'Suivi des vaccinations et rappels automatiques' },
-  { icon: 'fa-procedures', label: 'Gestion des hospitalisations et soins continus' },
-  { icon: 'fa-scalpel', label: 'Suivi des actes chirurgicaux et anesthésies' },
-  { icon: 'fa-microscope', label: 'Résultats de laboratoire et examens complémentaires' },
-  { icon: 'fa-x-ray', label: 'Imagerie médicale : radiographies, échographies' },
-  { icon: 'fa-file-medical', label: 'Certificats vétérinaires et documents officiels' },
-  { icon: 'fa-share-alt', label: 'Partage de dossiers entre praticiens' },
+const CLINIC_ICONS = [
+  'fa-users', 'fa-paw', 'fa-calendar-check', 'fa-stethoscope',
+  'fa-prescription', 'fa-syringe', 'fa-procedures', 'fa-scalpel',
+  'fa-microscope', 'fa-x-ray', 'fa-file-medical', 'fa-share-alt',
 ];
 
-const FARM_FEATURES = [
-  { icon: 'fa-map', label: 'Gestion des fermes, parcelles et installations' },
-  { icon: 'fa-horse', label: 'Suivi des troupeaux : bovins, ovins, caprins, volailles, porcins' },
-  { icon: 'fa-map-marker-alt', label: 'Visites terrain avec géolocalisation GPS' },
-  { icon: 'fa-virus', label: "Détection et gestion des épidémies et maladies" },
-  { icon: 'fa-shield-virus', label: 'Programmes de prophylaxie et protocoles sanitaires' },
-  { icon: 'fa-tag', label: 'Marquage individuel : boucles, puces, tatouages' },
-  { icon: 'fa-baby', label: 'Suivi de la reproduction et des gestations' },
-  { icon: 'fa-chart-line', label: 'Performances zootechniques : GMQ, taux de mortalité' },
-  { icon: 'fa-seedling', label: "Gestion de l'alimentation et des rations" },
-  { icon: 'fa-temperature-high', label: 'Surveillance sanitaire et alertes automatiques' },
-  { icon: 'fa-file-chart-line', label: "Rapports d'élevage et export réglementaire" },
-  { icon: 'fa-network-wired', label: 'Accès multi-fermes depuis un seul tableau de bord' },
+const FARM_ICONS = [
+  'fa-map', 'fa-horse', 'fa-map-marker-alt', 'fa-virus',
+  'fa-shield-virus', 'fa-tag', 'fa-baby', 'fa-chart-line',
+  'fa-seedling', 'fa-temperature-high', 'fa-file-chart-line', 'fa-network-wired',
 ];
 
-const PHARMACY_FEATURES = [
-  { icon: 'fa-pills', label: 'Catalogue complet de médicaments vétérinaires' },
-  { icon: 'fa-boxes', label: 'Gestion des stocks en temps réel par emplacement' },
-  { icon: 'fa-clock', label: 'Alertes de péremption J-30, J-15, J-7' },
-  { icon: 'fa-truck', label: 'Gestion des fournisseurs et catalogues tarifaires' },
-  { icon: 'fa-file-contract', label: 'Bons de commande et réceptions fournisseurs' },
-  { icon: 'fa-qrcode', label: 'Traçabilité lot par lot avec numéros de série' },
-  { icon: 'fa-prescription-bottle', label: 'Dispensation sur ordonnance sécurisée' },
-  { icon: 'fa-cash-register', label: 'Point de vente : ventes comptoir et factures' },
-  { icon: 'fa-chart-pie', label: 'Analyse des ventes par produit, catégorie, période' },
-  { icon: 'fa-exclamation-triangle', label: 'Alertes de rupture de stock avec seuil configurable' },
-  { icon: 'fa-sync', label: 'Synchronisation automatique avec le module clinique' },
-  { icon: 'fa-file-export', label: 'Export des registres vers les autorités vétérinaires' },
+const PHARMACY_ICONS = [
+  'fa-pills', 'fa-boxes', 'fa-clock', 'fa-truck',
+  'fa-file-contract', 'fa-qrcode', 'fa-prescription-bottle', 'fa-cash-register',
+  'fa-chart-pie', 'fa-exclamation-triangle', 'fa-sync', 'fa-file-export',
 ];
 
-const BILLING_FEATURES = [
-  { icon: 'fa-file-invoice', label: 'Devis personnalisés avec actes et produits' },
-  { icon: 'fa-receipt', label: 'Factures automatiques après consultation' },
-  { icon: 'fa-credit-card', label: 'Paiement Mobile Money, carte et espèces' },
-  { icon: 'fa-history', label: 'Historique des paiements et relances automatiques' },
-  { icon: 'fa-chart-bar', label: 'Rapports financiers mensuels et annuels' },
-  { icon: 'fa-percentage', label: 'Gestion des remises et programmes de fidélité' },
+const BILLING_ICONS = [
+  'fa-file-invoice', 'fa-receipt', 'fa-credit-card',
+  'fa-history', 'fa-chart-bar', 'fa-percentage',
 ];
 
-function FeatureBlock({ title, subtitle, icon, features, reverse, color }) {
+function FeatureBlock({ title, subtitle, headerIcon, icons, features, reverse, color, t }) {
   const [ref, revealed] = useScrollReveal();
   return (
     <div className={`feature-detail-block reveal-section ${revealed ? 'revealed' : ''}${reverse ? ' reverse' : ''}`} ref={ref}>
@@ -79,7 +48,7 @@ function FeatureBlock({ title, subtitle, icon, features, reverse, color }) {
         <div className={`col-lg-4${reverse ? ' order-lg-2' : ''}`}>
           <div className="module-header">
             <div className="module-icon-lg" style={color ? { background: color } : {}}>
-              <i className={`fas ${icon}`} />
+              <i className={`fas ${headerIcon}`} />
             </div>
             <div>
               <h2 className="section-title text-start" style={{ fontSize: '1.8rem' }}>{title}</h2>
@@ -93,7 +62,7 @@ function FeatureBlock({ title, subtitle, icon, features, reverse, color }) {
             }}>
               {features.length}
             </div>
-            <span style={{ color: '#6c757d', fontSize: '0.9rem' }}>fonctionnalités incluses</span>
+            <span style={{ color: '#6c757d', fontSize: '0.9rem' }}>{t('common.features_included')}</span>
           </div>
           <a
             href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/register`}
@@ -102,15 +71,15 @@ function FeatureBlock({ title, subtitle, icon, features, reverse, color }) {
             className="btn-primary-brand"
           >
             <i className="fas fa-rocket" />
-            Essayer gratuitement
+            {t('common.try_free')}
           </a>
         </div>
         <div className={`col-lg-8${reverse ? ' order-lg-1' : ''}`}>
           <div className="feature-list">
-            {features.map((f, i) => (
+            {features.map((label, i) => (
               <div key={i} className="fl-item">
-                <i className={`fas ${f.icon}`} style={color ? { color } : {}} />
-                <span>{f.label}</span>
+                <i className={`fas ${icons[i]}`} style={color ? { color } : {}} />
+                <span>{label}</span>
               </div>
             ))}
           </div>
@@ -121,11 +90,18 @@ function FeatureBlock({ title, subtitle, icon, features, reverse, color }) {
 }
 
 export default function Features() {
+  const { t } = useTranslation();
+
+  const clinicFeatures = t('features_page.clinic_features', { returnObjects: true });
+  const farmFeatures = t('features_page.farm_features', { returnObjects: true });
+  const pharmacyFeatures = t('features_page.pharmacy_features', { returnObjects: true });
+  const billingFeatures = t('features_page.billing_features', { returnObjects: true });
+
   return (
     <>
       <SEO
-        title="Fonctionnalités"
-        description="Découvrez toutes les fonctionnalités de RecallVET : gestion clinique, suivi élevage, pharmacie vétérinaire, facturation et rapports avancés."
+        title={t('features_page.seo_title')}
+        description={t('features_page.seo_description')}
         url="/fonctionnalites"
         keywords="fonctionnalités vétérinaires, dossier médical animal, gestion troupeaux, pharmacie vétérinaire logiciel"
       />
@@ -134,66 +110,74 @@ export default function Features() {
         <div className="container">
           <span className="badge-green mb-3" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}>
             <i className="fas fa-cubes me-2" />
-            Tout ce que vous pouvez faire
+            {t('features_page.badge')}
           </span>
-          <h1>Fonctionnalités complètes</h1>
-          <p>Une plateforme pensée pour chaque aspect de votre pratique vétérinaire en Afrique</p>
+          <h1>{t('features_page.title')}</h1>
+          <p>{t('features_page.subtitle')}</p>
         </div>
       </div>
 
       <div className="features-detail">
         <div className="container">
           <FeatureBlock
-            title="Module Clinique"
-            subtitle="Gérez l'intégralité de votre cabinet vétérinaire depuis un seul écran. Des dossiers patients aux résultats d'examens, en passant par les prescriptions et les rappels de vaccination."
-            icon="fa-hospital-user"
-            features={CLINIC_FEATURES}
+            title={t('features_page.clinic_title')}
+            subtitle={t('features_page.clinic_subtitle')}
+            headerIcon="fa-hospital-user"
+            icons={CLINIC_ICONS}
+            features={Array.isArray(clinicFeatures) ? clinicFeatures : []}
             color="#1a8b3f"
+            t={t}
           />
 
           <hr style={{ border: 'none', borderTop: '2px solid #e8f7ed', margin: '0 0 4rem' }} />
 
           <FeatureBlock
-            title="Module Élevage"
-            subtitle="Accompagnez vos clients éleveurs avec un outil de terrain puissant. Visites, événements sanitaires, performances zootechniques et programmes prophylactiques."
-            icon="fa-tractor"
-            features={FARM_FEATURES}
+            title={t('features_page.farm_title')}
+            subtitle={t('features_page.farm_subtitle')}
+            headerIcon="fa-tractor"
+            icons={FARM_ICONS}
+            features={Array.isArray(farmFeatures) ? farmFeatures : []}
             reverse
             color="#c17817"
+            t={t}
           />
 
           <hr style={{ border: 'none', borderTop: '2px solid #e8f7ed', margin: '0 0 4rem' }} />
 
           <FeatureBlock
-            title="Module Pharmacie"
-            subtitle="La gestion intelligente de votre stock de médicaments vétérinaires. Zéro rupture, traçabilité parfaite, commandes fournisseurs automatisées."
-            icon="fa-prescription-bottle-medical"
-            features={PHARMACY_FEATURES}
+            title={t('features_page.pharmacy_title')}
+            subtitle={t('features_page.pharmacy_subtitle')}
+            headerIcon="fa-prescription-bottle-medical"
+            icons={PHARMACY_ICONS}
+            features={Array.isArray(pharmacyFeatures) ? pharmacyFeatures : []}
             color="#2563eb"
+            t={t}
           />
 
           <hr style={{ border: 'none', borderTop: '2px solid #e8f7ed', margin: '0 0 4rem' }} />
 
           <FeatureBlock
-            title="Facturation & Finance"
-            subtitle="De la rédaction du devis au suivi des paiements, RecallVET automatise votre cycle de facturation et vous donne une vision claire de votre performance financière."
-            icon="fa-file-invoice-dollar"
-            features={BILLING_FEATURES}
+            title={t('features_page.billing_title')}
+            subtitle={t('features_page.billing_subtitle')}
+            headerIcon="fa-file-invoice-dollar"
+            icons={BILLING_ICONS}
+            features={Array.isArray(billingFeatures) ? billingFeatures : []}
             reverse
             color="#9C27B0"
+            t={t}
           />
 
           <div className="text-center" style={{ marginTop: '4rem', padding: '3rem', background: '#f8fafb', borderRadius: 20, border: '1px solid #e2e8f0' }}>
-            <h3 style={{ fontWeight: 800, marginBottom: '0.75rem' }}>Prêt à tout gérer depuis un seul outil ?</h3>
+            <h3 style={{ fontWeight: 800, marginBottom: '0.75rem' }}>{t('features_page.cta_title')}</h3>
             <p style={{ color: '#6c757d', maxWidth: 500, margin: '0 auto 1.5rem' }}>
-              Rejoignez les 500+ cliniques qui font confiance à RecallVET pour simplifier leur quotidien.
+              {t('features_page.cta_subtitle')}
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <a href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/register`} className="btn-primary-brand">
-                <i className="fas fa-rocket" /> Essai gratuit 14 jours
+                <i className="fas fa-rocket" /> {t('common.free_trial_14')}
               </a>
               <Link to="/demo" className="btn-outline-brand">
-                <i className="fas fa-play-circle" /> Demander une démo
+                <i className="fas fa-play-circle" /> {t('common.request_demo')}
               </Link>
             </div>
           </div>
@@ -203,8 +187,8 @@ export default function Features() {
       {/* CTA */}
       <section className="cta-banner">
         <div className="container">
-          <h2>Prêt à tester toutes ces fonctionnalités ?</h2>
-          <p>30 jours d'essai gratuit, sans engagement, sans carte bancaire.</p>
+          <h2>{t('features_page.cta_banner_title')}</h2>
+          <p>{t('features_page.cta_banner_subtitle')}</p>
           <div className="cta-buttons">
             <a
               href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/register`}
@@ -214,11 +198,11 @@ export default function Features() {
               style={{ background: 'linear-gradient(135deg,#f5a623,#e8870f)', boxShadow: '0 4px 18px rgba(245,166,35,0.4)' }}
             >
               <i className="fas fa-rocket" />
-              Commencer l'essai gratuit
+              {t('common.start_free_trial')}
             </a>
             <Link to="/demo" className="btn-white-outline">
               <i className="fas fa-play-circle" />
-              Voir la démo
+              {t('common.see_demo')}
             </Link>
           </div>
         </div>

@@ -29,6 +29,7 @@
   "problems": {
     "title": "Les défis que vous connaissez bien",
     "subtitle": "Chaque vétérinaire africain fait face aux mêmes obstacles. RecallVET les résout tous.",
+    "badge": "Les défis du terrain",
     "p1_title": "Dossiers papier introuvables",
     "p1_desc": "Perdre des heures à chercher l'historique médical d'un animal dans des classeurs poussiéreux ? Chaque consultation devrait commencer en 30 secondes.",
     "p2_title": "Ruptures de stock critiques",
@@ -55,6 +56,7 @@
   "how": {
     "title": "Démarrez en 3 étapes",
     "subtitle": "Opérationnel en moins de 24 heures, sans formation technique requise",
+    "badge": "Comment ça marche",
     "s1_title": "Inscrivez-vous",
     "s1_desc": "Créez votre compte gratuitement en 2 minutes. Aucune carte bancaire requise.",
     "s2_title": "Configurez votre espace",
@@ -65,6 +67,7 @@
   "modules": {
     "title": "Trois modules, une plateforme",
     "subtitle": "Chaque module est conçu pour répondre aux besoins spécifiques de votre métier",
+    "badge": "Modules",
     "clinic_title": "Module Clinique",
     "clinic_desc": "La solution complète pour votre cabinet vétérinaire",
     "clinic_features": [
@@ -173,6 +176,7 @@
   "testimonials": {
     "title": "Ce que disent nos clients",
     "subtitle": "Plus de 500 professionnels vétérinaires font confiance à RecallVET",
+    "badge": "Témoignages",
     "t1_quote": "RecallVET a complètement transformé notre cabinet. Nous gagnons 2 heures par jour sur l'administratif et nos clients sont mieux suivis. Je ne reviendrais pas en arrière.",
     "t1_name": "Dr. Aminata Diallo",
     "t1_title": "Vétérinaire, Clinique Animalia – Dakar, Sénégal",
@@ -300,6 +304,203 @@
     "contact_us": "Nous contacter",
     "loading": "Chargement...",
     "error": "Une erreur est survenue",
-    "required": "Champ obligatoire"
+    "required": "Champ obligatoire",
+    "features_included": "fonctionnalités incluses",
+    "try_free": "Essayer gratuitement",
+    "free_trial_14": "Essai gratuit 14 jours",
+    "request_demo": "Demander une démo",
+    "start_free_trial": "Commencer l'essai gratuit",
+    "see_demo": "Voir la démo",
+    "discover": "Découvrir",
+    "see_all_features": "Voir toutes les fonctionnalités",
+    "see_detailed_comparison": "Voir la comparaison détaillée",
+    "talk_to_advisor": "Parler à un conseiller",
+    "join_adventure": "Rejoignez l'aventure RecallVET",
+    "join_adventure_desc": "Faites partie des pionniers qui transforment la médecine vétérinaire africaine.",
+    "start_free": "Commencer gratuitement",
+    "contact_us_link": "Nous contacter"
+  },
+  "features_page": {
+    "seo_title": "Fonctionnalités",
+    "seo_description": "Découvrez toutes les fonctionnalités de RecallVET : gestion clinique, suivi élevage, pharmacie vétérinaire, facturation et rapports avancés.",
+    "badge": "Tout ce que vous pouvez faire",
+    "title": "Fonctionnalités complètes",
+    "subtitle": "Une plateforme pensée pour chaque aspect de votre pratique vétérinaire en Afrique",
+    "clinic_title": "Module Clinique",
+    "clinic_subtitle": "Gérez l'intégralité de votre cabinet vétérinaire depuis un seul écran. Des dossiers patients aux résultats d'examens, en passant par les prescriptions et les rappels de vaccination.",
+    "clinic_features": [
+      "Gestion des propriétaires (personnes physiques et morales)",
+      "Dossiers patients complets avec historique médical",
+      "Prise de rendez-vous en ligne avec confirmation automatique",
+      "Consultations : anamnèse, examen clinique, diagnostic",
+      "Ordonnances électroniques et prescriptions médicales",
+      "Suivi des vaccinations et rappels automatiques",
+      "Gestion des hospitalisations et soins continus",
+      "Suivi des actes chirurgicaux et anesthésies",
+      "Résultats de laboratoire et examens complémentaires",
+      "Imagerie médicale : radiographies, échographies",
+      "Certificats vétérinaires et documents officiels",
+      "Partage de dossiers entre praticiens"
+    ],
+    "farm_title": "Module Élevage",
+    "farm_subtitle": "Accompagnez vos clients éleveurs avec un outil de terrain puissant. Visites, événements sanitaires, performances zootechniques et programmes prophylactiques.",
+    "farm_features": [
+      "Gestion des fermes, parcelles et installations",
+      "Suivi des troupeaux : bovins, ovins, caprins, volailles, porcins",
+      "Visites terrain avec géolocalisation GPS",
+      "Détection et gestion des épidémies et maladies",
+      "Programmes de prophylaxie et protocoles sanitaires",
+      "Marquage individuel : boucles, puces, tatouages",
+      "Suivi de la reproduction et des gestations",
+      "Performances zootechniques : GMQ, taux de mortalité",
+      "Gestion de l'alimentation et des rations",
+      "Surveillance sanitaire et alertes automatiques",
+      "Rapports d'élevage et export réglementaire",
+      "Accès multi-fermes depuis un seul tableau de bord"
+    ],
+    "pharmacy_title": "Module Pharmacie",
+    "pharmacy_subtitle": "La gestion intelligente de votre stock de médicaments vétérinaires. Zéro rupture, traçabilité parfaite, commandes fournisseurs automatisées.",
+    "pharmacy_features": [
+      "Catalogue complet de médicaments vétérinaires",
+      "Gestion des stocks en temps réel par emplacement",
+      "Alertes de péremption J-30, J-15, J-7",
+      "Gestion des fournisseurs et catalogues tarifaires",
+      "Bons de commande et réceptions fournisseurs",
+      "Traçabilité lot par lot avec numéros de série",
+      "Dispensation sur ordonnance sécurisée",
+      "Point de vente : ventes comptoir et factures",
+      "Analyse des ventes par produit, catégorie, période",
+      "Alertes de rupture de stock avec seuil configurable",
+      "Synchronisation automatique avec le module clinique",
+      "Export des registres vers les autorités vétérinaires"
+    ],
+    "billing_title": "Facturation & Finance",
+    "billing_subtitle": "De la rédaction du devis au suivi des paiements, RecallVET automatise votre cycle de facturation et vous donne une vision claire de votre performance financière.",
+    "billing_features": [
+      "Devis personnalisés avec actes et produits",
+      "Factures automatiques après consultation",
+      "Paiement Mobile Money, carte et espèces",
+      "Historique des paiements et relances automatiques",
+      "Rapports financiers mensuels et annuels",
+      "Gestion des remises et programmes de fidélité"
+    ],
+    "cta_title": "Prêt à tout gérer depuis un seul outil ?",
+    "cta_subtitle": "Rejoignez les 500+ cliniques qui font confiance à RecallVET pour simplifier leur quotidien.",
+    "cta_banner_title": "Prêt à tester toutes ces fonctionnalités ?",
+    "cta_banner_subtitle": "30 jours d'essai gratuit, sans engagement, sans carte bancaire."
+  },
+  "faq": {
+    "badge": "Questions fréquentes",
+    "title": "Tout ce que vous devez savoir",
+    "subtitle": "Les réponses aux questions les plus posées par nos utilisateurs",
+    "questions": [
+      {
+        "question": "Combien coûte RecallVET ?",
+        "answer": "RecallVET propose 3 plans à partir de 15 000 FCFA/mois. Tous incluent un essai gratuit de 14 jours sans carte bancaire."
+      },
+      {
+        "question": "Est-ce que RecallVET fonctionne hors connexion ?",
+        "answer": "RecallVET est une application cloud. Vous avez besoin d'une connexion internet. Cependant, nous travaillons sur un mode hors-ligne pour la version mobile."
+      },
+      {
+        "question": "Puis-je importer mes données existantes ?",
+        "answer": "Oui ! RecallVET permet l'import CSV de vos clients, animaux et produits. Notre équipe vous accompagne pour une migration sans stress."
+      },
+      {
+        "question": "RecallVET est-il adapté aux élevages ?",
+        "answer": "Absolument. Le module Élevage gère les fermes, troupeaux, visites sanitaires et événements de santé. Idéal pour les vétérinaires ruraux."
+      },
+      {
+        "question": "Comment fonctionne le support client ?",
+        "answer": "Support par email et chat du lundi au vendredi. Les clients Pro et Enterprise bénéficient d'un support prioritaire avec réponse garantie sous 2h."
+      },
+      {
+        "question": "Mes données sont-elles sécurisées ?",
+        "answer": "Oui. Chiffrement SSL, hébergement sécurisé, sauvegardes quotidiennes et conformité aux normes de protection des données."
+      }
+    ]
+  },
+  "pricing_page": {
+    "seo_title": "Tarifs",
+    "seo_description": "Découvrez les tarifs transparents de RecallVET. Plans Starter, Pro et Enterprise adaptés à toutes les tailles de structure vétérinaire en Afrique.",
+    "badge": "Tarifs simples et transparents",
+    "billing_monthly": "Mensuel",
+    "billing_yearly": "Annuel",
+    "yearly_savings": "-17%",
+    "payment_methods_title": "Modes de paiement acceptés",
+    "comparison_title": "Comparaison détaillée",
+    "comparison_subtitle": "Toutes les fonctionnalités, plan par plan",
+    "comparison_feature_header": "Fonctionnalité",
+    "comparison_unlimited": "Illimité",
+    "comparison_option": "En option",
+    "comparison": {
+      "users": "Nombre d'utilisateurs",
+      "patients": "Patients / animaux",
+      "clinic_module": "Module Clinique",
+      "farm_module": "Module Élevage",
+      "pharmacy_module": "Module Pharmacie",
+      "billing": "Facturation intégrée",
+      "email_reminders": "Rappels Email",
+      "sms_reminders": "Rappels SMS",
+      "basic_reports": "Rapports de base",
+      "advanced_reports": "Rapports avancés",
+      "export_pdf_excel": "Export PDF / Excel",
+      "api_access": "Accès API",
+      "multi_site": "Multi-sites",
+      "white_label": "White-label / personnalisation",
+      "email_support": "Support email",
+      "priority_support": "Support prioritaire",
+      "account_manager": "Account manager dédié",
+      "online_training": "Formation en ligne",
+      "onsite_training": "Formation sur site",
+      "sla": "SLA garanti 99.9%",
+      "custom_integration": "Intégration sur mesure"
+    },
+    "cta_title": "Des questions sur nos tarifs ?",
+    "cta_subtitle": "Notre équipe est là pour vous aider à choisir le plan qui correspond à votre structure.",
+    "cta_advisor": "Parler à un conseiller",
+    "per_year": "an"
+  },
+  "about_page": {
+    "seo_title": "À propos",
+    "seo_description": "Découvrez l'histoire, la mission et l'équipe derrière RecallVET – la plateforme vétérinaire conçue pour l'Afrique.",
+    "mission_badge": "Mission",
+    "vision_badge": "Vision",
+    "quote": "Chaque vétérinaire africain mérite les mêmes outils que ses confrères des pays développés. RecallVET comble ce fossé numérique.",
+    "quote_author": "— Kenfack Tchinda, CEO RecallVET",
+    "vision_2030": "Objectif continental",
+    "vision_countries": "Pays cibles",
+    "vision_clinics": "Cliniques visées",
+    "countries_list": ["Cameroun", "Sénégal", "Côte d'Ivoire", "Ghana", "Nigeria", "Kenya", "Tanzanie", "Rwanda"],
+    "key_numbers": [
+      { "value": "2022", "label": "Année de création" },
+      { "value": "500+", "label": "Cliniques actives" },
+      { "value": "50K+", "label": "Animaux suivis" },
+      { "value": "15", "label": "Pays en Afrique" },
+      { "value": "99.9%", "label": "Disponibilité" },
+      { "value": "24h", "label": "Temps de réponse" }
+    ],
+    "key_numbers_icons": ["fa-calendar", "fa-hospital", "fa-paw", "fa-earth-africa", "fa-shield-halved", "fa-headset"],
+    "values_badge": "Ce qui nous guide",
+    "timeline_badge": "Notre parcours",
+    "timeline_title": "L'histoire RecallVET",
+    "timeline": [
+      { "year": "2022", "title": "L'idée", "desc": "Un vétérinaire camerounais frustré par les dossiers papier partage son vécu avec un développeur. L'idée de RecallVET est née." },
+      { "year": "2023 T1", "title": "Le prototype", "desc": "Première version du module clinique testée dans 3 cabinets vétérinaires à Yaoundé. 94% de satisfaction." },
+      { "year": "2023 T3", "title": "Lancement bêta", "desc": "Ouverture du bêta à 50 cliniques dans 5 pays (Cameroun, Sénégal, CI, Ghana, Nigeria)." },
+      { "year": "2024 T1", "title": "Version 1.0", "desc": "Lancement officiel avec les 3 modules complets. 150 cliniques actives dès le premier mois." },
+      { "year": "2025", "title": "Expansion", "desc": "500+ cliniques, 15 pays, nouvelle levée de fonds pour accélérer le développement mobile." },
+      { "year": "2026", "title": "Version 2.0", "desc": "Intelligence artificielle, app mobile hors-ligne, intégration labs partenaires et API publique." }
+    ],
+    "team_title": "L'équipe RecallVET",
+    "team_subtitle": "Une équipe passionnée par la technologie et la santé animale",
+    "team_roles": {
+      "ceo": "CEO & Co-fondateur",
+      "cto": "CTO & Co-fondateur",
+      "product": "Head of Product",
+      "vet": "Lead Vétérinaire",
+      "bizdev": "Business Development",
+      "success": "Customer Success"
+    }
   }
 }

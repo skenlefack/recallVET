@@ -62,9 +62,9 @@ function StatsSection() {
         <div className="text-center mb-5">
           <span className="badge-green mb-3">
             <i className="fas fa-chart-pie me-2" />
-            RecallVET en chiffres
+            {t('stats.title')}
           </span>
-          <h2 className="section-title">{t('stats.title') !== 'stats.title' ? t('stats.title') : 'La confiance de toute l\'Afrique'}</h2>
+          <h2 className="section-title">{t('stats.title')}</h2>
         </div>
         <div className="row g-4 justify-content-center">
           <div className="col-6 col-md-3">
@@ -206,7 +206,7 @@ function HeroSection() {
         </div>
       </div>
       <div className="hero-scroll-indicator">
-        <span>Découvrir</span>
+        <span>{t('common.discover')}</span>
         <i className="fas fa-chevron-down" />
       </div>
     </section>
@@ -219,14 +219,8 @@ function FAQSection() {
   const [openIdx, setOpenIdx] = useState(null);
   const [ref, revealed] = useScrollReveal();
 
-  const faqs = [
-    { q: "Combien coûte RecallVET ?", a: "RecallVET propose 3 plans à partir de 15 000 FCFA/mois. Tous incluent un essai gratuit de 14 jours sans carte bancaire." },
-    { q: "Est-ce que RecallVET fonctionne hors connexion ?", a: "RecallVET est une application cloud. Vous avez besoin d'une connexion internet. Cependant, nous travaillons sur un mode hors-ligne pour la version mobile." },
-    { q: "Puis-je importer mes données existantes ?", a: "Oui ! RecallVET permet l'import CSV de vos clients, animaux et produits. Notre équipe vous accompagne pour une migration sans stress." },
-    { q: "RecallVET est-il adapté aux élevages ?", a: "Absolument. Le module Élevage gère les fermes, troupeaux, visites sanitaires et événements de santé. Idéal pour les vétérinaires ruraux." },
-    { q: "Comment fonctionne le support client ?", a: "Support par email et chat du lundi au vendredi. Les clients Pro et Enterprise bénéficient d'un support prioritaire avec réponse garantie sous 2h." },
-    { q: "Mes données sont-elles sécurisées ?", a: "Oui. Chiffrement SSL, hébergement sécurisé, sauvegardes quotidiennes et conformité aux normes de protection des données." },
-  ];
+  const faqData = t('faq.questions', { returnObjects: true });
+  const faqs = Array.isArray(faqData) ? faqData.map(f => ({ q: f.question, a: f.answer })) : [];
 
   return (
     <section className={`faq-home-section reveal-section ${revealed ? 'revealed' : ''}`} ref={ref}>
@@ -234,10 +228,10 @@ function FAQSection() {
         <div className="text-center mb-5">
           <span className="badge-green mb-3">
             <i className="fas fa-question-circle me-2" />
-            Questions fréquentes
+            {t('faq.badge')}
           </span>
-          <h2 className="section-title">Tout ce que vous devez savoir</h2>
-          <p className="section-subtitle">Les réponses aux questions les plus posées par nos utilisateurs</p>
+          <h2 className="section-title">{t('faq.title')}</h2>
+          <p className="section-subtitle">{t('faq.subtitle')}</p>
         </div>
         <div className="faq-list">
           {faqs.map((faq, i) => (
@@ -299,7 +293,7 @@ function ProblemSection() {
         <div className="text-center mb-5">
           <span className="badge-green mb-3">
             <i className="fas fa-exclamation-triangle me-2" />
-            Les défis du terrain
+            {t('problems.badge')}
           </span>
           <h2 className="section-title">{t('problems.title')}</h2>
           <p className="section-subtitle">{t('problems.subtitle')}</p>
@@ -344,7 +338,7 @@ function FeaturesGrid() {
         <div className="text-center mb-5">
           <span className="badge-green mb-3">
             <i className="fas fa-star me-2" />
-            Fonctionnalités
+            {t('nav.features')}
           </span>
           <h2 className="section-title">{t('features.title')}</h2>
           <p className="section-subtitle">{t('features.subtitle')}</p>
@@ -366,7 +360,7 @@ function FeaturesGrid() {
         <div className="text-center mt-5">
           <Link to="/fonctionnalites" className="btn-outline-brand">
             <i className="fas fa-arrow-right" />
-            Voir toutes les fonctionnalités
+            {t('common.see_all_features')}
           </Link>
         </div>
       </div>
@@ -386,7 +380,7 @@ function HowItWorks() {
         <div className="text-center mb-5">
           <span className="badge-green mb-3">
             <i className="fas fa-map-signs me-2" />
-            Comment ça marche
+            {t('how.badge')}
           </span>
           <h2 className="section-title">{t('how.title')}</h2>
           <p className="section-subtitle">{t('how.subtitle')}</p>
@@ -424,7 +418,7 @@ function ModulesShowcase() {
         <div className="text-center mb-5">
           <span className="badge-green mb-3">
             <i className="fas fa-cubes me-2" />
-            Modules
+            {t('modules.badge')}
           </span>
           <h2 className="section-title">{t('modules.title')}</h2>
           <p className="section-subtitle">{t('modules.subtitle')}</p>
@@ -473,7 +467,7 @@ function PricingPreview() {
         <div className="text-center mb-5">
           <span className="badge-green mb-3">
             <i className="fas fa-tags me-2" />
-            Tarifs
+            {t('nav.pricing')}
           </span>
           <h2 className="section-title">{t('pricing.title')}</h2>
           <p className="section-subtitle">{t('pricing.subtitle')}</p>
@@ -536,7 +530,7 @@ function PricingPreview() {
         <div className="text-center mt-4">
           <Link to="/tarifs" className="btn-outline-brand">
             <i className="fas fa-table-list" />
-            Voir la comparaison détaillée
+            {t('common.see_detailed_comparison')}
           </Link>
         </div>
       </div>
@@ -556,7 +550,7 @@ function TestimonialsSection() {
         <div className="text-center mb-5">
           <span className="badge-green mb-3">
             <i className="fas fa-quote-left me-2" />
-            Témoignages
+            {t('testimonials.badge')}
           </span>
           <h2 className="section-title">{t('testimonials.title')}</h2>
           <p className="section-subtitle">{t('testimonials.subtitle')}</p>

@@ -5,23 +5,27 @@ import SEO from '../components/seo/SEO';
 const VALUE_ICONS = ['fa-lightbulb', 'fa-shield-halved', 'fa-handshake', 'fa-earth-africa'];
 
 const TEAM = [
-  { initial: 'KT', name: 'Kenfack Tchinda', role: 'CEO & Co-fondateur', bg: 'linear-gradient(135deg,#1a8b3f,#2db85a)' },
-  { initial: 'AF', name: 'Amara Fofana', role: 'CTO & Co-fondateur', bg: 'linear-gradient(135deg,#354e84,#4a6ab8)' },
-  { initial: 'EA', name: 'Estelle Akoua', role: 'Head of Product', bg: 'linear-gradient(135deg,#f5a623,#e8870f)' },
-  { initial: 'BN', name: 'Boubacar Ndiaye', role: 'Lead Vétérinaire', bg: 'linear-gradient(135deg,#6c3483,#9b59b6)' },
-  { initial: 'OA', name: 'Oluwaseun Adeyemi', role: 'Business Development', bg: 'linear-gradient(135deg,#1a5276,#2980b9)' },
-  { initial: 'MK', name: 'Marie Kouassi', role: 'Customer Success', bg: 'linear-gradient(135deg,#922b21,#e74c3c)' },
+  { initial: 'KT', name: 'Kenfack Tchinda', roleKey: 'ceo', bg: 'linear-gradient(135deg,#1a8b3f,#2db85a)' },
+  { initial: 'AF', name: 'Amara Fofana', roleKey: 'cto', bg: 'linear-gradient(135deg,#354e84,#4a6ab8)' },
+  { initial: 'EA', name: 'Estelle Akoua', roleKey: 'product', bg: 'linear-gradient(135deg,#f5a623,#e8870f)' },
+  { initial: 'BN', name: 'Boubacar Ndiaye', roleKey: 'vet', bg: 'linear-gradient(135deg,#6c3483,#9b59b6)' },
+  { initial: 'OA', name: 'Oluwaseun Adeyemi', roleKey: 'bizdev', bg: 'linear-gradient(135deg,#1a5276,#2980b9)' },
+  { initial: 'MK', name: 'Marie Kouassi', roleKey: 'success', bg: 'linear-gradient(135deg,#922b21,#e74c3c)' },
 ];
 
 export default function About() {
   const { t } = useTranslation();
   const values = t('about.values', { returnObjects: true });
+  const keyNumbers = t('about_page.key_numbers', { returnObjects: true });
+  const keyNumberIcons = t('about_page.key_numbers_icons', { returnObjects: true });
+  const countriesList = t('about_page.countries_list', { returnObjects: true });
+  const timeline = t('about_page.timeline', { returnObjects: true });
 
   return (
     <>
       <SEO
-        title="À propos"
-        description="Découvrez l'histoire, la mission et l'équipe derrière RecallVET – la plateforme vétérinaire conçue pour l'Afrique."
+        title={t('about_page.seo_title')}
+        description={t('about_page.seo_description')}
         url="/a-propos"
       />
 
@@ -39,7 +43,7 @@ export default function About() {
             <div className="col-lg-6">
               <span className="badge-green mb-3">
                 <i className="fas fa-bullseye me-2" />
-                Mission
+                {t('about_page.mission_badge')}
               </span>
               <h2 className="section-title text-start">{t('about.mission_title')}</h2>
               <p style={{ color: '#6c757d', lineHeight: 1.8, fontSize: '1rem' }}>{t('about.mission_text')}</p>
@@ -53,10 +57,10 @@ export default function About() {
               }}>
                 <i className="fas fa-quote-left" style={{ fontSize: '2rem', opacity: 0.3, marginBottom: '1rem', display: 'block' }} />
                 <p style={{ fontSize: '1.1rem', lineHeight: 1.7, margin: 0, fontStyle: 'italic' }}>
-                  "Chaque vétérinaire africain mérite les mêmes outils que ses confrères des pays développés. RecallVET comble ce fossé numérique."
+                  "{t('about_page.quote')}"
                 </p>
                 <div style={{ marginTop: '1.25rem', fontSize: '0.9rem', opacity: 0.8 }}>
-                  — Kenfack Tchinda, CEO RecallVET
+                  {t('about_page.quote_author')}
                 </div>
               </div>
             </div>
@@ -67,22 +71,22 @@ export default function About() {
             <div className="col-lg-6 order-lg-2">
               <span className="badge-green mb-3">
                 <i className="fas fa-eye me-2" />
-                Vision
+                {t('about_page.vision_badge')}
               </span>
               <h2 className="section-title text-start">{t('about.vision_title')}</h2>
               <p style={{ color: '#6c757d', lineHeight: 1.8 }}>{t('about.vision_text')}</p>
               <div style={{ display: 'flex', gap: '2rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
                 <div>
                   <div style={{ fontSize: '2rem', fontWeight: 900, color: '#1a8b3f' }}>2030</div>
-                  <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>Objectif continental</div>
+                  <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>{t('about_page.vision_2030')}</div>
                 </div>
                 <div>
                   <div style={{ fontSize: '2rem', fontWeight: 900, color: '#1a8b3f' }}>50</div>
-                  <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>Pays cibles</div>
+                  <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>{t('about_page.vision_countries')}</div>
                 </div>
                 <div>
                   <div style={{ fontSize: '2rem', fontWeight: 900, color: '#1a8b3f' }}>10K+</div>
-                  <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>Cliniques visées</div>
+                  <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>{t('about_page.vision_clinics')}</div>
                 </div>
               </div>
             </div>
@@ -96,7 +100,7 @@ export default function About() {
                 gridTemplateColumns: '1fr 1fr',
                 gap: '1rem',
               }}>
-                {['Cameroun', 'Sénégal', 'Côte d\'Ivoire', 'Ghana', 'Nigeria', 'Kenya', 'Tanzanie', 'Rwanda'].map((c) => (
+                {Array.isArray(countriesList) && countriesList.map((c) => (
                   <div key={c} style={{
                     background: '#fff',
                     border: '1px solid #e8f7ed',
@@ -123,21 +127,14 @@ export default function About() {
       <section style={{ padding: '3rem 0', background: '#fff' }}>
         <div className="container">
           <div className="row g-4 text-center">
-            {[
-              { value: '2022', label: 'Année de création', icon: 'fa-calendar' },
-              { value: '500+', label: 'Cliniques actives', icon: 'fa-hospital' },
-              { value: '50K+', label: 'Animaux suivis', icon: 'fa-paw' },
-              { value: '15', label: 'Pays en Afrique', icon: 'fa-earth-africa' },
-              { value: '99.9%', label: 'Disponibilité', icon: 'fa-shield-halved' },
-              { value: '24h', label: 'Temps de réponse', icon: 'fa-headset' }
-            ].map((s, i) => (
+            {Array.isArray(keyNumbers) && keyNumbers.map((s, i) => (
               <div key={i} className="col-6 col-md-4 col-lg-2">
                 <div style={{
                   padding: '1.5rem 0.5rem',
                   borderRadius: 16,
                   transition: 'all 0.3s',
                 }}>
-                  <i className={`fas ${s.icon}`} style={{ fontSize: '1.5rem', color: '#1a8b3f', marginBottom: '0.75rem', display: 'block' }} />
+                  <i className={`fas ${Array.isArray(keyNumberIcons) ? keyNumberIcons[i] : 'fa-star'}`} style={{ fontSize: '1.5rem', color: '#1a8b3f', marginBottom: '0.75rem', display: 'block' }} />
                   <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#0f1c2e', lineHeight: 1 }}>{s.value}</div>
                   <div style={{ fontSize: '0.82rem', color: '#6c757d', marginTop: '0.3rem' }}>{s.label}</div>
                 </div>
@@ -153,7 +150,7 @@ export default function About() {
           <div className="text-center mb-5">
             <span className="badge-green mb-3">
               <i className="fas fa-heart me-2" />
-              Ce qui nous guide
+              {t('about_page.values_badge')}
             </span>
             <h2 className="section-title">{t('about.values_title')}</h2>
           </div>
@@ -173,26 +170,63 @@ export default function About() {
         </div>
       </section>
 
+      {/* Team */}
+      <section style={{ padding: '4rem 0', background: '#fff' }}>
+        <div className="container">
+          <div className="text-center mb-5">
+            <span className="badge-green mb-3">
+              <i className="fas fa-users me-2" />
+              {t('about_page.team_title')}
+            </span>
+            <h2 className="section-title">{t('about_page.team_title')}</h2>
+            <p className="section-subtitle">{t('about_page.team_subtitle')}</p>
+          </div>
+          <div className="row g-4 justify-content-center">
+            {TEAM.map((member) => (
+              <div key={member.initial} className="col-6 col-md-4 col-lg-2">
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: '50%',
+                    background: member.bg,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff',
+                    fontSize: '1.4rem',
+                    fontWeight: 800,
+                    margin: '0 auto 1rem',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
+                  }}>
+                    {member.initial}
+                  </div>
+                  <h5 style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.25rem', color: '#0f1c2e' }}>
+                    {member.name}
+                  </h5>
+                  <p style={{ fontSize: '0.82rem', color: '#6c757d', margin: 0 }}>
+                    {t(`about_page.team_roles.${member.roleKey}`)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Timeline */}
       <section style={{ padding: '4rem 0', background: '#f8fafb' }}>
         <div className="container">
           <div className="text-center mb-5">
             <span className="badge-green mb-3">
               <i className="fas fa-history me-2" />
-              Notre parcours
+              {t('about_page.timeline_badge')}
             </span>
-            <h2 className="section-title">L'histoire RecallVET</h2>
+            <h2 className="section-title">{t('about_page.timeline_title')}</h2>
           </div>
           <div style={{ maxWidth: 700, margin: '0 auto', position: 'relative' }}>
             <div style={{ position: 'absolute', left: 20, top: 0, bottom: 0, width: 2, background: 'linear-gradient(to bottom,#1a8b3f,#2db85a)', opacity: 0.3 }} />
-            {[
-              { year: '2022', title: 'L\'idée', desc: 'Un vétérinaire camerounais frustré par les dossiers papier partage son vécu avec un développeur. L\'idée de RecallVET est née.' },
-              { year: '2023 T1', title: 'Le prototype', desc: 'Première version du module clinique testée dans 3 cabinets vétérinaires à Yaoundé. 94% de satisfaction.' },
-              { year: '2023 T3', title: 'Lancement bêta', desc: 'Ouverture du bêta à 50 cliniques dans 5 pays (Cameroun, Sénégal, CI, Ghana, Nigeria).' },
-              { year: '2024 T1', title: 'Version 1.0', desc: 'Lancement officiel avec les 3 modules complets. 150 cliniques actives dès le premier mois.' },
-              { year: '2025', title: 'Expansion', desc: '500+ cliniques, 15 pays, nouvelle levée de fonds pour accélérer le développement mobile.' },
-              { year: '2026', title: 'Version 2.0', desc: 'Intelligence artificielle, app mobile hors-ligne, intégration labs partenaires et API publique.' },
-            ].map((event, i) => (
+            {Array.isArray(timeline) && timeline.map((event, i) => (
               <div key={i} style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', paddingLeft: '2.5rem', position: 'relative' }}>
                 <div style={{
                   position: 'absolute', left: 0, top: '0.25rem',
@@ -217,8 +251,8 @@ export default function About() {
       {/* CTA */}
       <section className="cta-banner">
         <div className="container">
-          <h2>Rejoignez l'aventure RecallVET</h2>
-          <p>Faites partie des pionniers qui transforment la médecine vétérinaire africaine.</p>
+          <h2>{t('common.join_adventure')}</h2>
+          <p>{t('common.join_adventure_desc')}</p>
           <div className="cta-buttons">
             <a
               href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/register`}
@@ -228,11 +262,11 @@ export default function About() {
               style={{ background: 'linear-gradient(135deg,#f5a623,#e8870f)', boxShadow: '0 4px 18px rgba(245,166,35,0.4)' }}
             >
               <i className="fas fa-rocket" />
-              Commencer gratuitement
+              {t('common.start_free')}
             </a>
             <Link to="/contact" className="btn-white-outline">
               <i className="fas fa-envelope" />
-              Nous contacter
+              {t('common.contact_us_link')}
             </Link>
           </div>
         </div>

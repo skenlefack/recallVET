@@ -3,33 +3,43 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import SEO from '../components/seo/SEO';
 
-const COMPARISON = [
-  { feature: 'Nombre d\'utilisateurs', starter: '1', pro: '5', enterprise: 'Illimité' },
-  { feature: 'Patients / animaux', starter: '200', pro: 'Illimité', enterprise: 'Illimité' },
-  { feature: 'Module Clinique', starter: true, pro: true, enterprise: true },
-  { feature: 'Module Élevage', starter: false, pro: 'En option', enterprise: true },
-  { feature: 'Module Pharmacie', starter: false, pro: true, enterprise: true },
-  { feature: 'Facturation intégrée', starter: false, pro: true, enterprise: true },
-  { feature: 'Rappels Email', starter: true, pro: true, enterprise: true },
-  { feature: 'Rappels SMS', starter: false, pro: true, enterprise: true },
-  { feature: 'Rapports de base', starter: true, pro: true, enterprise: true },
-  { feature: 'Rapports avancés', starter: false, pro: true, enterprise: true },
-  { feature: 'Export PDF / Excel', starter: false, pro: true, enterprise: true },
-  { feature: 'Accès API', starter: false, pro: true, enterprise: true },
-  { feature: 'Multi-sites', starter: false, pro: false, enterprise: true },
-  { feature: 'White-label / personnalisation', starter: false, pro: false, enterprise: true },
-  { feature: 'Support email', starter: true, pro: true, enterprise: true },
-  { feature: 'Support prioritaire', starter: false, pro: true, enterprise: true },
-  { feature: 'Account manager dédié', starter: false, pro: false, enterprise: true },
-  { feature: 'Formation en ligne', starter: false, pro: true, enterprise: true },
-  { feature: 'Formation sur site', starter: false, pro: false, enterprise: true },
-  { feature: 'SLA garanti 99.9%', starter: false, pro: false, enterprise: true },
-  { feature: 'Intégration sur mesure', starter: false, pro: false, enterprise: true },
+const COMPARISON_KEYS = [
+  'users', 'patients', 'clinic_module', 'farm_module', 'pharmacy_module',
+  'billing', 'email_reminders', 'sms_reminders', 'basic_reports', 'advanced_reports',
+  'export_pdf_excel', 'api_access', 'multi_site', 'white_label', 'email_support',
+  'priority_support', 'account_manager', 'online_training', 'onsite_training',
+  'sla', 'custom_integration',
 ];
 
-function CompCell({ value }) {
+const COMPARISON_VALUES = [
+  { starter: '1', pro: '5', enterprise: 'unlimited' },
+  { starter: '200', pro: 'unlimited', enterprise: 'unlimited' },
+  { starter: true, pro: true, enterprise: true },
+  { starter: false, pro: 'option', enterprise: true },
+  { starter: false, pro: true, enterprise: true },
+  { starter: false, pro: true, enterprise: true },
+  { starter: true, pro: true, enterprise: true },
+  { starter: false, pro: true, enterprise: true },
+  { starter: true, pro: true, enterprise: true },
+  { starter: false, pro: true, enterprise: true },
+  { starter: false, pro: true, enterprise: true },
+  { starter: false, pro: true, enterprise: true },
+  { starter: false, pro: false, enterprise: true },
+  { starter: false, pro: false, enterprise: true },
+  { starter: true, pro: true, enterprise: true },
+  { starter: false, pro: true, enterprise: true },
+  { starter: false, pro: false, enterprise: true },
+  { starter: false, pro: true, enterprise: true },
+  { starter: false, pro: false, enterprise: true },
+  { starter: false, pro: false, enterprise: true },
+  { starter: false, pro: false, enterprise: true },
+];
+
+function CompCell({ value, t }) {
   if (value === true) return <td className="text-center"><i className="fas fa-check-circle" style={{ color: '#1a8b3f', fontSize: '1.1rem' }} /></td>;
   if (value === false) return <td className="text-center"><i className="fas fa-minus" style={{ color: '#ccc' }} /></td>;
+  if (value === 'unlimited') return <td className="text-center" style={{ fontSize: '0.88rem', fontWeight: 600, color: '#495057' }}>{t('pricing_page.comparison_unlimited')}</td>;
+  if (value === 'option') return <td className="text-center" style={{ fontSize: '0.88rem', fontWeight: 600, color: '#495057' }}>{t('pricing_page.comparison_option')}</td>;
   return <td className="text-center" style={{ fontSize: '0.88rem', fontWeight: 600, color: '#495057' }}>{value}</td>;
 }
 
@@ -57,8 +67,8 @@ export default function Pricing() {
   return (
     <>
       <SEO
-        title="Tarifs"
-        description="Découvrez les tarifs transparents de RecallVET. Plans Starter, Pro et Enterprise adaptés à toutes les tailles de structure vétérinaire en Afrique."
+        title={t('pricing_page.seo_title')}
+        description={t('pricing_page.seo_description')}
         url="/tarifs"
         keywords="tarif logiciel vétérinaire, prix RecallVET, abonnement vétérinaire Afrique, SaaS vétérinaire prix"
       />
@@ -67,7 +77,7 @@ export default function Pricing() {
         <div className="container">
           <span className="badge-green mb-3" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}>
             <i className="fas fa-tags me-2" />
-            Tarifs simples et transparents
+            {t('pricing_page.badge')}
           </span>
           <h1>{t('pricing.title')}</h1>
           <p>{t('pricing.subtitle')}</p>
@@ -78,12 +88,12 @@ export default function Pricing() {
         <div className="billing-toggle">
           <button className={`toggle-btn ${billingCycle === 'monthly' ? 'active' : ''}`}
             onClick={() => setBillingCycle('monthly')}>
-            Mensuel
+            {t('pricing_page.billing_monthly')}
           </button>
           <button className={`toggle-btn ${billingCycle === 'yearly' ? 'active' : ''}`}
             onClick={() => setBillingCycle('yearly')}>
-            Annuel
-            <span className="savings-badge">-17%</span>
+            {t('pricing_page.billing_yearly')}
+            <span className="savings-badge">{t('pricing_page.yearly_savings')}</span>
           </button>
         </div>
       </div>
@@ -107,7 +117,7 @@ export default function Pricing() {
                     <div className="plan-price">
                       <span className="currency">{t(`pricing.${p.key}_currency`)}</span>
                       {isAnnual ? formatPrice(t(`pricing.${p.key}_price`)) : t(`pricing.${p.key}_price`)}
-                      <span className="period"> /{isAnnual ? 'an' : t('pricing.monthly')}</span>
+                      <span className="period"> /{isAnnual ? t('pricing_page.per_year') : t('pricing.monthly')}</span>
                     </div>
                     <p className="plan-desc">{t(`pricing.${p.key}_desc`)}</p>
                     <ul className="plan-features">
@@ -152,7 +162,7 @@ export default function Pricing() {
       <section style={{ padding: '2rem 0 3rem', background: '#f8fafb', borderTop: '1px solid #e2e8f0' }}>
         <div className="container text-center">
           <p style={{ color: '#6c757d', fontSize: '0.88rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600, marginBottom: '1.5rem' }}>
-            Modes de paiement acceptés
+            {t('pricing_page.payment_methods_title')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
             {['Orange Money', 'MTN Mobile Money', 'Wave', 'Airtel Money', 'Visa', 'Mastercard', 'Virement bancaire'].map((m) => (
@@ -168,15 +178,15 @@ export default function Pricing() {
       <section style={{ padding: '4rem 0', background: '#fff' }}>
         <div className="container">
           <div className="text-center mb-4">
-            <h2 className="section-title">Comparaison détaillée</h2>
-            <p className="section-subtitle">Toutes les fonctionnalités, plan par plan</p>
+            <h2 className="section-title">{t('pricing_page.comparison_title')}</h2>
+            <p className="section-subtitle">{t('pricing_page.comparison_subtitle')}</p>
           </div>
           <div className="table-responsive">
             <table className="table" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
               <thead>
                 <tr style={{ background: '#f8fafb' }}>
                   <th style={{ padding: '1rem', fontWeight: 700, color: '#0f1c2e', width: '40%', borderBottom: '2px solid #e2e8f0' }}>
-                    Fonctionnalité
+                    {t('pricing_page.comparison_feature_header')}
                   </th>
                   <th className="text-center" style={{ padding: '1rem', fontWeight: 700, color: '#0f1c2e', borderBottom: '2px solid #e2e8f0' }}>
                     Starter
@@ -190,24 +200,31 @@ export default function Pricing() {
                 </tr>
               </thead>
               <tbody>
-                {COMPARISON.map((row, i) => (
-                  <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafb' }}>
-                    <td style={{ padding: '0.75rem 1rem', fontSize: '0.9rem', color: '#0f1c2e', borderBottom: '1px solid #f0f4f8' }}>
-                      {row.feature}
-                    </td>
-                    <CompCell value={row.starter} />
-                    <td className="text-center" style={{ background: 'rgba(26,139,63,0.04)', borderBottom: '1px solid #f0f4f8' }}>
-                      {row.pro === true ? (
-                        <i className="fas fa-check-circle" style={{ color: '#1a8b3f', fontSize: '1.1rem' }} />
-                      ) : row.pro === false ? (
-                        <i className="fas fa-minus" style={{ color: '#ccc' }} />
-                      ) : (
-                        <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1a8b3f' }}>{row.pro}</span>
-                      )}
-                    </td>
-                    <CompCell value={row.enterprise} />
-                  </tr>
-                ))}
+                {COMPARISON_KEYS.map((key, i) => {
+                  const row = COMPARISON_VALUES[i];
+                  return (
+                    <tr key={key} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafb' }}>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.9rem', color: '#0f1c2e', borderBottom: '1px solid #f0f4f8' }}>
+                        {t(`pricing_page.comparison.${key}`)}
+                      </td>
+                      <CompCell value={row.starter} t={t} />
+                      <td className="text-center" style={{ background: 'rgba(26,139,63,0.04)', borderBottom: '1px solid #f0f4f8' }}>
+                        {row.pro === true ? (
+                          <i className="fas fa-check-circle" style={{ color: '#1a8b3f', fontSize: '1.1rem' }} />
+                        ) : row.pro === false ? (
+                          <i className="fas fa-minus" style={{ color: '#ccc' }} />
+                        ) : row.pro === 'unlimited' ? (
+                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1a8b3f' }}>{t('pricing_page.comparison_unlimited')}</span>
+                        ) : row.pro === 'option' ? (
+                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1a8b3f' }}>{t('pricing_page.comparison_option')}</span>
+                        ) : (
+                          <span style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1a8b3f' }}>{row.pro}</span>
+                        )}
+                      </td>
+                      <CompCell value={row.enterprise} t={t} />
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -237,16 +254,16 @@ export default function Pricing() {
       {/* CTA */}
       <section className="cta-banner">
         <div className="container">
-          <h2>Des questions sur nos tarifs ?</h2>
-          <p>Notre équipe est là pour vous aider à choisir le plan qui correspond à votre structure.</p>
+          <h2>{t('pricing_page.cta_title')}</h2>
+          <p>{t('pricing_page.cta_subtitle')}</p>
           <div className="cta-buttons">
             <Link to="/contact" className="btn-primary-brand" style={{ background: 'linear-gradient(135deg,#f5a623,#e8870f)', boxShadow: '0 4px 18px rgba(245,166,35,0.4)' }}>
               <i className="fas fa-comments" />
-              Parler à un conseiller
+              {t('pricing_page.cta_advisor')}
             </Link>
             <a href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/register`} target="_blank" rel="noreferrer" className="btn-white-outline">
               <i className="fas fa-rocket" />
-              Commencer l'essai gratuit
+              {t('common.start_free_trial')}
             </a>
           </div>
         </div>

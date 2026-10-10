@@ -11,7 +11,20 @@ export default function Header({ toggleSidebar }) {
   const navigate = useNavigate()
   const [showDropdown, setShowDropdown] = useState(false)
   const [showTenantDropdown, setShowTenantDropdown] = useState(false)
+  const [showLangDropdown, setShowLangDropdown] = useState(false)
   const dropdownRef = useRef(null)
+  const langRef = useRef(null)
+
+  const languages = [
+    { code: 'fr', label: 'Français' },
+    { code: 'en', label: 'English' },
+    { code: 'pt', label: 'Português' },
+    { code: 'ar', label: 'العربية' },
+    { code: 'es', label: 'Español' },
+    { code: 'sw', label: 'Kiswahili' }
+  ]
+  const currentLang = localStorage.getItem('i18nextLng') || 'fr'
+  const currentLangLabel = languages.find(l => l.code === currentLang)?.label || currentLang.toUpperCase()
 
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState(null)
@@ -41,6 +54,9 @@ export default function Header({ toggleSidebar }) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setShowDropdown(false)
         setShowTenantDropdown(false)
+      }
+      if (langRef.current && !langRef.current.contains(e.target)) {
+        setShowLangDropdown(false)
       }
       if (searchRef.current && !searchRef.current.contains(e.target)) {
         setShowSearchResults(false)
@@ -171,13 +187,32 @@ export default function Header({ toggleSidebar }) {
         <NotificationBell />
 
         {/* Language */}
-        <button className="header-btn header-lang" onClick={() => {
-          const lang = localStorage.getItem('i18nextLng') === 'en' ? 'fr' : 'en'
-          localStorage.setItem('i18nextLng', lang)
-          window.location.reload()
-        }}>
-          {localStorage.getItem('i18nextLng') === 'en' ? 'FR' : 'EN'}
-        </button>
+        <div className="position-relative" ref={langRef}>
+          <button className="header-btn header-lang" onClick={() => setShowLangDropdown(!showLangDropdown)}>
+            <i className="fas fa-globe me-1" />
+            <span className="d-none d-md-inline">{currentLangLabel}</span>
+            <span className="d-inline d-md-none">{currentLang.toUpperCase()}</span>
+            <i className="fas fa-chevron-down ms-1" style={{ fontSize: '0.6rem' }} />
+          </button>
+          {showLangDropdown && (
+            <div className="header-dropdown">
+              <div className="header-dropdown-title">Langue / Language</div>
+              {languages.map(lang => (
+                <button
+                  key={lang.code}
+                  className={`header-dropdown-item ${currentLang === lang.code ? 'active' : ''}`}
+                  onClick={() => {
+                    localStorage.setItem('i18nextLng', lang.code)
+                    setShowLangDropdown(false)
+                    window.location.reload()
+                  }}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* User */}
         <div className="position-relative">

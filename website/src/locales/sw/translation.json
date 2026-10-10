@@ -1,0 +1,522 @@
+{
+  "nav": {
+    "home": "Nyumbani",
+    "features": "Vipengele",
+    "pricing": "Bei",
+    "contact": "Wasiliana",
+    "about": "Kuhusu",
+    "login": "Ingia",
+    "free_trial": "Jaribio la bure",
+    "demo": "Omba onyesho"
+  },
+  "hero": {
+    "badge": "Mpya · Toleo la 2.0 linapatikana",
+    "headline": "Suluhisho la mifugo",
+    "headline_accent": "Nambari 1 Afrika",
+    "subtext": "RecallVET inaunganisha usimamizi wa kliniki yako ya mifugo, shamba na duka la dawa. Aga kwaheri kumbukumbu za karatasi, upungufu wa hifadhi na miadi iliyokosekana.",
+    "cta_primary": "Anza jaribio la bure",
+    "cta_secondary": "Tazama onyesho",
+    "no_card": "Hakuna kadi ya mkopo inayohitajika · Siku 30 bure",
+    "stat_clinics": "Kliniki zinazofanya kazi",
+    "stat_animals": "Wanyama wanaofuatiliwa",
+    "stat_countries": "Nchi zinazofunikwa",
+    "stat_uptime": "Upatikanaji"
+  },
+  "trusted": {
+    "title": "Wanatuamini",
+    "subtitle": "Mamia ya wataalamu wa mifugo kote Afrika wanatumia RecallVET kila siku"
+  },
+  "problems": {
+    "title": "Changamoto unazozijua vyema",
+    "subtitle": "Kila daktari wa mifugo wa Kiafrika anakabiliwa na vikwazo vile vile. RecallVET inavisuluhisha vyote.",
+    "badge": "Changamoto za uwandani",
+    "p1_title": "Kumbukumbu za karatasi zilizopotea",
+    "p1_desc": "Kupoteza masaa ukitafuta historia ya matibabu ya mnyama katika faili za zamani? Kila mashauriano yanapaswa kuanza ndani ya sekunde 30.",
+    "p2_title": "Upungufu mkubwa wa hifadhi",
+    "p2_desc": "Kugundua kwamba chanjo zimeisha siku unazozihitaji zaidi. Usimamizi mbaya wa hifadhi unagharimu sana sifa yako.",
+    "p3_title": "Vikumbusho na ufuatiliaji uliokosekana",
+    "p3_desc": "Wanyama ambao hawajapata chanjo zao za kuimarisha, wateja waliopotea kwa kukosa ufuatiliaji wa kiotomatiki. Kila kikumbusho kilichokosekana ni fursa iliyopotea."
+  },
+  "features": {
+    "title": "Kila kitu unachohitaji",
+    "subtitle": "Jukwaa kamili lililobuniwa kwa hali halisi za Afrika",
+    "f1_title": "Usimamizi wa kliniki",
+    "f1_desc": "Rekodi kamili za wagonjwa, mashauriano, maagizo na chanjo kwa kubofya moja.",
+    "f2_title": "Ufuatiliaji wa shamba",
+    "f2_desc": "Simamia mashamba yako, makundi ya wanyama, ziara za uwandani na matukio ya afya kwa urahisi.",
+    "f3_title": "Duka la Dawa na Hifadhi",
+    "f3_desc": "Hesabu ya wakati halisi, arifa za kumalizika muda, maagizo ya wasambazaji ya kiotomatiki.",
+    "f4_title": "Ankara zilizounganishwa",
+    "f4_desc": "Ankara za kitaalamu, makadirio, ufuatiliaji wa malipo na ripoti za fedha.",
+    "f5_title": "Vikumbusho vya kiotomatiki",
+    "f5_desc": "SMS na barua pepe za kiotomatiki kwa chanjo, uchunguzi wa kawaida na upya.",
+    "f6_title": "Ripoti na Uchambuzi",
+    "f6_desc": "Dashibodi za wakati halisi, takwimu za utendaji na ripoti zinazoweza kusafirishwa."
+  },
+  "how": {
+    "title": "Anza kwa hatua 3",
+    "subtitle": "Tayari kufanya kazi ndani ya masaa 24, bila mafunzo ya kiufundi yanayohitajika",
+    "badge": "Jinsi inavyofanya kazi",
+    "s1_title": "Jisajili",
+    "s1_desc": "Fungua akaunti yako bure ndani ya dakika 2. Hakuna kadi ya benki inayohitajika.",
+    "s2_title": "Sanidi nafasi yako",
+    "s2_desc": "Ingiza data yako iliyopo, ongeza timu yako na binafsishe mtiririko wa kazi yako.",
+    "s3_title": "Simamia na kukua",
+    "s3_desc": "Anza kutumia vipengele vyote na utazame mazoea yako yakibadilika."
+  },
+  "modules": {
+    "title": "Moduli tatu, jukwaa moja",
+    "subtitle": "Kila moduli imebuniwa kukidhi mahitaji mahususi ya taaluma yako",
+    "badge": "Moduli",
+    "clinic_title": "Moduli ya Kliniki",
+    "clinic_desc": "Suluhisho kamili kwa kliniki yako ya mifugo",
+    "clinic_features": [
+      "Usimamizi wa wamiliki na wagonjwa",
+      "Rekodi za matibabu za kielektroniki",
+      "Kupanga miadi mtandaoni",
+      "Mashauriano na uchunguzi",
+      "Maagizo na dawa",
+      "Ufuatiliaji wa chanjo",
+      "Kulazwa hospitalini na upasuaji",
+      "Matokeo ya maabara"
+    ],
+    "farm_title": "Moduli ya Shamba",
+    "farm_desc": "Udhibiti kamili wa shughuli zako za kilimo",
+    "farm_features": [
+      "Usimamizi wa mashamba na viwanja",
+      "Ufuatiliaji wa makundi kwa spishi",
+      "Ziara za uwandani na eneo la kijiografia",
+      "Matukio ya afya na milipuko",
+      "Programu za kinga",
+      "Kuweka alama na kutambua wanyama",
+      "Utendaji wa uzalishaji",
+      "Ripoti za shamba"
+    ],
+    "pharmacy_title": "Moduli ya Duka la Dawa",
+    "pharmacy_desc": "Usimamizi wa duka la dawa la mifugo kwa akili",
+    "pharmacy_features": [
+      "Katalogi ya dawa na bidhaa",
+      "Hifadhi ya wakati halisi",
+      "Arifa za kumalizika muda",
+      "Maagizo ya ununuzi kwa wasambazaji",
+      "Upokeaji na udhibiti wa ubora",
+      "Utoaji kwa agizo la daktari",
+      "Ufuatiliaji wa kila kundi",
+      "Uchambuzi wa mauzo"
+    ]
+  },
+  "pricing": {
+    "title": "Bei wazi",
+    "subtitle": "Mipango inayofaa kila ukubwa wa taasisi. Hakuna ada zilizofichwa.",
+    "monthly": "kwa mwezi",
+    "popular": "Maarufu zaidi",
+    "cta": "Anza sasa",
+    "cta_enterprise": "Wasiliana nasi",
+    "trial_note": "Jaribio la bure la siku 30 kwenye mipango yote",
+    "starter_name": "Starter",
+    "starter_price": "15 000",
+    "starter_currency": "XAF",
+    "starter_desc": "Bora kwa madaktari wa mifugo wanaojitegemea",
+    "starter_features": [
+      "Mtumiaji 1",
+      "Hadi wagonjwa 200",
+      "Moduli ya Kliniki",
+      "Vikumbusho kwa barua pepe",
+      "Msaada kwa barua pepe",
+      "Ripoti za msingi"
+    ],
+    "pro_name": "Pro",
+    "pro_price": "35 000",
+    "pro_currency": "XAF",
+    "pro_desc": "Kwa kliniki na mazoea yanayokua",
+    "pro_features": [
+      "Hadi watumiaji 5",
+      "Wagonjwa wasio na kikomo",
+      "Moduli za Kliniki + Duka la Dawa",
+      "Vikumbusho SMS + Barua pepe",
+      "Msaada wa kipaumbele",
+      "Ripoti za kina",
+      "Ufikiaji wa API",
+      "Ankara zilizounganishwa"
+    ],
+    "enterprise_name": "Enterprise",
+    "enterprise_price": "75 000",
+    "enterprise_currency": "XAF",
+    "enterprise_desc": "Kwa vikundi na mitandao ya mifugo",
+    "enterprise_features": [
+      "Watumiaji wasio na kikomo",
+      "Moduli zote zimejumuishwa",
+      "Maeneo mengi",
+      "Ubinafsishaji kamili",
+      "Meneja akaunti maalum",
+      "Mafunzo kwenye tovuti",
+      "SLA iliyohakikishiwa 99.9%",
+      "Ujumuishaji maalum"
+    ],
+    "faq_title": "Maswali yanayoulizwa mara kwa mara kuhusu bei",
+    "faq": [
+      {
+        "q": "Ninaweza kubadilisha mpango wakati wowote?",
+        "a": "Ndiyo, unaweza kupandisha au kupunguza mpango wako wakati wowote. Mabadiliko yanafanya kazi mara moja na ankara ni sawia."
+      },
+      {
+        "q": "Mnakubali Mobile Money?",
+        "a": "Ndiyo! Tunakubali Orange Money, MTN Mobile Money, Wave, Airtel Money pamoja na kadi za Visa/Mastercard na uhamisho wa benki."
+      },
+      {
+        "q": "Nini kinatokea baada ya jaribio la siku 30?",
+        "a": "Mwishoni mwa jaribio lako, unachagua mpango wa kulipa au akaunti yako inakuwa ya kusoma tu. Data yako inahifadhiwa kwa siku 60."
+      },
+      {
+        "q": "Kuna ada za usanidi?",
+        "a": "Hakuna ada za usanidi kwa mipango ya Starter na Pro. Mpango wa Enterprise unaweza kujumuisha ada za usanidi kulingana na mahitaji ya ujumuishaji."
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "Wateja wetu wanasema nini",
+    "subtitle": "Zaidi ya wataalamu 500 wa mifugo wanaamini RecallVET",
+    "badge": "Ushuhuda",
+    "t1_quote": "RecallVET imebadilisha kabisa kliniki yetu. Tunaokoa masaa 2 kwa siku katika usimamizi na wateja wetu wanafuatiliwa vizuri zaidi. Sitarudi nyuma kamwe.",
+    "t1_name": "Dk. Aminata Diallo",
+    "t1_title": "Daktari wa mifugo, Clinique Animalia – Dakar, Senegal",
+    "t2_quote": "Usimamizi wa hifadhi ya dawa ulikuwa ndoto mbaya yetu. Leo na RecallVET, tuna upungufu sifuri na ufuatiliaji kamili. Chombo kisichoweza kukosekana.",
+    "t2_name": "Dk. Kwame Asante",
+    "t2_title": "Mkurugenzi, VetPlus Clinic – Accra, Ghana",
+    "t3_quote": "Kwa mtandao wetu wa kliniki 8 nchini Cote d'Ivoire, RecallVET ilikuwa suluhisho tulilokuwa tunakosea. Uwekaji data katikati na ripoti zilizounganishwa ni bora sana.",
+    "t3_name": "Dk. Estelle Konan",
+    "t3_title": "Mkurugenzi Mtendaji, AfriVet Group – Abidjan, Cote d'Ivoire"
+  },
+  "stats": {
+    "title": "RecallVET kwa nambari",
+    "clinics": "Kliniki zinazofanya kazi",
+    "animals": "Wanyama wanaofuatiliwa",
+    "countries": "Nchi",
+    "uptime": "Upatikanaji"
+  },
+  "cta_banner": {
+    "title": "Uko tayari kubadilisha mazoea yako?",
+    "subtitle": "Jiunge na mamia ya madaktari wa mifugo wa Kiafrika ambao tayari wamedigitisha mazoea yao na RecallVET.",
+    "btn_primary": "Anza jaribio la bure",
+    "btn_secondary": "Omba onyesho"
+  },
+  "contact": {
+    "title": "Wasiliana nasi",
+    "subtitle": "Timu yetu iko hapa kujibu maswali yako yote",
+    "form_name": "Jina kamili",
+    "form_email": "Anwani ya barua pepe",
+    "form_subject": "Mada",
+    "form_message": "Ujumbe",
+    "form_submit": "Tuma ujumbe",
+    "form_sending": "Inatuma...",
+    "form_success": "Ujumbe wako umetumwa kwa mafanikio. Tutakujibu ndani ya masaa 24.",
+    "form_error": "Hitilafu imetokea. Tafadhali jaribu tena.",
+    "info_email": "contact@recallvet.com",
+    "info_phone": "+237 6XX XXX XXX",
+    "info_address": "Yaounde, Kamerun",
+    "info_hours": "Jumatatu–Ijumaa · 8a–6j (WAT)",
+    "social_title": "Tufuate"
+  },
+  "demo": {
+    "title": "Omba onyesho la bure",
+    "subtitle": "Gundua RecallVET ikifanya kazi na onyesho maalum la dakika 30",
+    "badge": "Onyesho la bure · Bila kujitolea",
+    "form_fullname": "Jina kamili",
+    "form_email": "Barua pepe ya kitaalamu",
+    "form_phone": "Simu",
+    "form_practice": "Jina la taasisi yako",
+    "form_type": "Aina ya taasisi",
+    "form_country": "Nchi",
+    "form_message": "Tuambie zaidi (hiari)",
+    "form_submit": "Omba onyesho langu",
+    "form_sending": "Inatuma...",
+    "form_success_title": "Ombi limepokelewa!",
+    "form_success_msg": "Asante! Timu yetu itawasiliana nawe ndani ya masaa 24 kupanga onyesho lako maalum.",
+    "types": {
+      "clinic": "Kliniki ya mifugo",
+      "farm": "Shamba / Ufugaji",
+      "pharmacy": "Duka la dawa la mifugo",
+      "mixed": "Taasisi mchanganyiko",
+      "group": "Kikundi / Mtandao"
+    },
+    "benefits": [
+      "Onyesho la moja kwa moja la vipengele vyote",
+      "Majibu ya maswali yako mahususi",
+      "Ushauri wa usanidi ulioainishwa",
+      "Bila kujitolea wala shinikizo la biashara"
+    ]
+  },
+  "about": {
+    "title": "Kuhusu RecallVET",
+    "subtitle": "Tunajenga mustakabali wa tiba ya mifugo barani Afrika",
+    "mission_title": "Dhamira Yetu",
+    "mission_text": "RecallVET ilizaliwa kutokana na uchunguzi rahisi: wataalamu wa mifugo wa Kiafrika wanastahili zana za kidijitali zinazolingana na utaalamu wao. Dhamira yetu ni kutoa jukwaa kamili, nafuu na lililoendana na hali halisi za Afrika ili kudigitisha na kutaalamu mazoea ya mifugo katika bara zima.",
+    "vision_title": "Maono Yetu",
+    "vision_text": "Kuwa jukwaa la kumbukumbu kwa afya ya wanyama barani Afrika ifikapo 2030, kufunika nchi 50 na kuchangia katika kuboresha usalama wa chakula na ustawi wa wanyama.",
+    "values_title": "Thamani Zetu",
+    "values": [
+      { "title": "Ubunifu", "desc": "Tunatengeneza suluhisho za kisasa zilizokabilishwa na vikwazo vya ndani (muunganisho, lugha, sarafu)." },
+      { "title": "Kutegemewa", "desc": "Data yako ni takatifu. Usalama wa kiwango cha benki, hifadhi rudufu za kiotomatiki, upatikanaji uliohakikishiwa." },
+      { "title": "Ukaribu", "desc": "Msaada wa ndani katika lugha yako, na timu inayoelewa changamoto zako za kila siku." },
+      { "title": "Athari", "desc": "Kila daktari wa mifugo tunayemsaidia anachangia afya ya wanyama na usalama wa chakula wa Afrika." }
+    ],
+    "team_title": "Timu ya RecallVET",
+    "team_subtitle": "Timu yenye shauku na teknolojia na afya ya wanyama"
+  },
+  "footer": {
+    "product_title": "Bidhaa",
+    "product_links": {
+      "features": "Vipengele",
+      "pricing": "Bei",
+      "demo": "Onyesho",
+      "changelog": "Mabadiliko",
+      "roadmap": "Ramani ya njia"
+    },
+    "company_title": "Kampuni",
+    "company_links": {
+      "about": "Kuhusu",
+      "blog": "Blogu",
+      "careers": "Kazi",
+      "press": "Vyombo vya habari",
+      "partners": "Washirika"
+    },
+    "legal_title": "Kisheria",
+    "legal_links": {
+      "privacy": "Faragha",
+      "terms": "Masharti ya matumizi",
+      "cookies": "Vidakuzi",
+      "security": "Usalama"
+    },
+    "contact_title": "Wasiliana",
+    "description": "Jukwaa la usimamizi wa mifugo lililobuniwa kwa Afrika. Kliniki, shamba, duka la dawa – yote katika moja.",
+    "copyright": "\u00a9 {year} RecallVET. Haki zote zimehifadhiwa.",
+    "made_with": "Imetengenezwa kwa \u2764 kwa Afrika"
+  },
+  "legal": {
+    "privacy_title": "Sera ya faragha",
+    "terms_title": "Masharti ya matumizi",
+    "last_updated": "Ilisasishwa mwisho",
+    "back": "Rudi"
+  },
+  "common": {
+    "read_more": "Soma zaidi",
+    "get_started": "Anza",
+    "contact_us": "Wasiliana nasi",
+    "loading": "Inapakia...",
+    "error": "Hitilafu imetokea",
+    "required": "Sehemu inayohitajika",
+    "features_included": "vipengele vilivyojumuishwa",
+    "try_free": "Jaribu bure",
+    "free_trial_14": "Jaribio la bure la siku 14",
+    "request_demo": "Omba onyesho",
+    "start_free_trial": "Anza jaribio la bure",
+    "see_demo": "Tazama onyesho",
+    "discover": "Gundua",
+    "see_all_features": "Tazama vipengele vyote",
+    "see_detailed_comparison": "Tazama ulinganisho wa kina",
+    "talk_to_advisor": "Zungumza na mshauri",
+    "join_adventure": "Jiunge na safari ya RecallVET",
+    "join_adventure_desc": "Kuwa sehemu ya waanzilishi wanaobadilisha tiba ya mifugo ya Kiafrika.",
+    "start_free": "Anza bure",
+    "contact_us_link": "Wasiliana nasi"
+  },
+  "features_page": {
+    "seo_title": "Vipengele",
+    "seo_description": "Gundua vipengele vyote vya RecallVET: usimamizi wa kliniki, ufuatiliaji wa shamba, duka la dawa la mifugo, ankara na ripoti za kina.",
+    "badge": "Kila kitu unachoweza kufanya",
+    "title": "Vipengele kamili",
+    "subtitle": "Jukwaa lililobuniwa kwa kila kipengele cha mazoea yako ya mifugo barani Afrika",
+    "clinic_title": "Moduli ya Kliniki",
+    "clinic_subtitle": "Simamia kliniki yako yote ya mifugo kutoka skrini moja. Kutoka rekodi za wagonjwa hadi matokeo ya vipimo, kupitia maagizo na vikumbusho vya chanjo.",
+    "clinic_features": [
+      "Usimamizi wa wamiliki (watu binafsi na mashirika)",
+      "Rekodi kamili za wagonjwa na historia ya matibabu",
+      "Kupanga miadi mtandaoni na uthibitisho wa kiotomatiki",
+      "Mashauriano: historia, uchunguzi wa kimwili, utambuzi",
+      "Maagizo ya kielektroniki na dawa",
+      "Ufuatiliaji wa chanjo na vikumbusho vya kiotomatiki",
+      "Usimamizi wa kulazwa hospitalini na huduma endelevu",
+      "Ufuatiliaji wa upasuaji na ganzi",
+      "Matokeo ya maabara na vipimo vya ziada",
+      "Taswira ya matibabu: X-ray, ultrasound",
+      "Vyeti vya mifugo na nyaraka rasmi",
+      "Kushiriki rekodi kati ya wataalamu"
+    ],
+    "farm_title": "Moduli ya Shamba",
+    "farm_subtitle": "Saidia wateja wako wafugaji kwa chombo cha uwandani chenye nguvu. Ziara, matukio ya afya, utendaji wa uzalishaji na programu za kinga.",
+    "farm_features": [
+      "Usimamizi wa mashamba, viwanja na vifaa",
+      "Ufuatiliaji wa makundi: ng'ombe, kondoo, mbuzi, kuku, nguruwe",
+      "Ziara za uwandani na eneo la GPS",
+      "Kugundua na kusimamia milipuko na magonjwa",
+      "Programu za kinga na itifaki za afya",
+      "Kuweka alama binafsi: alama za masikio, chipu, tattoo",
+      "Ufuatiliaji wa uzazi na mimba",
+      "Utendaji wa uzalishaji: kiwango cha ukuaji, kiwango cha vifo",
+      "Usimamizi wa lishe na posho",
+      "Ufuatiliaji wa afya na arifa za kiotomatiki",
+      "Ripoti za shamba na usafirishaji wa udhibiti",
+      "Ufikiaji wa mashamba mengi kutoka dashibodi moja"
+    ],
+    "pharmacy_title": "Moduli ya Duka la Dawa",
+    "pharmacy_subtitle": "Usimamizi wa akili wa hifadhi yako ya dawa za mifugo. Upungufu sifuri, ufuatiliaji kamili, maagizo ya wasambazaji ya kiotomatiki.",
+    "pharmacy_features": [
+      "Katalogi kamili ya dawa za mifugo",
+      "Usimamizi wa hifadhi kwa wakati halisi kwa eneo",
+      "Arifa za kumalizika muda S-30, S-15, S-7",
+      "Usimamizi wa wasambazaji na katalogi za bei",
+      "Maagizo ya ununuzi na upokeaji wa wasambazaji",
+      "Ufuatiliaji wa kila kundi kwa nambari za mfululizo",
+      "Utoaji salama kwa agizo la daktari",
+      "Sehemu ya mauzo: mauzo ya kaunta na ankara",
+      "Uchambuzi wa mauzo kwa bidhaa, kategoria, kipindi",
+      "Arifa za upungufu wa hifadhi na kiwango cha usanidi",
+      "Usawazishaji wa kiotomatiki na moduli ya kliniki",
+      "Usafirishaji wa sajili kwa mamlaka ya mifugo"
+    ],
+    "billing_title": "Ankara na Fedha",
+    "billing_subtitle": "Kutoka uandaaji wa makadirio hadi ufuatiliaji wa malipo, RecallVET inaotomatisha mzunguko wako wa ankara na kukupa mtazamo wazi wa utendaji wako wa kifedha.",
+    "billing_features": [
+      "Makadirio yaliyobinafsishwa na taratibu na bidhaa",
+      "Ankara za kiotomatiki baada ya mashauriano",
+      "Malipo ya Mobile Money, kadi na taslimu",
+      "Historia ya malipo na vikumbusho vya kiotomatiki",
+      "Ripoti za fedha za kila mwezi na kila mwaka",
+      "Usimamizi wa punguzo na programu za uaminifu"
+    ],
+    "cta_title": "Uko tayari kusimamia kila kitu kutoka chombo kimoja?",
+    "cta_subtitle": "Jiunge na kliniki 500+ zinazotegemea RecallVET kurahisisha kazi yao ya kila siku.",
+    "cta_banner_title": "Uko tayari kujaribu vipengele hivi vyote?",
+    "cta_banner_subtitle": "Jaribio la bure la siku 30, bila kujitolea, bila kadi ya mkopo."
+  },
+  "faq": {
+    "badge": "Maswali yanayoulizwa mara kwa mara",
+    "title": "Kila kitu unachohitaji kujua",
+    "subtitle": "Majibu ya maswali yanayoulizwa zaidi na watumiaji wetu",
+    "questions": [
+      {
+        "question": "RecallVET inagharimu kiasi gani?",
+        "answer": "RecallVET inatoa mipango 3 kuanzia XAF 15,000/mwezi. Yote yanajumuisha jaribio la bure la siku 14 bila kadi ya mkopo."
+      },
+      {
+        "question": "RecallVET inafanya kazi bila mtandao?",
+        "answer": "RecallVET ni programu ya wingu. Unahitaji muunganisho wa intaneti. Hata hivyo, tunafanya kazi kwenye hali ya nje ya mtandao kwa toleo la simu."
+      },
+      {
+        "question": "Ninaweza kuingiza data yangu iliyopo?",
+        "answer": "Ndiyo! RecallVET inasaidia kuingiza CSV ya wateja wako, wanyama na bidhaa. Timu yetu inakusaidia kwa uhamiaji usio na msongo."
+      },
+      {
+        "question": "RecallVET inafaa kwa mashamba?",
+        "answer": "Kabisa. Moduli ya Shamba inasimamia mashamba, makundi, ziara za afya na matukio ya afya. Bora kwa madaktari wa mifugo wa vijijini."
+      },
+      {
+        "question": "Msaada wa wateja unafanyaje kazi?",
+        "answer": "Msaada kwa barua pepe na gumzo Jumatatu hadi Ijumaa. Wateja wa Pro na Enterprise wanapata msaada wa kipaumbele na jibu lililohakikishwa ndani ya masaa 2."
+      },
+      {
+        "question": "Data yangu iko salama?",
+        "answer": "Ndiyo. Usimbaji fiche wa SSL, uhifadhi salama, hifadhi rudufu za kila siku na kufuata viwango vya ulinzi wa data."
+      }
+    ]
+  },
+  "pricing_page": {
+    "seo_title": "Bei",
+    "seo_description": "Gundua bei wazi za RecallVET. Mipango ya Starter, Pro na Enterprise inayofaa ukubwa wote wa taasisi za mifugo barani Afrika.",
+    "badge": "Bei rahisi na wazi",
+    "billing_monthly": "Kila mwezi",
+    "billing_yearly": "Kila mwaka",
+    "yearly_savings": "-17%",
+    "payment_methods_title": "Njia za malipo zinazokubaliwa",
+    "comparison_title": "Ulinganisho wa kina",
+    "comparison_subtitle": "Vipengele vyote, mpango kwa mpango",
+    "comparison_feature_header": "Kipengele",
+    "comparison_unlimited": "Bila kikomo",
+    "comparison_option": "Hiari",
+    "comparison": {
+      "users": "Idadi ya watumiaji",
+      "patients": "Wagonjwa / wanyama",
+      "clinic_module": "Moduli ya Kliniki",
+      "farm_module": "Moduli ya Shamba",
+      "pharmacy_module": "Moduli ya Duka la Dawa",
+      "billing": "Ankara zilizounganishwa",
+      "email_reminders": "Vikumbusho kwa barua pepe",
+      "sms_reminders": "Vikumbusho kwa SMS",
+      "basic_reports": "Ripoti za msingi",
+      "advanced_reports": "Ripoti za kina",
+      "export_pdf_excel": "Usafirishaji PDF / Excel",
+      "api_access": "Ufikiaji wa API",
+      "multi_site": "Maeneo mengi",
+      "white_label": "White-label / ubinafsishaji",
+      "email_support": "Msaada kwa barua pepe",
+      "priority_support": "Msaada wa kipaumbele",
+      "account_manager": "Meneja akaunti maalum",
+      "online_training": "Mafunzo mtandaoni",
+      "onsite_training": "Mafunzo kwenye tovuti",
+      "sla": "SLA iliyohakikishiwa 99.9%",
+      "custom_integration": "Ujumuishaji maalum"
+    },
+    "cta_title": "Maswali kuhusu bei zetu?",
+    "cta_subtitle": "Timu yetu iko hapa kukusaidia kuchagua mpango unaofaa taasisi yako.",
+    "cta_advisor": "Zungumza na mshauri",
+    "per_year": "mwaka"
+  },
+  "about_page": {
+    "seo_title": "Kuhusu",
+    "seo_description": "Gundua hadithi, dhamira na timu nyuma ya RecallVET - jukwaa la mifugo lililobuniwa kwa Afrika.",
+    "mission_badge": "Dhamira",
+    "vision_badge": "Maono",
+    "quote": "Kila daktari wa mifugo wa Kiafrika anastahili zana zile zile kama wenzao katika nchi zilizoendelea. RecallVET inaziba pengo hili la kidijitali.",
+    "quote_author": "- Kenfack Tchinda, CEO RecallVET",
+    "vision_2030": "Lengo la kibara",
+    "vision_countries": "Nchi lengwa",
+    "vision_clinics": "Kliniki lengwa",
+    "countries_list": [
+      "Kamerun",
+      "Senegal",
+      "Cote d'Ivoire",
+      "Ghana",
+      "Nigeria",
+      "Kenya",
+      "Tanzania",
+      "Rwanda"
+    ],
+    "key_numbers": [
+      { "value": "2022", "label": "Mwaka wa kuanzishwa" },
+      { "value": "500+", "label": "Kliniki zinazofanya kazi" },
+      { "value": "50K+", "label": "Wanyama wanaofuatiliwa" },
+      { "value": "15", "label": "Nchi barani Afrika" },
+      { "value": "99.9%", "label": "Upatikanaji" },
+      { "value": "24h", "label": "Muda wa majibu" }
+    ],
+    "key_numbers_icons": [
+      "fa-calendar",
+      "fa-hospital",
+      "fa-paw",
+      "fa-earth-africa",
+      "fa-shield-halved",
+      "fa-headset"
+    ],
+    "values_badge": "Kinachotuongoza",
+    "timeline_badge": "Safari yetu",
+    "timeline_title": "Hadithi ya RecallVET",
+    "timeline": [
+      { "year": "2022", "title": "Wazo", "desc": "Daktari wa mifugo wa Kikamerun aliyekatishwa tamaa na kumbukumbu za karatasi alishiriki uzoefu wake na msanidi programu. Wazo la RecallVET lilizaliwa." },
+      { "year": "2023 R1", "title": "Mfano wa kwanza", "desc": "Toleo la kwanza la moduli ya kliniki lilijaribiwa katika kliniki 3 za mifugo huko Yaounde. Kuridhika 94%." },
+      { "year": "2023 R3", "title": "Uzinduzi wa beta", "desc": "Beta ilifunguliwa kwa kliniki 50 katika nchi 5 (Kamerun, Senegal, Cote d'Ivoire, Ghana, Nigeria)." },
+      { "year": "2024 R1", "title": "Toleo la 1.0", "desc": "Uzinduzi rasmi na moduli 3 kamili. Kliniki 150 zinazofanya kazi katika mwezi wa kwanza." },
+      { "year": "2025", "title": "Upanuzi", "desc": "Kliniki 500+, nchi 15, duru mpya ya ufadhili kuharakisha maendeleo ya simu." },
+      { "year": "2026", "title": "Toleo la 2.0", "desc": "Akili bandia, programu ya simu nje ya mtandao, ujumuishaji na maabara washirika na API ya umma." }
+    ],
+    "team_title": "Timu ya RecallVET",
+    "team_subtitle": "Timu yenye shauku na teknolojia na afya ya wanyama",
+    "team_roles": {
+      "ceo": "CEO na Mwanzilishi mwenza",
+      "cto": "CTO na Mwanzilishi mwenza",
+      "product": "Mkuu wa Bidhaa",
+      "vet": "Daktari Mkuu wa Mifugo",
+      "bizdev": "Maendeleo ya Biashara",
+      "success": "Mafanikio ya Wateja"
+    }
+  }
+}

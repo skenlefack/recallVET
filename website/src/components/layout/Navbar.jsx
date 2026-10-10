@@ -57,18 +57,22 @@ export default function Navbar() {
 
             {/* Desktop actions */}
             <div className="rv-nav-actions">
-              <button
-                className={`lang-btn${i18n.language === 'fr' ? ' active' : ''}`}
-                onClick={() => switchLang('fr')}
-              >
-                FR
-              </button>
-              <button
-                className={`lang-btn${i18n.language === 'en' ? ' active' : ''}`}
-                onClick={() => switchLang('en')}
-              >
-                EN
-              </button>
+              {[
+                { code: 'fr', label: 'Fran\u00e7ais' },
+                { code: 'en', label: 'English' },
+                { code: 'pt', label: 'Portugu\u00eas' },
+                { code: 'ar', label: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629' },
+                { code: 'es', label: 'Espa\u00f1ol' },
+                { code: 'sw', label: 'Kiswahili' },
+              ].map((lang) => (
+                <button
+                  key={lang.code}
+                  className={`lang-btn${i18n.language === lang.code ? ' active' : ''}`}
+                  onClick={() => switchLang(lang.code)}
+                >
+                  {lang.label}
+                </button>
+              ))}
               <a
                 href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/login`}
                 target="_blank"
@@ -111,19 +115,23 @@ export default function Navbar() {
           ))}
         </ul>
         <div className="mobile-actions">
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <button
-              className={`lang-btn${i18n.language === 'fr' ? ' active' : ''}`}
-              onClick={() => switchLang('fr')}
-            >
-              FR
-            </button>
-            <button
-              className={`lang-btn${i18n.language === 'en' ? ' active' : ''}`}
-              onClick={() => switchLang('en')}
-            >
-              EN
-            </button>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+            {[
+              { code: 'fr', label: 'Fran\u00e7ais' },
+              { code: 'en', label: 'English' },
+              { code: 'pt', label: 'Portugu\u00eas' },
+              { code: 'ar', label: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629' },
+              { code: 'es', label: 'Espa\u00f1ol' },
+              { code: 'sw', label: 'Kiswahili' },
+            ].map((lang) => (
+              <button
+                key={lang.code}
+                className={`lang-btn${i18n.language === lang.code ? ' active' : ''}`}
+                onClick={() => switchLang(lang.code)}
+              >
+                {lang.label}
+              </button>
+            ))}
           </div>
           <a
             href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/login`}
