@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { api, getToken } from '../../services/api';
 import AttachmentPanel from '../../components/AttachmentPanel';
@@ -26,6 +26,14 @@ const EncounterForm = () => {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [toast, setToast] = useState(null);
+
+    // AI Diagnostic state
+    const [aiOpen, setAiOpen] = useState(false);
+    const [clinicalSigns, setClinicalSigns] = useState([]);
+    const [selectedSigns, setSelectedSigns] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [loadingSigns, setLoadingSigns] = useState(false);
+    const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
     useEffect(() => {
         if (isEdit) loadEncounter();
@@ -128,6 +136,68 @@ const EncounterForm = () => {
             setToast({ type: 'danger', message: res.message || 'Erreur lors de la sauvegarde' });
         }
         setSaving(false);
+    };
+
+    // --- AI Diagnostic Helpers ---
+
+    const loadClinicalSigns = useCallback(async () => {
+        if (clinicalSigns.length > 0) return; // already loaded
+        setLoadingSigns(true);
+        const res = await api.get('/v1/reference/clinical-signs', token);
+        if (res.success) {
+            setClinicalSigns(res.data || []);
+        }
+        setLoadingSigns(false);
+    }, [clinicalSigns.length, token]);
+
+    const handleAiToggle = () => {
+        const next = !aiOpen;
+        setAiOpen(next);
+        if (next) loadClinicalSigns();
+    };
+
+    const handleSignToggle = (signId) => {
+        setSelectedSigns(prev => {
+            if (prev.includes(signId)) {
+                return prev.filter(id => id !== signId);
+            }
+            return [...prev, signId];
+        });
+    };
+
+    // Fetch suggestions when selected signs change
+    useEffect(() => {
+        if (selectedSigns.length === 0) {
+            setSuggestions([]);
+            return;
+        }
+        const fetchSuggestions = async () => {
+            setLoadingSuggestions(true);
+            const res = await api.get(`/v1/reference/suggestions?signs=${selectedSigns.join(',')}`, token);
+            if (res.success) {
+                setSuggestions(res.data || []);
+            }
+            setLoadingSuggestions(false);
+        };
+        const debounce = setTimeout(fetchSuggestions, 300);
+        return () => clearTimeout(debounce);
+    }, [selectedSigns, token]);
+
+    const useSuggestion = (disease) => {
+        const current = form.diagnosis.trim();
+        const diseaseName = disease.name_fr || disease.name_en || '';
+        if (current && !current.includes(diseaseName)) {
+            setForm(prev => ({ ...prev, diagnosis: current + '\n' + diseaseName }));
+        } else if (!current) {
+            setForm(prev => ({ ...prev, diagnosis: diseaseName }));
+        }
+    };
+
+    const getConfidenceLevel = (matchCount, totalSelected) => {
+        const ratio = matchCount / totalSelected;
+        if (ratio >= 0.8) return { label: 'Elevée', color: 'success', percent: Math.round(ratio * 100) };
+        if (ratio >= 0.5) return { label: 'Moyenne', color: 'warning', percent: Math.round(ratio * 100) };
+        return { label: 'Faible', color: 'secondary', percent: Math.round(ratio * 100) };
     };
 
     if (loading) return <div className="loading-container"><div className="spinner-border text-success" /><p>Chargement...</p></div>;
@@ -260,6 +330,118 @@ const EncounterForm = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* AI Diagnostic Suggestions */}
+                <div className="card form-card mb-3 border-info">
+                    <div className="card-header bg-light d-flex justify-content-between align-items-center"
+                         style={{ cursor: 'pointer' }}
+                         onClick={handleAiToggle}>
+                        <h6 className="mb-0 text-info">
+                            <i className="fas fa-robot me-2"></i>Aide au diagnostic IA
+                        </h6>
+                        <i className={`fas fa-chevron-${aiOpen ? 'up' : 'down'} text-muted`}></i>
+                    </div>
+                    {aiOpen && (
+                        <div className="card-body">
+                            {/* Clinical signs selector */}
+                            <div className="mb-3">
+                                <label className="form-label fw-semibold">
+                                    <i className="fas fa-search-plus me-1"></i>Signes cliniques observés
+                                </label>
+                                {loadingSigns ? (
+                                    <div className="text-center py-2 text-muted">
+                                        <i className="fas fa-spinner fa-spin me-1"></i>Chargement des signes cliniques...
+                                    </div>
+                                ) : (
+                                    <div className="border rounded p-2" style={{ maxHeight: 200, overflowY: 'auto' }}>
+                                        {clinicalSigns.length === 0 ? (
+                                            <div className="text-muted small text-center py-2">Aucun signe clinique disponible</div>
+                                        ) : (
+                                            <div className="d-flex flex-wrap gap-1">
+                                                {clinicalSigns.map(sign => (
+                                                    <button
+                                                        key={sign.id}
+                                                        type="button"
+                                                        className={`btn btn-sm ${selectedSigns.includes(sign.id) ? 'btn-info text-white' : 'btn-outline-secondary'}`}
+                                                        onClick={() => handleSignToggle(sign.id)}
+                                                    >
+                                                        {selectedSigns.includes(sign.id) && <i className="fas fa-check me-1"></i>}
+                                                        {sign.name_fr || sign.name_en}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                {selectedSigns.length > 0 && (
+                                    <small className="text-muted mt-1 d-block">
+                                        {selectedSigns.length} signe(s) sélectionné(s)
+                                        <button type="button" className="btn btn-link btn-sm p-0 ms-2 text-decoration-none"
+                                                onClick={() => { setSelectedSigns([]); setSuggestions([]); }}>
+                                            Effacer tout
+                                        </button>
+                                    </small>
+                                )}
+                            </div>
+
+                            {/* Suggestions */}
+                            {selectedSigns.length > 0 && (
+                                <div>
+                                    <label className="form-label fw-semibold">
+                                        <i className="fas fa-lightbulb me-1 text-warning"></i>Diagnostics suggérés
+                                    </label>
+                                    {loadingSuggestions ? (
+                                        <div className="text-center py-2 text-muted">
+                                            <i className="fas fa-spinner fa-spin me-1"></i>Analyse en cours...
+                                        </div>
+                                    ) : suggestions.length === 0 ? (
+                                        <div className="text-muted small border rounded p-3 text-center">
+                                            <i className="fas fa-info-circle me-1"></i>
+                                            Aucun diagnostic correspondant trouvé pour les signes sélectionnés.
+                                        </div>
+                                    ) : (
+                                        <div className="list-group">
+                                            {suggestions.map(disease => {
+                                                const conf = getConfidenceLevel(disease.match_count, selectedSigns.length);
+                                                return (
+                                                    <div key={disease.id} className="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div className="flex-grow-1">
+                                                            <div className="fw-semibold">{disease.name_fr || disease.name_en}</div>
+                                                            <div className="d-flex align-items-center gap-2 mt-1">
+                                                                <small className="text-muted">
+                                                                    Correspondance: {disease.match_count}/{selectedSigns.length} signes
+                                                                </small>
+                                                                <span className={`badge bg-${conf.color}`}>
+                                                                    Confiance: {conf.percent}%
+                                                                </span>
+                                                            </div>
+                                                            <div className="progress mt-1" style={{ height: 4 }}>
+                                                                <div className={`progress-bar bg-${conf.color}`}
+                                                                     style={{ width: `${conf.percent}%` }}></div>
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-success ms-3"
+                                                            onClick={() => useSuggestion(disease)}
+                                                            title="Utiliser ce diagnostic"
+                                                        >
+                                                            <i className="fas fa-plus me-1"></i>Utiliser
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                    <small className="text-muted d-block mt-2">
+                                        <i className="fas fa-exclamation-circle me-1"></i>
+                                        Ces suggestions sont basées sur les correspondances signes-maladies et ne remplacent pas le jugement clinique.
+                                    </small>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Suivi */}

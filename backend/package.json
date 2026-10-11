@@ -25,6 +25,7 @@
     "mysql2": "^3.6.5",
     "node-cron": "^3.0.3",
     "nodemailer": "^7.0.12",
+    "socket.io": "^4.7.4",
     "stripe": "^14.0.0",
     "pdfkit": "^0.17.2",
     "uuid": "^9.0.1",

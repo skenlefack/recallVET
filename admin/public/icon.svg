@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="64" fill="#2563eb"/>
+  <g transform="translate(256,240)" fill="#ffffff">
+    <!-- Paw pad center -->
+    <ellipse cx="0" cy="40" rx="50" ry="45"/>
+    <!-- Paw pad top-left -->
+    <ellipse cx="-60" cy="-30" rx="30" ry="35" transform="rotate(-15,-60,-30)"/>
+    <!-- Paw pad top-right -->
+    <ellipse cx="60" cy="-30" rx="30" ry="35" transform="rotate(15,60,-30)"/>
+    <!-- Paw pad far-left -->
+    <ellipse cx="-95" cy="20" rx="25" ry="30" transform="rotate(-30,-95,20)"/>
+    <!-- Paw pad far-right -->
+    <ellipse cx="95" cy="20" rx="25" ry="30" transform="rotate(30,95,20)"/>
+  </g>
+  <!-- Cross (vet) -->
+  <g transform="translate(256,240)" fill="#2563eb" opacity="0.9">
+    <rect x="-8" y="15" width="16" height="50" rx="3"/>
+    <rect x="-25" y="32" width="50" height="16" rx="3"/>
+  </g>
+  <text x="256" y="460" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="72" fill="#ffffff">RV</text>
+</svg>

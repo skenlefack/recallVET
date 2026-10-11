@@ -20,6 +20,7 @@ const AnalyticsDashboard = lazy(() => import('./pages/dashboard/AnalyticsDashboa
 // Clinic
 const PartyList = lazy(() => import('./pages/clinic/PartyList'))
 const PartyForm = lazy(() => import('./pages/clinic/PartyForm'))
+const PartyMap = lazy(() => import('./pages/clinic/PartyMap'))
 const AnimalList = lazy(() => import('./pages/clinic/AnimalList'))
 const AnimalForm = lazy(() => import('./pages/clinic/AnimalForm'))
 const AppointmentList = lazy(() => import('./pages/clinic/AppointmentList'))
@@ -115,6 +116,7 @@ export default function AppRouter() {
 
         {/* Clinic */}
         <Route path="/clinic/parties" element={<L><PartyList /></L>} />
+        <Route path="/clinic/parties/map" element={<L><PartyMap /></L>} />
         <Route path="/clinic/parties/new" element={<L><PartyForm /></L>} />
         <Route path="/clinic/parties/:id" element={<L><PartyForm /></L>} />
         <Route path="/clinic/animals" element={<L><AnimalList /></L>} />

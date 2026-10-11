@@ -7,22 +7,57 @@ const asyncHandler = require('../../../utils/asyncHandler');
 const { createFarm, updateFarm } = require('../../../validators/farm');
 
 router.get('/', asyncHandler(async (req, res) => {
-  const { search, page = 1, limit: rawLimit = 25 } = req.query;
+  const { search, page = 1, limit: rawLimit = 25, near_lat, near_lng, radius_km } = req.query;
   const limit = Math.min(parseInt(rawLimit) || 25, 100);
   const offset = (page - 1) * limit;
   let where = 'WHERE f.tenant_id = ?';
   const params = [req.tenant.id];
+
+  const useGeo = near_lat && near_lng && radius_km;
+  const lat = parseFloat(near_lat);
+  const lng = parseFloat(near_lng);
+  const radius = parseFloat(radius_km);
+
+  if (useGeo) {
+    where += ' AND f.gps_lat IS NOT NULL AND f.gps_lng IS NOT NULL';
+  }
+
   if (search) { where += ' AND (f.name LIKE ? OR f.farm_code LIKE ? OR p.display_name LIKE ?)'; const s = `%${search}%`; params.push(s, s, s); }
 
-  const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM rv_farm f LEFT JOIN rv_party p ON f.owner_party_id = p.id ${where}`, params);
-  const [rows] = await db.query(
-    `SELECT f.*, p.display_name as owner_name,
-            (SELECT COUNT(*) FROM rv_herd_lot h WHERE h.farm_id = f.id) as herd_count
+  if (useGeo) {
+    const distanceExpr = `(6371 * acos(LEAST(1.0, cos(radians(?)) * cos(radians(f.gps_lat)) * cos(radians(f.gps_lng) - radians(?)) + sin(radians(?)) * sin(radians(f.gps_lat)))))`;
+    const geoParams = [lat, lng, lat];
+
+    const countSql = `SELECT COUNT(*) as total FROM (
+      SELECT f.id, ${distanceExpr} AS distance
+      FROM rv_farm f LEFT JOIN rv_party p ON f.owner_party_id = p.id ${where}
+      HAVING distance < ?
+    ) geo_sub`;
+    const [[{ total }]] = await db.query(countSql, [...geoParams, ...params, radius]);
+
+    const dataSql = `SELECT f.*, p.display_name as owner_name,
+            (SELECT COUNT(*) FROM rv_herd_lot h WHERE h.farm_id = f.id) as herd_count,
+            ${distanceExpr} AS distance
      FROM rv_farm f LEFT JOIN rv_party p ON f.owner_party_id = p.id
-     ${where} ORDER BY f.updated_at DESC LIMIT ? OFFSET ?`,
-    [...params, limit, parseInt(offset)]
-  );
-  res.json({ success: true, data: rows, pagination: { total, page: parseInt(page), limit, totalPages: Math.ceil(total / limit) } });
+     ${where}
+     HAVING distance < ?
+     ORDER BY distance LIMIT ? OFFSET ?`;
+    const [rows] = await db.query(dataSql, [...geoParams, ...params, radius, limit, parseInt(offset)]);
+
+    rows.forEach(r => { if (r.distance != null) r.distance = Math.round(r.distance * 100) / 100; });
+
+    res.json({ success: true, data: rows, pagination: { total, page: parseInt(page), limit, totalPages: Math.ceil(total / limit) } });
+  } else {
+    const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM rv_farm f LEFT JOIN rv_party p ON f.owner_party_id = p.id ${where}`, params);
+    const [rows] = await db.query(
+      `SELECT f.*, p.display_name as owner_name,
+              (SELECT COUNT(*) FROM rv_herd_lot h WHERE h.farm_id = f.id) as herd_count
+       FROM rv_farm f LEFT JOIN rv_party p ON f.owner_party_id = p.id
+       ${where} ORDER BY f.updated_at DESC LIMIT ? OFFSET ?`,
+      [...params, limit, parseInt(offset)]
+    );
+    res.json({ success: true, data: rows, pagination: { total, page: parseInt(page), limit, totalPages: Math.ceil(total / limit) } });
+  }
 }));
 
 router.get('/:id', asyncHandler(async (req, res) => {

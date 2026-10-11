@@ -6,15 +6,61 @@ const validate = require('../../../middleware/validate');
 const asyncHandler = require('../../../utils/asyncHandler');
 const { createParty, updateParty } = require('../../../validators/clinic');
 
-// GET /api/v1/clinic/parties — List parties with search & pagination
+/**
+ * @swagger
+ * /v1/clinic/parties:
+ *   get:
+ *     summary: List parties (clients/contacts) with search and pagination
+ *     tags: [Parties]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by name, phone, or email
+ *       - in: query
+ *         name: party_type
+ *         schema:
+ *           type: string
+ *           enum: [individual, company, farm, government]
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 25
+ *           maximum: 100
+ *     responses:
+ *       200:
+ *         description: Paginated list of parties
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaginationResponse'
+ */
 router.get('/', asyncHandler(async (req, res) => {
   const tenantId = req.tenant.id;
-  const { search, party_type, page = 1, limit: rawLimit = 25 } = req.query;
+  const { search, party_type, page = 1, limit: rawLimit = 25, near_lat, near_lng, radius_km } = req.query;
   const limit = Math.min(parseInt(rawLimit) || 25, 100);
   const offset = (page - 1) * limit;
 
+  const useGeo = near_lat && near_lng && radius_km;
+  const lat = parseFloat(near_lat);
+  const lng = parseFloat(near_lng);
+  const radius = parseFloat(radius_km);
+
   let where = 'WHERE p.tenant_id = ?';
   const params = [tenantId];
+
+  if (useGeo) {
+    where += ' AND p.geo_lat IS NOT NULL AND p.geo_lng IS NOT NULL';
+  }
 
   if (search) {
     where += ' AND (p.display_name LIKE ? OR p.phone_primary LIKE ? OR p.email LIKE ?)';
@@ -26,27 +72,61 @@ router.get('/', asyncHandler(async (req, res) => {
     params.push(party_type);
   }
 
-  const [[{ total }]] = await db.query(
-    `SELECT COUNT(*) as total FROM rv_party p ${where}`, params
-  );
+  if (useGeo) {
+    // Use Haversine formula for proximity search
+    const distanceExpr = `(6371 * acos(LEAST(1.0, cos(radians(?)) * cos(radians(p.geo_lat)) * cos(radians(p.geo_lng) - radians(?)) + sin(radians(?)) * sin(radians(p.geo_lat)))))`;
+    const geoParams = [lat, lng, lat];
 
-  const [rows] = await db.query(
-    `SELECT p.*,
-            (SELECT COUNT(*) FROM rv_animal a WHERE a.owner_party_id = p.id AND a.is_alive = 1) as animal_count
+    const countSql = `SELECT COUNT(*) as total FROM (
+      SELECT p.id, ${distanceExpr} AS distance
+      FROM rv_party p ${where}
+      HAVING distance < ?
+    ) geo_sub`;
+    const [[{ total }]] = await db.query(countSql, [...geoParams, ...params, radius]);
+
+    const dataSql = `SELECT p.*,
+            (SELECT COUNT(*) FROM rv_animal a WHERE a.owner_party_id = p.id AND a.is_alive = 1) as animal_count,
+            ${distanceExpr} AS distance
      FROM rv_party p ${where}
-     ORDER BY p.updated_at DESC
-     LIMIT ? OFFSET ?`,
-    [...params, limit, parseInt(offset)]
-  );
+     HAVING distance < ?
+     ORDER BY distance
+     LIMIT ? OFFSET ?`;
+    const [rows] = await db.query(dataSql, [...geoParams, ...params, radius, limit, parseInt(offset)]);
 
-  res.json({
-    success: true,
-    data: rows,
-    pagination: {
-      total, page: parseInt(page), limit,
-      totalPages: Math.ceil(total / limit)
-    }
-  });
+    // Round distance to 2 decimals
+    rows.forEach(r => { if (r.distance != null) r.distance = Math.round(r.distance * 100) / 100; });
+
+    res.json({
+      success: true,
+      data: rows,
+      pagination: {
+        total, page: parseInt(page), limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
+  } else {
+    const [[{ total }]] = await db.query(
+      `SELECT COUNT(*) as total FROM rv_party p ${where}`, params
+    );
+
+    const [rows] = await db.query(
+      `SELECT p.*,
+              (SELECT COUNT(*) FROM rv_animal a WHERE a.owner_party_id = p.id AND a.is_alive = 1) as animal_count
+       FROM rv_party p ${where}
+       ORDER BY p.updated_at DESC
+       LIMIT ? OFFSET ?`,
+      [...params, limit, parseInt(offset)]
+    );
+
+    res.json({
+      success: true,
+      data: rows,
+      pagination: {
+        total, page: parseInt(page), limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
+  }
 }));
 
 // GET /api/v1/clinic/parties/:id
@@ -77,7 +157,48 @@ router.get('/:id', asyncHandler(async (req, res) => {
   });
 }));
 
-// POST /api/v1/clinic/parties
+/**
+ * @swagger
+ * /v1/clinic/parties:
+ *   post:
+ *     summary: Create a new party (client or contact)
+ *     tags: [Parties]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [display_name]
+ *             properties:
+ *               party_type:
+ *                 type: string
+ *                 enum: [individual, company, farm, government]
+ *               display_name:
+ *                 type: string
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               phone_primary:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               country_code:
+ *                 type: string
+ *               city:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Party created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ */
 router.post('/', createParty, validate, asyncHandler(async (req, res) => {
   const conn = await db.getConnection();
   try {

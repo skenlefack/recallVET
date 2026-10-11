@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Form, Card, Row, Col, Button, Alert, Spinner, Image, Badge, ListGroup } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { api, getToken, API_URL } from '../../services/api'
+import { useTheme } from '../../context/ThemeContext'
 import CountrySelect from '../../components/CountrySelect'
 
 const STRUCTURE_TYPES = [
@@ -37,6 +38,7 @@ const TIMEZONES = [
 export default function TenantSettings() {
   const { t } = useTranslation()
   const fileInputRef = useRef()
+  const { updateColors } = useTheme()
 
   const [form, setForm] = useState({
     name: '',
@@ -49,6 +51,15 @@ export default function TenantSettings() {
     default_language: 'fr',
     timezone: 'Africa/Douala'
   })
+
+  const [whiteLabel, setWhiteLabel] = useState({
+    primary_color: '#2563eb',
+    secondary_color: '#1e40af',
+    custom_domain: '',
+    email_footer: '',
+    login_banner_url: ''
+  })
+  const [savingWhiteLabel, setSavingWhiteLabel] = useState(false)
   const [logoUrl, setLogoUrl] = useState(null)
   const [logoPreview, setLogoPreview] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -88,6 +99,13 @@ export default function TenantSettings() {
         default_language: d.default_language || 'fr',
         timezone: d.timezone || 'Africa/Douala'
       })
+      setWhiteLabel({
+        primary_color: d.primary_color || '#2563eb',
+        secondary_color: d.secondary_color || '#1e40af',
+        custom_domain: d.custom_domain || '',
+        email_footer: d.email_footer || '',
+        login_banner_url: d.login_banner_url || ''
+      })
       if (d.logo_url) {
         setLogoUrl(d.logo_url)
       }
@@ -99,6 +117,24 @@ export default function TenantSettings() {
 
   const handleChange = (e) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleWhiteLabelChange = (e) => {
+    setWhiteLabel(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleSaveWhiteLabel = async (e) => {
+    e.preventDefault()
+    setSavingWhiteLabel(true)
+    const token = getToken()
+    const res = await api.put('/v1/tenant', whiteLabel, token)
+    setSavingWhiteLabel(false)
+    if (res.success) {
+      updateColors(whiteLabel.primary_color, whiteLabel.secondary_color)
+      setToast({ type: 'success', message: 'Personnalisation sauvegard\u00e9e.' })
+    } else {
+      setToast({ type: 'danger', message: res.message || 'Erreur lors de la sauvegarde.' })
+    }
   }
 
   const handleCountryChange = (code) => {
@@ -573,6 +609,115 @@ export default function TenantSettings() {
           </Card>
         </Col>
       </Row>
+
+      {/* ── White-Label / Personnalisation ── */}
+      <hr className="my-4" />
+      <h5 className="mb-3"><i className="fas fa-palette me-2" />Personnalisation (White-Label)</h5>
+      <Card>
+        <Card.Body>
+          <Form onSubmit={handleSaveWhiteLabel}>
+            <Row className="g-3">
+              <Col md={3}>
+                <Form.Group>
+                  <Form.Label>Couleur principale</Form.Label>
+                  <div className="d-flex align-items-center gap-2">
+                    <Form.Control
+                      type="color"
+                      name="primary_color"
+                      value={whiteLabel.primary_color}
+                      onChange={handleWhiteLabelChange}
+                      style={{ width: 50, height: 38, padding: 2 }}
+                    />
+                    <Form.Control
+                      type="text"
+                      name="primary_color"
+                      value={whiteLabel.primary_color}
+                      onChange={handleWhiteLabelChange}
+                      pattern="^#[0-9a-fA-F]{6}$"
+                      maxLength={7}
+                      size="sm"
+                      style={{ width: 90 }}
+                    />
+                  </div>
+                </Form.Group>
+              </Col>
+              <Col md={3}>
+                <Form.Group>
+                  <Form.Label>Couleur secondaire</Form.Label>
+                  <div className="d-flex align-items-center gap-2">
+                    <Form.Control
+                      type="color"
+                      name="secondary_color"
+                      value={whiteLabel.secondary_color}
+                      onChange={handleWhiteLabelChange}
+                      style={{ width: 50, height: 38, padding: 2 }}
+                    />
+                    <Form.Control
+                      type="text"
+                      name="secondary_color"
+                      value={whiteLabel.secondary_color}
+                      onChange={handleWhiteLabelChange}
+                      pattern="^#[0-9a-fA-F]{6}$"
+                      maxLength={7}
+                      size="sm"
+                      style={{ width: 90 }}
+                    />
+                  </div>
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Domaine personnalis\u00e9</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="custom_domain"
+                    value={whiteLabel.custom_domain}
+                    onChange={handleWhiteLabelChange}
+                    placeholder="app.votreclinique.com"
+                  />
+                  <Form.Text className="text-muted">Contactez le support pour configurer le DNS.</Form.Text>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row className="g-3 mt-1">
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>URL banni\u00e8re de connexion</Form.Label>
+                  <Form.Control
+                    type="url"
+                    name="login_banner_url"
+                    value={whiteLabel.login_banner_url}
+                    onChange={handleWhiteLabelChange}
+                    placeholder="https://example.com/banner.png"
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Pied de page des emails</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={2}
+                    name="email_footer"
+                    value={whiteLabel.email_footer}
+                    onChange={handleWhiteLabelChange}
+                    placeholder="Texte personnalis\u00e9 en bas de vos emails..."
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <div className="text-end mt-3">
+              <Button type="submit" variant="success" disabled={savingWhiteLabel}>
+                {savingWhiteLabel ? (
+                  <><Spinner size="sm" className="me-1" />{t('common.loading')}</>
+                ) : (
+                  <><i className="fas fa-save me-1" />Sauvegarder la personnalisation</>
+                )}
+              </Button>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
     </div>
   )
 }

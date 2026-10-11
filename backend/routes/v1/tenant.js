@@ -38,7 +38,8 @@ const upload = multer({
 router.get('/', asyncHandler(async (req, res) => {
   const [rows] = await db.query(
     `SELECT id, name, slug, logo_url, address_line, city, region, country_code,
-            phone, default_currency, default_language, timezone
+            phone, default_currency, default_language, timezone,
+            primary_color, secondary_color, custom_domain, email_footer, login_banner_url
      FROM rv_tenant WHERE id = ?`,
     [req.tenant.id]
   );
@@ -61,6 +62,11 @@ router.put('/', [
   body('default_currency').optional().isIn(['XAF', 'XOF', 'USD', 'EUR', 'GBP']).withMessage('Invalid currency'),
   body('default_language').optional().isIn(['fr', 'en']).withMessage('Language must be fr or en'),
   body('timezone').optional().trim().isLength({ max: 50 }).withMessage('Timezone must be at most 50 characters'),
+  body('primary_color').optional({ nullable: true }).trim().matches(/^#[0-9a-fA-F]{6}$/).withMessage('Primary color must be a valid hex color (e.g. #2563eb)'),
+  body('secondary_color').optional({ nullable: true }).trim().matches(/^#[0-9a-fA-F]{6}$/).withMessage('Secondary color must be a valid hex color (e.g. #1e40af)'),
+  body('custom_domain').optional({ nullable: true }).trim().isLength({ max: 255 }).withMessage('Custom domain must be at most 255 characters'),
+  body('email_footer').optional({ nullable: true }).trim().isLength({ max: 2000 }).withMessage('Email footer must be at most 2000 characters'),
+  body('login_banner_url').optional({ nullable: true }).trim().isURL().withMessage('Login banner URL must be a valid URL'),
   validate
 ], asyncHandler(async (req, res) => {
   // Only owner or admin can update tenant settings
@@ -68,7 +74,7 @@ router.put('/', [
     return res.status(403).json({ success: false, message: 'Only owner or admin can update tenant settings.' });
   }
 
-  const allowedFields = ['name', 'phone', 'address_line', 'city', 'region', 'country_code', 'default_currency', 'default_language', 'timezone'];
+  const allowedFields = ['name', 'phone', 'address_line', 'city', 'region', 'country_code', 'default_currency', 'default_language', 'timezone', 'primary_color', 'secondary_color', 'custom_domain', 'email_footer', 'login_banner_url'];
   const updates = {};
   for (const field of allowedFields) {
     if (req.body[field] !== undefined) {

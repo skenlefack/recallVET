@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { api, getToken } from '../services/api'
+import { io } from 'socket.io-client'
+import { api, getToken, API_URL } from '../services/api'
 
 function timeAgo(dateStr, t) {
   const now = new Date()
@@ -24,7 +25,9 @@ export default function NotificationBell() {
   const [notifications, setNotifications] = useState([])
   const [showDropdown, setShowDropdown] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [newNotif, setNewNotif] = useState(false)
   const dropdownRef = useRef(null)
+  const socketRef = useRef(null)
 
   const fetchUnreadCount = useCallback(async () => {
     const res = await api.get('/v1/notifications/unread-count', getToken())
@@ -42,7 +45,63 @@ export default function NotificationBell() {
     setLoading(false)
   }, [])
 
-  // Poll unread count every 60 seconds
+  // Socket.IO connection
+  useEffect(() => {
+    const token = getToken()
+    if (!token) return
+
+    // Derive WebSocket URL from API_URL
+    // API_URL is like '/api' or 'http://localhost:5000/api'
+    let wsUrl
+    if (API_URL.startsWith('http')) {
+      wsUrl = API_URL.replace(/\/api\/?$/, '')
+    } else {
+      // Relative URL — connect to same host
+      wsUrl = window.location.origin
+    }
+
+    const socket = io(wsUrl, {
+      auth: { token },
+      transports: ['websocket', 'polling'],
+      reconnectionAttempts: 10,
+      reconnectionDelay: 3000
+    })
+
+    socket.on('connect', () => {
+      // Join tenant room if available
+      try {
+        const tenantData = localStorage.getItem('rv_tenant')
+        if (tenantData) {
+          const tenant = JSON.parse(tenantData)
+          if (tenant.id) socket.emit('join_tenant', tenant.id)
+        }
+      } catch (e) { /* ignore */ }
+    })
+
+    socket.on('notification', (notif) => {
+      // Update unread count
+      setUnreadCount(prev => prev + 1)
+
+      // Prepend to notification list if dropdown is open
+      setNotifications(prev => {
+        if (prev.length === 0) return prev // list not loaded yet
+        return [notif, ...prev].slice(0, 10)
+      })
+
+      // Trigger badge animation
+      setNewNotif(true)
+      setTimeout(() => setNewNotif(false), 2000)
+    })
+
+    socketRef.current = socket
+
+    return () => {
+      socket.disconnect()
+      socketRef.current = null
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fallback polling every 60 seconds
   useEffect(() => {
     fetchUnreadCount()
     const interval = setInterval(fetchUnreadCount, 60000)
@@ -100,9 +159,9 @@ export default function NotificationBell() {
         onClick={handleToggle}
         aria-label={t('notifications.title')}
       >
-        <i className="fas fa-bell fs-5"></i>
+        <i className={`fas fa-bell fs-5${newNotif ? ' fa-shake' : ''}`}></i>
         {unreadCount > 0 && (
-          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          <span className={`position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger${newNotif ? ' animate__animated animate__pulse' : ''}`}
             style={{ fontSize: '0.65rem' }}>
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>

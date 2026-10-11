@@ -5,7 +5,52 @@ const validate = require('../../middleware/validate');
 const { demoRequest, contact, newsletterSubscribe } = require('../../validators/public');
 const asyncHandler = require('../../utils/asyncHandler');
 
-// GET /public/plans - Get all active pricing plans
+/**
+ * @swagger
+ * /public/plans:
+ *   get:
+ *     summary: Get all active pricing plans
+ *     tags: [Public]
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: List of active subscription plans
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       code:
+ *                         type: string
+ *                       name_fr:
+ *                         type: string
+ *                       name_en:
+ *                         type: string
+ *                       price_monthly:
+ *                         type: number
+ *                       price_yearly:
+ *                         type: number
+ *                       currency:
+ *                         type: string
+ *                       max_users:
+ *                         type: integer
+ *                       max_animals:
+ *                         type: integer
+ *                       features:
+ *                         type: string
+ *                       trial_days:
+ *                         type: integer
+ */
 router.get('/plans', asyncHandler(async (req, res) => {
   const [plans] = await db.query(
     'SELECT id, code, name_fr, name_en, description_fr, description_en, price_monthly, price_yearly, currency, max_users, max_animals, max_structures, features, trial_days, sort_order FROM rv_plan WHERE is_active = 1 ORDER BY sort_order'

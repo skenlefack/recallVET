@@ -15,6 +15,7 @@ const menuSections = [
     title: 'CLINIQUE',
     items: [
       { title: 'Clients', icon: 'fas fa-users', to: '/clinic/parties' },
+      { title: 'Carte clients', icon: 'fas fa-map-marker-alt', to: '/clinic/parties/map' },
       { title: 'Animaux', icon: 'fas fa-paw', to: '/clinic/animals' },
       { title: 'Rendez-vous', icon: 'fas fa-calendar-check', to: '/clinic/appointments' },
       { title: 'Calendrier', icon: 'fas fa-calendar-alt', to: '/clinic/calendar' },

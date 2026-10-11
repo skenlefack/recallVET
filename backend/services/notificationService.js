@@ -1,8 +1,10 @@
 const db = require('../config/db');
+const { getIO } = require('../config/socket');
 
 /**
  * Create a new in-app notification.
  * Checks user preferences before inserting — if user has disabled this event_type, skip.
+ * Emits the notification via Socket.IO for real-time delivery.
  */
 async function createNotification(tenantId, userId, { type = 'info', title, body = null, data = null, event_type = null }) {
   // Check user preference if event_type is provided
@@ -22,6 +24,21 @@ async function createNotification(tenantId, userId, { type = 'info', title, body
      VALUES (?, ?, ?, ?, ?, ?)`,
     [tenantId, userId, type, title, body, data ? JSON.stringify(data) : null]
   );
+
+  // Emit real-time notification via Socket.IO
+  const io = getIO();
+  if (io) {
+    io.to(`user_${userId}`).emit('notification', {
+      id: result.insertId,
+      type,
+      title,
+      body,
+      data,
+      is_read: 0,
+      created_at: new Date().toISOString()
+    });
+  }
+
   return result.insertId;
 }
 

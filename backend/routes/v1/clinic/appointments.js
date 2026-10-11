@@ -7,7 +7,53 @@ const validate = require('../../../middleware/validate');
 const asyncHandler = require('../../../utils/asyncHandler');
 const { createAppointment, updateAppointment } = require('../../../validators/clinic');
 
-// GET /api/v1/clinic/appointments
+/**
+ * @swagger
+ * /v1/clinic/appointments:
+ *   get:
+ *     summary: List appointments with filtering and pagination
+ *     tags: [Appointments]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: date
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter by scheduled date (YYYY-MM-DD)
+ *       - in: query
+ *         name: site_id
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: vet_user_id
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [scheduled, confirmed, checked_in, in_progress, completed, cancelled, no_show]
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 25
+ *           maximum: 100
+ *     responses:
+ *       200:
+ *         description: Paginated list of appointments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaginationResponse'
+ */
 router.get('/', asyncHandler(async (req, res) => {
   const tenantId = req.tenant.id;
   const { date, site_id, vet_user_id, status, page = 1, limit: rawLimit = 25 } = req.query;
@@ -48,7 +94,57 @@ router.get('/:id', asyncHandler(async (req, res) => {
   res.json({ success: true, data: rows[0] });
 }));
 
-// POST /api/v1/clinic/appointments
+/**
+ * @swagger
+ * /v1/clinic/appointments:
+ *   post:
+ *     summary: Create a new appointment
+ *     tags: [Appointments]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [animal_id, party_id, scheduled_date]
+ *             properties:
+ *               animal_id:
+ *                 type: integer
+ *               party_id:
+ *                 type: integer
+ *               vet_user_id:
+ *                 type: integer
+ *               site_id:
+ *                 type: integer
+ *               appointment_type:
+ *                 type: string
+ *                 enum: [consultation, vaccination, surgery, follow_up, emergency]
+ *               scheduled_date:
+ *                 type: string
+ *                 format: date
+ *               start_time:
+ *                 type: string
+ *                 format: time
+ *               end_time:
+ *                 type: string
+ *                 format: time
+ *               urgency_level:
+ *                 type: string
+ *                 enum: [normal, urgent, emergency]
+ *               reason:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Appointment created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ */
 router.post('/', createAppointment, validate, asyncHandler(async (req, res) => {
   const tenantId = req.tenant.id;
   const { animal_id, party_id, vet_user_id, site_id, appointment_type, scheduled_date, start_time, end_time, urgency_level, booking_channel, reason, special_instructions, send_reminder, reminder_channel, notes } = req.body;

@@ -1,14 +1,20 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const logger = require('./services/logger');
 const errorHandler = require('./middleware/errorHandler');
+const socketConfig = require('./config/socket');
 
 const app = express();
+const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
+
+// Initialize Socket.IO
+socketConfig.init(server);
 
 // Security
 app.use(helmet());
@@ -88,7 +94,7 @@ app.use('/api/public/demo-request', contactLimiter);
 // API Documentation
 if (process.env.NODE_ENV !== 'production') {
   const swaggerUi = require('swagger-ui-express');
-  const swaggerSpec = require('./swagger');
+  const swaggerSpec = require('./config/swagger');
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
 
@@ -119,7 +125,7 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     logger.info(`RecallVET API running on port ${PORT}`);
   });
 }

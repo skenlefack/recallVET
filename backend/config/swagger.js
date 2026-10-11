@@ -6,21 +6,18 @@ const options = {
     info: {
       title: 'RecallVET API',
       version: '1.0.0',
-      description: 'Veterinary Management SaaS Platform API'
+      description: 'API de gestion v\u00e9t\u00e9rinaire multi-tenant',
+      contact: { name: 'RecallVET Support', email: 'support@recallvet.com' }
     },
     servers: [
-      {
-        url: 'http://localhost:5000/api',
-        description: 'Development server'
-      }
+      { url: '/api', description: 'API Server' }
     ],
     components: {
       securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT'
-        }
+        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }
+      },
+      parameters: {
+        tenantId: { in: 'header', name: 'X-Tenant-Id', required: true, schema: { type: 'integer' } }
       },
       schemas: {
         SuccessResponse: {
@@ -55,8 +52,10 @@ const options = {
         }
       }
     },
+    security: [{ bearerAuth: [] }],
     tags: [
       { name: 'Auth', description: 'Authentication endpoints' },
+      { name: 'Public', description: 'Public endpoints (no auth required)' },
       { name: 'Animals', description: 'Animal management' },
       { name: 'Parties', description: 'Client/contact management' },
       { name: 'Appointments', description: 'Appointment scheduling' },
