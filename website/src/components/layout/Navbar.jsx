@@ -1,6 +1,63 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+
+const LANGUAGES = [
+  { code: 'fr', flag: '\u{1F1EB}\u{1F1F7}', label: 'Fran\u00e7ais', short: 'FR' },
+  { code: 'en', flag: '\u{1F1EC}\u{1F1E7}', label: 'English', short: 'EN' },
+  { code: 'pt', flag: '\u{1F1E7}\u{1F1F7}', label: 'Portugu\u00eas', short: 'PT' },
+  { code: 'ar', flag: '\u{1F1F8}\u{1F1E6}', label: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629', short: 'AR' },
+  { code: 'es', flag: '\u{1F1EA}\u{1F1F8}', label: 'Espa\u00f1ol', short: 'ES' },
+  { code: 'sw', flag: '\u{1F1F0}\u{1F1EA}', label: 'Kiswahili', short: 'SW' },
+];
+
+function LanguageDropdown({ currentLang, onSwitch, fullWidth }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const active = LANGUAGES.find((l) => l.code === currentLang) || LANGUAGES[0];
+
+  return (
+    <div className={`lang-dropdown${fullWidth ? ' lang-dropdown--full' : ''}`} ref={ref}>
+      <button
+        className="lang-dropdown__toggle"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        type="button"
+      >
+        <span className="lang-dropdown__flag">{active.flag}</span>
+        <span className="lang-dropdown__code">{active.short}</span>
+        <i className={`fas fa-chevron-${open ? 'up' : 'down'} lang-dropdown__arrow`} />
+      </button>
+      {open && (
+        <ul className="lang-dropdown__menu" role="listbox">
+          {LANGUAGES.map((lang) => (
+            <li
+              key={lang.code}
+              role="option"
+              aria-selected={lang.code === currentLang}
+              className={`lang-dropdown__item${lang.code === currentLang ? ' lang-dropdown__item--active' : ''}`}
+              onClick={() => { onSwitch(lang.code); setOpen(false); }}
+            >
+              <span className="lang-dropdown__flag">{lang.flag}</span>
+              <span className="lang-dropdown__label">{lang.label}</span>
+              {lang.code === currentLang && <i className="fas fa-check lang-dropdown__check" />}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
@@ -57,22 +114,7 @@ export default function Navbar() {
 
             {/* Desktop actions */}
             <div className="rv-nav-actions">
-              {[
-                { code: 'fr', label: 'Fran\u00e7ais' },
-                { code: 'en', label: 'English' },
-                { code: 'pt', label: 'Portugu\u00eas' },
-                { code: 'ar', label: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629' },
-                { code: 'es', label: 'Espa\u00f1ol' },
-                { code: 'sw', label: 'Kiswahili' },
-              ].map((lang) => (
-                <button
-                  key={lang.code}
-                  className={`lang-btn${i18n.language === lang.code ? ' active' : ''}`}
-                  onClick={() => switchLang(lang.code)}
-                >
-                  {lang.label}
-                </button>
-              ))}
+              <LanguageDropdown currentLang={i18n.language} onSwitch={switchLang} />
               <a
                 href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/login`}
                 target="_blank"
@@ -115,24 +157,7 @@ export default function Navbar() {
           ))}
         </ul>
         <div className="mobile-actions">
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-            {[
-              { code: 'fr', label: 'Fran\u00e7ais' },
-              { code: 'en', label: 'English' },
-              { code: 'pt', label: 'Portugu\u00eas' },
-              { code: 'ar', label: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629' },
-              { code: 'es', label: 'Espa\u00f1ol' },
-              { code: 'sw', label: 'Kiswahili' },
-            ].map((lang) => (
-              <button
-                key={lang.code}
-                className={`lang-btn${i18n.language === lang.code ? ' active' : ''}`}
-                onClick={() => switchLang(lang.code)}
-              >
-                {lang.label}
-              </button>
-            ))}
-          </div>
+          <LanguageDropdown currentLang={i18n.language} onSwitch={switchLang} fullWidth />
           <a
             href={`${import.meta.env.VITE_ADMIN_URL || 'http://localhost:3011'}/login`}
             target="_blank"
