@@ -33,8 +33,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - run: cd backend && npm ci
+      - run: cd backend && npm run migrate
       - run: cd backend && npm test
 
   admin-tests:
@@ -43,6 +44,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - run: cd admin && npm ci
       - run: cd admin && npx vitest run

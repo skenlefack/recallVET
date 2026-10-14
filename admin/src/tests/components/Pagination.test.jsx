@@ -14,8 +14,10 @@ describe('Pagination', () => {
 
   it('renders pagination with correct page numbers', () => {
     render(<Pagination {...defaultProps} />);
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('5')).toBeInTheDocument();
+    const pageButtons = screen.getAllByRole('button');
+    const pageNumbers = pageButtons.map(b => b.textContent).filter(t => /^\d+$/.test(t));
+    expect(pageNumbers).toContain('1');
+    expect(pageNumbers).toContain('5');
   });
 
   it('calls onPageChange when clicking a page button', () => {
@@ -27,13 +29,13 @@ describe('Pagination', () => {
 
   it('disables previous button on first page', () => {
     render(<Pagination {...defaultProps} currentPage={1} />);
-    const prevButton = screen.getByText('\u00ab');
-    expect(prevButton.closest('li')).toHaveClass('disabled');
+    const prevButton = screen.getByTitle('Page précédente');
+    expect(prevButton).toBeDisabled();
   });
 
   it('disables next button on last page', () => {
     render(<Pagination {...defaultProps} currentPage={5} />);
-    const nextButton = screen.getByText('\u00bb');
-    expect(nextButton.closest('li')).toHaveClass('disabled');
+    const nextButton = screen.getByTitle('Page suivante');
+    expect(nextButton).toBeDisabled();
   });
 });
