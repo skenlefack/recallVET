@@ -36,12 +36,20 @@ function mockAuthChain() {
   }]]); // tenant
   db.query.mockResolvedValueOnce([[{
     id: 1, status: 'trialing', plan_id: 1, trial_ends_at: '2099-12-31',
-    plan_code: 'professional', plan_name: 'Professional', features: null
+    plan_code: 'professional', plan_name: 'Professional', features: '{}'
   }]]); // subscription
+}
+
+function mockPlanLimitPass() {
+  // checkPlanLimit: subscription query returns null limit → unlimited
+  db.query.mockResolvedValueOnce([[{ max_users: null, max_animals: null, max_structures: null }]]);
 }
 
 beforeEach(() => {
   jest.clearAllMocks();
+  db.query.mockReset();
+  db._conn.query.mockReset();
+  db.getConnection.mockResolvedValue(db._conn);
 });
 
 describe('GET /api/v1/clinic/animals', () => {
@@ -107,6 +115,7 @@ describe('GET /api/v1/clinic/animals/:id', () => {
 describe('POST /api/v1/clinic/animals', () => {
   it('should create animal with valid data', async () => {
     mockAuthChain();
+    mockPlanLimitPass();
     const conn = db._conn;
     // COUNT for code generation
     conn.query.mockResolvedValueOnce([[{ cnt: 5 }]]);
@@ -116,7 +125,7 @@ describe('POST /api/v1/clinic/animals', () => {
     const res = await request(app)
       .post('/api/v1/clinic/animals')
       .set('Authorization', 'Bearer ' + token)
-      .send({ owner_party_id: 1, species_id: 1, name: 'Buddy', sex: 'male' });
+      .send({ owner_party_id: 1, species_id: 1, name: 'Buddy', sex: 'M' });
 
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
@@ -128,6 +137,7 @@ describe('POST /api/v1/clinic/animals', () => {
 
   it('should return 422 without owner_party_id', async () => {
     mockAuthChain();
+    mockPlanLimitPass();
 
     const res = await request(app)
       .post('/api/v1/clinic/animals')

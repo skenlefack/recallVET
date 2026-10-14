@@ -42,6 +42,9 @@ function mockAuthChain() {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  db.query.mockReset();
+  db._conn.query.mockReset();
+  db.getConnection.mockResolvedValue(db._conn);
 });
 
 describe('Pharmacy - Stock routes', () => {
@@ -71,7 +74,7 @@ describe('Pharmacy - Stock routes', () => {
       const res = await request(app)
         .post('/api/v1/pharmacy/stock/locations')
         .set('Authorization', 'Bearer ' + token)
-        .send({ name: 'Véhicule terrain', location_type: 'vehicle' });
+        .send({ name: 'Véhicule terrain', location_type: 'mobile' });
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
