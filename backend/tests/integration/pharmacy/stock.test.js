@@ -36,7 +36,7 @@ function mockAuthChain() {
   }]]);
   db.query.mockResolvedValueOnce([[{
     id: 1, status: 'trialing', plan_id: 1, trial_ends_at: '2099-12-31',
-    plan_code: 'professional', plan_name: 'Professional', features: null
+    plan_code: 'professional', plan_name: 'Professional', features: '{}'
   }]]);
 }
 
