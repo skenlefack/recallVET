@@ -9,13 +9,33 @@ on:
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: recallvet_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: recallvet_test
+      DB_PORT: 3306
+      NODE_ENV: test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - run: cd backend && npm ci
-      - run: cd backend && npm test --if-present
+      - run: cd backend && npm test
 
   admin-tests:
     runs-on: ubuntu-latest
@@ -25,4 +45,4 @@ jobs:
         with:
           node-version: 20
       - run: cd admin && npm ci
-      - run: cd admin && npm test -- --run --if-present
+      - run: cd admin && npx vitest run
