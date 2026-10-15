@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const { getIO } = require('../config/socket');
+const { sendPushToUser } = require('./pushNotificationService');
 
 /**
  * Create a new in-app notification.
@@ -38,6 +39,9 @@ async function createNotification(tenantId, userId, { type = 'info', title, body
       created_at: new Date().toISOString()
     });
   }
+
+  // Also send push notification to mobile devices
+  sendPushToUser(userId, { title, body: body || title, data: data || {} }).catch(() => {});
 
   return result.insertId;
 }

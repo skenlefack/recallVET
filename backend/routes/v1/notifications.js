@@ -10,6 +10,7 @@ const {
   markAsRead,
   markAllAsRead
 } = require('../../services/notificationService');
+const { registerDeviceToken, removeDeviceToken } = require('../../services/pushNotificationService');
 
 // GET /api/v1/notifications — List notifications with pagination
 router.get('/', [
@@ -91,6 +92,27 @@ router.put('/:id/read', [
     return res.status(404).json({ success: false, message: 'Notification not found or already read' });
   }
   res.json({ success: true });
+}));
+
+// POST /api/v1/notifications/device-token — Register a device for push notifications
+router.post('/device-token', [
+  body('token').notEmpty().withMessage('Device token is required'),
+  body('platform').optional().isIn(['android', 'ios', 'web']),
+  body('device_name').optional().trim(),
+  validate
+], asyncHandler(async (req, res) => {
+  const { token, platform, device_name } = req.body;
+  await registerDeviceToken(req.user.id, req.tenant.id, { token, platform, device_name });
+  res.json({ success: true, message: 'Device registered for push notifications.' });
+}));
+
+// DELETE /api/v1/notifications/device-token — Unregister a device (e.g., on logout)
+router.delete('/device-token', [
+  body('token').notEmpty().withMessage('Device token is required'),
+  validate
+], asyncHandler(async (req, res) => {
+  await removeDeviceToken(req.user.id, req.body.token);
+  res.json({ success: true, message: 'Device unregistered.' });
 }));
 
 module.exports = router;
