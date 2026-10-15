@@ -1,3 +1,6 @@
+import { getCachedRecords, getCachedRecord, cacheRecords, queueMutation } from './offlineDb';
+import { getStoreForEndpoint, getOnlineStatus } from './syncEngine';
+
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 function getToken() {
@@ -57,15 +60,12 @@ function buildHeaders(token, isJson = true) {
 let refreshPromise = null;
 
 async function refreshAccessToken() {
-  // If a refresh is already in progress, wait for it
   if (refreshPromise) return refreshPromise;
 
   refreshPromise = (async () => {
     try {
       const refreshToken = getRefreshToken();
-      if (!refreshToken) {
-        throw new Error('No refresh token available');
-      }
+      if (!refreshToken) throw new Error('No refresh token available');
 
       const res = await fetch(`${API_URL}/auth/refresh`, {
         method: 'POST',
@@ -73,16 +73,11 @@ async function refreshAccessToken() {
         body: JSON.stringify({ refreshToken })
       });
 
-      if (!res.ok) {
-        throw new Error('Refresh failed');
-      }
+      if (!res.ok) throw new Error('Refresh failed');
 
       const data = await res.json();
-      if (!data.token) {
-        throw new Error('No token in refresh response');
-      }
+      if (!data.token) throw new Error('No token in refresh response');
 
-      // Update tokens in localStorage while preserving user/tenants
       const stored = localStorage.getItem('rv_user');
       if (stored) {
         const parsed = JSON.parse(stored);
@@ -93,7 +88,6 @@ async function refreshAccessToken() {
 
       return data.token;
     } catch (e) {
-      // Refresh failed — clear auth and redirect to login
       localStorage.removeItem('rv_user');
       localStorage.removeItem('rv_tenant');
       window.location.href = '/login';
@@ -110,14 +104,11 @@ async function fetchWithRefresh(endpoint, options, isRetry = false) {
   const res = await fetch(`${API_URL}${endpoint}`, options);
 
   if (res.status === 401 && !isRetry) {
-    // Don't try to refresh the refresh endpoint itself
     if (endpoint === '/auth/refresh' || endpoint === '/auth/login' || endpoint === '/auth/register') {
       return res;
     }
-
     try {
       const newToken = await refreshAccessToken();
-      // Rebuild headers with the new token
       const newOptions = { ...options, headers: { ...options.headers, Authorization: `Bearer ${newToken}` } };
       return fetch(`${API_URL}${endpoint}`, newOptions);
     } catch (e) {
@@ -128,58 +119,117 @@ async function fetchWithRefresh(endpoint, options, isRetry = false) {
   return res;
 }
 
-const api = {
-  async get(endpoint, token) {
+// --- Offline-aware GET: try network, fallback to IndexedDB ---
+
+async function offlineGet(endpoint, token) {
+  const store = getStoreForEndpoint(endpoint);
+
+  if (getOnlineStatus()) {
     try {
       const res = await fetchWithRefresh(endpoint, {
         method: 'GET',
         headers: buildHeaders(token)
       });
+      const json = await safeJson(res);
+
+      // Cache successful list responses in IndexedDB
+      if (json.success && store && Array.isArray(json.data)) {
+        cacheRecords(store, json.data).catch(() => {});
+      }
+
+      return json;
+    } catch (e) {
+      // Network error — fall through to offline
+    }
+  }
+
+  // Offline fallback: serve from IndexedDB
+  if (store) {
+    const tenantId = getTenantId();
+
+    // Detail endpoint: /v1/clinic/animals/123
+    const idMatch = endpoint.match(/\/(\d+)$/);
+    if (idMatch) {
+      const record = await getCachedRecord(store, parseInt(idMatch[1]));
+      if (record) {
+        return { success: true, data: record, _offline: true };
+      }
+      return { success: false, message: 'Not available offline', _offline: true };
+    }
+
+    // List endpoint
+    const records = await getCachedRecords(store, tenantId);
+    return {
+      success: true,
+      data: records,
+      pagination: { total: records.length, page: 1, limit: records.length, totalPages: 1 },
+      _offline: true
+    };
+  }
+
+  return { success: false, message: 'You are offline', _offline: true };
+}
+
+// --- Offline-aware mutation: try network, queue if offline ---
+
+async function offlineMutate(endpoint, method, data, token) {
+  if (getOnlineStatus()) {
+    try {
+      const res = await fetchWithRefresh(endpoint, {
+        method,
+        headers: buildHeaders(token),
+        body: JSON.stringify(data)
+      });
       return safeJson(res);
     } catch (e) {
-      return { success: false, message: e.message };
+      // Network error — fall through to queue
     }
+  }
+
+  // Queue mutation for later sync
+  await queueMutation(endpoint, method, data, token);
+  return {
+    success: true,
+    message: 'Saved offline — will sync when connection returns',
+    _offline: true,
+    _queued: true
+  };
+}
+
+const api = {
+  async get(endpoint, token) {
+    return offlineGet(endpoint, token);
   },
 
   async post(endpoint, data, token) {
-    try {
-      const res = await fetchWithRefresh(endpoint, {
-        method: 'POST',
-        headers: buildHeaders(token),
-        body: JSON.stringify(data)
-      });
-      return safeJson(res);
-    } catch (e) {
-      return { success: false, message: e.message };
-    }
+    return offlineMutate(endpoint, 'POST', data, token);
   },
 
   async put(endpoint, data, token) {
-    try {
-      const res = await fetchWithRefresh(endpoint, {
-        method: 'PUT',
-        headers: buildHeaders(token),
-        body: JSON.stringify(data)
-      });
-      return safeJson(res);
-    } catch (e) {
-      return { success: false, message: e.message };
-    }
+    return offlineMutate(endpoint, 'PUT', data, token);
   },
 
   async delete(endpoint, token) {
-    try {
-      const res = await fetchWithRefresh(endpoint, {
-        method: 'DELETE',
-        headers: buildHeaders(token)
-      });
-      return safeJson(res);
-    } catch (e) {
-      return { success: false, message: e.message };
+    if (getOnlineStatus()) {
+      try {
+        const res = await fetchWithRefresh(endpoint, {
+          method: 'DELETE',
+          headers: buildHeaders(token)
+        });
+        return safeJson(res);
+      } catch (e) {
+        return { success: false, message: e.message };
+      }
     }
+    await queueMutation(endpoint, 'DELETE', null, token);
+    return { success: true, message: 'Delete queued offline', _offline: true, _queued: true };
   },
 
   async upload(endpoint, formData, token) {
+    // Uploads require network — cannot be queued offline
+    if (!getOnlineStatus()) {
+      return { success: false, message: 'File uploads require an internet connection', _offline: true };
+    }
     try {
       const headers = { 'Authorization': `Bearer ${token}` };
       const tenantId = getTenantId();

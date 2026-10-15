@@ -3,6 +3,7 @@ import { useTenant } from '../context/TenantContext'
 import { useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import NotificationBell from '../components/NotificationBell'
+import OfflineIndicator from '../components/OfflineIndicator'
 import api from '../services/api'
 
 export default function Header({ toggleSidebar }) {
@@ -182,6 +183,9 @@ export default function Header({ toggleSidebar }) {
             )}
           </div>
         )}
+
+        {/* Offline status */}
+        <OfflineIndicator />
 
         {/* Notifications */}
         <NotificationBell />

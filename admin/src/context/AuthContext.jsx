@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { api } from '../services/api'
+import { clearOfflineData } from '../services/offlineDb'
 
 const AuthContext = createContext(null)
 
@@ -85,6 +86,7 @@ export function AuthProvider({ children }) {
     setTenants([])
     localStorage.removeItem('rv_user')
     localStorage.removeItem('rv_tenant')
+    clearOfflineData().catch(() => {})
   }
 
   return (

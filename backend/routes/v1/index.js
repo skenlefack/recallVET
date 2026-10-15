@@ -20,6 +20,7 @@ router.use('/analytics', require('./analytics'));
 router.use('/uploads', require('./uploads'));
 router.use('/search', require('./search'));
 router.use('/reference', require('./reference'));
+router.use('/sync', require('./sync'));
 
 // Tenant context endpoint (returns full auth context)
 router.get('/tenant-context', (req, res) => {
