@@ -11,19 +11,28 @@ class AuthService {
       'password': password,
     });
 
-    if (res['success'] == true && res['token'] != null) {
-      final tenantId = res['tenants'] != null && (res['tenants'] as List).isNotEmpty
-          ? res['tenants'][0]['tenant_id']?.toString()
-          : null;
+    if (res['success'] == true && res['data'] != null) {
+      final data = res['data'] as Map<String, dynamic>;
+      final tenants = data['tenants'] as List? ?? [];
+      final tenantId = tenants.isNotEmpty ? tenants[0]['id']?.toString() : null;
 
       await _api.saveTokens(
-        res['token'],
-        res['refreshToken'] ?? '',
+        data['token'],
+        data['refreshToken'] ?? '',
         tenantId: tenantId,
       );
+
+      return {
+        'success': true,
+        'user': data['user'],
+        'tenants': tenants,
+      };
     }
 
-    return res;
+    return {
+      'success': false,
+      'message': res['message'] ?? 'Identifiants incorrects',
+    };
   }
 
   Future<void> logout() async {
