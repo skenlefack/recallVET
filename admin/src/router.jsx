@@ -16,6 +16,7 @@ import ResetPassword from './pages/auth/ResetPassword'
 // Dashboard
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'))
 const AnalyticsDashboard = lazy(() => import('./pages/dashboard/AnalyticsDashboard'))
+const MultiClinicDashboard = lazy(() => import('./pages/dashboard/MultiClinicDashboard'))
 
 // Clinic
 const PartyList = lazy(() => import('./pages/clinic/PartyList'))
@@ -110,6 +111,7 @@ export default function AppRouter() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<L><Dashboard /></L>} />
         <Route path="/analytics" element={<L><AnalyticsDashboard /></L>} />
+        <Route path="/multi-clinic" element={<L><MultiClinicDashboard /></L>} />
 
         {/* Notifications */}
         <Route path="/notifications" element={<L><NotificationList /></L>} />

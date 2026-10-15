@@ -8,6 +8,7 @@ const menuSections = [
     title: 'PRINCIPAL',
     items: [
       { title: 'Tableau de bord', icon: 'fas fa-tachometer-alt', to: '/dashboard' },
+      { title: 'Multi-Clinique', icon: 'fas fa-building', to: '/multi-clinic' },
       { title: 'Analytiques', icon: 'fas fa-chart-bar', to: '/analytics' }
     ]
   },
