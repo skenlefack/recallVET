@@ -95,6 +95,7 @@ services:
   certbot:
     image: certbot/certbot
     container_name: recallvet-certbot
+    restart: always
     volumes:
       - ./docker/nginx/ssl:/etc/letsencrypt
       - certbot_data:/var/www/certbot
